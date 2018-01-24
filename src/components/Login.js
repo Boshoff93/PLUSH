@@ -1,5 +1,7 @@
 import React from 'react';
 import WrappedApp from './Profile';
+import uuid from 'uuid';
+
 import {
   BrowserRouter as Router,
   Route,
@@ -8,10 +10,62 @@ import {
   Switch,
 } from 'react-router-dom'
 
-
 class Login extends React.Component{
   state = {
     value: '',
+    connected: false,
+    userName: '',
+    id: '',
+  }
+
+  componentDidMount(){
+    let ws = this.ws = new WebSocket('ws://echo.websocket.org')
+    ws.onmessage = this.message.bind(this);
+    ws.onopen = this.open.bind(this);
+    ws.onclose = this.close.bind(this);
+  }
+
+  message(e) {
+    const event = JSON.parse(e.data);
+    if(event.name === 'user add') {
+      this.newUser(event.data);
+    }
+  }
+
+  open() {
+    this.setState({
+      connected: true
+    });
+  }
+  close() {
+    this.setState({
+      connected: false
+    });
+  }
+
+  newUser(user) {
+    let currentUser = this.state;
+    currentUser.id = user.id;
+    currentUser.userName = user.name;
+    this.setState({
+      currentUser
+    });
+
+  }
+
+  addUser(name){
+    let msg = {
+      name: 'user add',
+      data: {
+        id: uuid.v4(),
+        name: name,
+      }
+    }
+    this.ws.send(JSON.stringify(msg))
+  }
+
+  setUser(activeUser) {
+    //TODO: get user messages this will go into profile
   }
 
   onChange = (e) => {
@@ -21,6 +75,7 @@ class Login extends React.Component{
   };
 
   handleSubmit = () => {
+    this.addUser(this.state.value);
     this.setState({
       value: '',
     });
@@ -43,7 +98,7 @@ class Login extends React.Component{
           value={this.state.value}
         type='text'
         />
-        <a href='/profile'>
+
 
         <button
           onClick={this.handleSubmit}
@@ -53,10 +108,20 @@ class Login extends React.Component{
         >
           Submit
         </button>
-        </a>
+
 
       </div>
+
+      <div>
+        <input
+          onChange={this.onChange}
+          value={this.state.userName + " " + this.state.id}
+        type='text'
+        />
       </div>
+
+      </div>
+
       </div>
       </Router>
     )

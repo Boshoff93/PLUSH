@@ -1,4 +1,6 @@
 import React from 'react';
+import MessageView from './MessageView';
+import MessageInput from './MessageInput';
 
 function createStore(reducer, initialState) {
   let state = initialState;
@@ -60,79 +62,16 @@ class Profile extends React.Component {
       PLUSH WALL POSTS
       <div className='ui left aligned segment'
       style={{fontFamily:'Risque', fontSize: '25px', marginTop: '20px', color:'black' }}>
-        <MessageView messages={messages} />
+        <MessageView
+          messages={messages}
+          store ={store}
+        />
         <div className='ui right aligned segment'>
-        <MessageInput />
+        <MessageInput
+          store ={store}
+        />
         </div>
       </div>
-      </div>
-    );
-  }
-}
-
-class MessageInput extends React.Component {
-  state = {
-    value: '',
-  };
-
-  onChange = (e) => {
-    this.setState({
-      value: e.target.value,
-    })
-  };
-
-  handleSubmit = () => {
-    store.dispatch({
-      type: 'ADD_MESSAGE',
-      message: this.state.value,
-    });
-    this.setState({
-      value: '',
-    });
-  };
-
-  render() {
-    return (
-      <div className='ui fluid input'>
-        <input
-          onChange={this.onChange}
-          value={this.state.value}
-          type='text'
-        />
-        <button
-          onClick={this.handleSubmit}
-          className='ui primary button'
-          style={{backgroundColor:'orange', color: 'black' }}
-          type='submit'
-        >
-          Submit
-        </button>
-       </div>
-    );
-  }
-}
-
-class MessageView extends React.Component {
-  handleClick = (index) => {
-    store.dispatch({
-      type: 'DELETE_MESSAGE',
-      index: index,
-    });
-  };
-
-  render() {
-    const messages = this.props.messages.map((message, index) => (
-      <div
-        className='comment'
-        key={index}
-        onClick={() => this.handleClick(index)}
-      >
-        {message}
-      </div>
-    ));
-    return (
-      <div className='ui comments'>
-        {messages}
       </div>
     );
   }
