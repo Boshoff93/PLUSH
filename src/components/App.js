@@ -13,11 +13,7 @@ const App = () => (
     <div className='row'>
     <Switch>
     <Route path="/profile" component={Profile}/>
-    <Route exact path='/' component={Login} render={() => (
-          <Redirect
-            to='/'
-          />
-        )} />
+    <Route exact path='/' component={Login}/>
     </Switch>
     </div>
 

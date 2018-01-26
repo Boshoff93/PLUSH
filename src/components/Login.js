@@ -1,10 +1,9 @@
 import React from 'react';
 import WrappedApp from './Profile';
 import uuid from 'uuid';
+import Socket from './socket.js'
 
 import {
-  BrowserRouter as Router,
-  Route,
   Link,
   Redirect,
   Switch,
@@ -14,58 +13,71 @@ class Login extends React.Component{
   state = {
     value: '',
     connected: false,
-    userName: '',
     id: '',
+    userName: '',
+    userSet: '',
   }
 
   componentDidMount(){
-    let ws = this.ws = new WebSocket('ws://echo.websocket.org')
-    ws.onmessage = this.message.bind(this);
-    ws.onopen = this.open.bind(this);
-    ws.onclose = this.close.bind(this);
+    let ws = new WebSocket('ws://localhost:4000')
+    let socket = this.socket = new Socket(ws);
+    socket.on('connect', this.onConnect.bind(this));
+    socket.on('disconnect', this.onDisconnect.bind(this));
+    socket.on('user add', this.onAddUser.bind(this));
+    socket.on('username availible', this.onFindUserUnSuccessful.bind(this));
+    socket.on('username unavailible', this.onAddUser.bind(this));
+    socket.on('error', this.onError.bind(this));
   }
 
-  message(e) {
-    const event = JSON.parse(e.data);
-    if(event.name === 'user add') {
-      this.newUser(event.data);
-    }
+  onConnect(){
+    this.setState({connected: true});
   }
 
-  open() {
-    this.setState({
-      connected: true
-    });
-  }
-  close() {
-    this.setState({
-      connected: false
-    });
+  onDisconnect(){
+    this.setState({connected: false});
   }
 
-  newUser(user) {
-    let currentUser = this.state;
-    currentUser.id = user.id;
-    currentUser.userName = user.name;
+  onError(error){
+    //do nothing
+  }
+
+  onAddUser(user) {
+    var currentUser = this.state;
+    currentUser.id = user.Id;
+    currentUser.userName = user.Name;
+    currentUser.value = '';
+    currentUser.userSet = '/profile' ;
     this.setState({
       currentUser
     });
 
   }
 
-  addUser(name){
-    let msg = {
-      name: 'user add',
-      data: {
-        id: uuid.v4(),
-        name: name,
-      }
-    }
-    this.ws.send(JSON.stringify(msg))
+  // onFindUserSuccessful(user) {
+  //   let currentUser = this.state;
+  //   currentUser.id = user.Id;
+  //   currentUser.userName = user.Name;
+  //   currentUser.value = '';
+  //   currentUser.userSet = '/profile' ;
+  //   this.setState({
+  //     currentUser
+  //   });
+  // }
+
+  onFindUserUnSuccessful(user) {
+    this.addUser(user.Name);
   }
 
-  setUser(activeUser) {
-    //TODO: get user messages this will go into profile
+  findUser(name) {
+    this.socket.emit('user find', {name});
+  }
+
+  addUser(name){
+    var newUser = {
+      id: uuid.v4().toString(),
+      name: name,
+    }
+    this.socket.emit('user add', newUser);
   }
 
   onChange = (e) => {
@@ -75,15 +87,20 @@ class Login extends React.Component{
   };
 
   handleSubmit = () => {
-    this.addUser(this.state.value);
+    if(this.state.value != ''){
+      this.findUser(this.state.value);
+    }
     this.setState({
-      value: '',
+      value:'',
     });
   };
 
+
   render(){
+    if (this.state.userSet === '/profile') {
+      return <Redirect push to="/profile" />;
+    } else {
     return (
-      <Router>
       <div className="ui center aligned container"
         style={{fontFamily:'Risque', fontSize: '35px', color:'Orange', marginTop: '150px' }}
       >
@@ -98,34 +115,21 @@ class Login extends React.Component{
           value={this.state.value}
         type='text'
         />
-
-
         <button
           onClick={this.handleSubmit}
-          className='ui primary button large'
+          className='ui inverted orange button'
           type='submit'
-          style={{fontFamily:'Risque', fontSize: '25px', backgroundColor: 'Orange', color: 'black' }}
+          style={{fontFamily:'Risque', fontSize: '25px'}}
         >
           Submit
         </button>
-
-
       </div>
-
-      <div>
-        <input
-          onChange={this.onChange}
-          value={this.state.userName + " " + this.state.id}
-        type='text'
-        />
       </div>
 
       </div>
-
-      </div>
-      </Router>
     )
   }
+}
 }
 
 export default Login
