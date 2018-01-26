@@ -1,40 +1,21 @@
 import React from 'react';
-import MessageView from './MessageView';
-import MessageInput from './MessageInput';
+import PostView from './PostView';
+import PostInput from './PostInput';
+import { createStore } from 'redux';
+import Socket from './socket.js'
 
-function createStore(reducer, initialState) {
-  let state = initialState;
-  const listeners = [];
-
-  const subscribe = (listener) => (
-    listeners.push(listener)
-  );
-
-  const getState = () => (state);
-
-  const dispatch = (action) => {
-    state = reducer(state, action);
-    listeners.forEach(l => l());
-  };
-
-  return {
-    subscribe,
-    getState,
-    dispatch,
-  };
-}
 
 function reducer(state, action) {
-  if (action.type === 'ADD_MESSAGE') {
+  if (action.type === 'ADD_POST') {
     return {
-      messages: state.messages.concat(action.message),
+      posts: state.posts.concat(action.post),
     };
-  } else if (action.type === 'DELETE_MESSAGE') {
+  } else if (action.type === 'DELETE_POST') {
     return {
-      messages: [
-        ...state.messages.slice(0, action.index),
-        ...state.messages.slice(
-          action.index + 1, state.messages.length
+      posts: [
+        ...state.posts.slice(0, action.index),
+        ...state.posts.slice(
+          action.index + 1, state.posts.length
         ),
       ],
     };
@@ -43,17 +24,31 @@ function reducer(state, action) {
   }
 }
 
-const initialState = { messages: [] };
+const initialState = {
+  userName: '',
+  posts: []
+  //TODO once posts are written to and from the database, impliment timestamps into posts
+};
 
 const store = createStore(reducer, initialState);
 
 class Profile extends React.Component {
   componentDidMount() {
     store.subscribe(() => this.forceUpdate());
+
+    let ws = new WebSocket('ws://localhost:4000')
+    let socket = this.socket = new Socket(ws);
+    // socket.on('connect', this.onConnect.bind(this));
+    // socket.on('disconnect', this.onDisconnect.bind(this));
+    // socket.on('user add', this.onAddUser.bind(this));
+    // socket.on('username availible', this.onFindUserUnSuccessful.bind(this));
+    // socket.on('username unavailible', this.onAddUser.bind(this));
+    // socket.on('error', this.onError.bind(this));
+
   }
 
   render() {
-    const messages = store.getState().messages;
+    const posts = store.getState().posts;
 
     return (
       <div className="ui center aligned container"
@@ -62,12 +57,12 @@ class Profile extends React.Component {
       PLUSH WALL POSTS
       <div className='ui left aligned segment'
       style={{fontFamily:'Risque', fontSize: '25px', marginTop: '20px', color:'black' }}>
-        <MessageView
-          messages={messages}
+        <PostView
+          posts={posts}
           store ={store}
         />
         <div className='ui right aligned segment'>
-        <MessageInput
+        <PostInput
           store ={store}
         />
         </div>

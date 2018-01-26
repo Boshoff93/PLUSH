@@ -1,6 +1,6 @@
 import React from 'react';
 
-export class MessageInput extends React.Component {
+export class PostInput extends React.Component {
   state = {
     value: '',
   };
@@ -13,8 +13,8 @@ export class MessageInput extends React.Component {
 
   handleSubmit = () => {
     this.props.store.dispatch({
-      type: 'ADD_MESSAGE',
-      message: this.state.value,
+      type: 'ADD_POST',
+      post: this.state.value,
     });
     this.setState({
       value: '',
@@ -42,4 +42,4 @@ export class MessageInput extends React.Component {
   }
 }
 
-export default MessageInput
+export default PostInput
