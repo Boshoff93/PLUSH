@@ -1,7 +1,7 @@
 # PLUSH
 Personal Social Media Project - Techologies: React.js, Golang, and RethinkDB
 
-React.js will be used for the frontend (This repository),
+React.js will be used for the frontend (this repository),
 
 Golang will be used for backend server API's,
 
