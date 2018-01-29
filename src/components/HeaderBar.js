@@ -8,7 +8,7 @@ const HeaderBar = () => (
         className='ui orange header'
         style={{ marginTop: '10px', fontFamily:'Risque' }}
       >
-        PLUSH!
+        PLUSH
       </h1>
     </div>
   </div>

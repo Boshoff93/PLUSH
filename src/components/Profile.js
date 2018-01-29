@@ -1,41 +1,14 @@
 import React from 'react';
 import PostView from './PostView';
 import PostInput from './PostInput';
-import { createStore } from 'redux';
-import Socket from './socket.js'
-
-
-function reducer(state, action) {
-  if (action.type === 'ADD_POST') {
-    return {
-      posts: state.posts.concat(action.post),
-    };
-  } else if (action.type === 'DELETE_POST') {
-    return {
-      posts: [
-        ...state.posts.slice(0, action.index),
-        ...state.posts.slice(
-          action.index + 1, state.posts.length
-        ),
-      ],
-    };
-  } else {
-    return state;
-  }
-}
-
-const initialState = {
-  userName: '',
-  posts: []
-  //TODO once posts are written to and from the database, impliment timestamps into posts
-};
-
-const store = createStore(reducer, initialState);
+import Socket from './socket.js';
+import {connect} from 'react-redux'
+import '../App.css'
 
 class Profile extends React.Component {
-  componentDidMount() {
-    store.subscribe(() => this.forceUpdate());
 
+  componentDidMount() {
+    //store.subscribe(() => this.forceUpdate());
     let ws = new WebSocket('ws://localhost:4000')
     let socket = this.socket = new Socket(ws);
     // socket.on('connect', this.onConnect.bind(this));
@@ -48,28 +21,46 @@ class Profile extends React.Component {
   }
 
   render() {
-    const posts = store.getState().posts;
 
     return (
-      <div className="ui center aligned container"
-        style={{fontFamily:'Risque', fontSize: '25px', color:'orange' }}
-      >
-      PLUSH WALL POSTS
-      <div className='ui left aligned segment'
-      style={{fontFamily:'Risque', fontSize: '25px', marginTop: '20px', color:'black' }}>
-        <PostView
-          posts={posts}
-          store ={store}
-        />
-        <div className='ui right aligned segment'>
-        <PostInput
-          store ={store}
-        />
+      <div className="ui center aligned container">
+
+      <div className= 'ui grid'>
+
+        <div className='four wide centered column'>
+          {this.props.userName}
         </div>
+
+        <div className='twelve wide centered column'>
+          <div className='Plush-blue Plush-font'>
+            PLUSH WALL POSTS
+          </div>
+          <div className='ui left aligned segment'
+          style={{marginTop: '20px', color:'black' }}>
+            <PostView
+            posts={this.props.posts}
+            />
+            <div className='ui right aligned segment'>
+            <PostInput
+            />
+            </div>
+          </div>
+          </div>
+        </div>
+
       </div>
-      </div>
+
     );
   }
 }
 
-export default Profile;
+function mapStateToProps(state) {
+  return {
+    posts: state.posts,
+    userName: state.userName
+
+  }
+}
+
+
+export default connect(mapStateToProps, null)(Profile);

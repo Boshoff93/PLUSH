@@ -2,12 +2,17 @@ import React from 'react';
 import WrappedApp from './Profile';
 import uuid from 'uuid';
 import Socket from './socket.js'
+import {bindActionCreators} from 'redux'
+import {setUser} from '../actions/setUser';
+import {connect} from 'react-redux'
 
 import {
   Link,
   Redirect,
   Switch,
 } from 'react-router-dom'
+
+let USERNAME = '';
 
 class Login extends React.Component{
   state = {
@@ -50,19 +55,8 @@ class Login extends React.Component{
     this.setState({
       currentUser
     });
-
+    this.props.setUser(this.state.userName)
   }
-
-  // onFindUserSuccessful(user) {
-  //   let currentUser = this.state;
-  //   currentUser.id = user.Id;
-  //   currentUser.userName = user.Name;
-  //   currentUser.value = '';
-  //   currentUser.userSet = '/profile' ;
-  //   this.setState({
-  //     currentUser
-  //   });
-  // }
 
   onFindUserUnSuccessful(user) {
     this.addUser(user.Name);
@@ -132,4 +126,8 @@ class Login extends React.Component{
 }
 }
 
-export default Login
+function matchDispachToProps(dispatch) {
+  return bindActionCreators({setUser: setUser}, dispatch)
+}
+
+export default connect(null,matchDispachToProps)(Login);

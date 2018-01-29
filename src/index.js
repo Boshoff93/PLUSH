@@ -2,14 +2,49 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import registerServiceWorker from './registerServiceWorker';
-import { BrowserRouter as Router } from "react-router-dom";
 import "./semantic-dist/semantic.css";
 import App from './components/App';
+import { createStore } from 'redux';
+
+function reducer(state = {
+  userName: '',
+  posts: [],
+}, action) {
+
+  switch (action.type) {
+    case 'ADD_POST': {
+      return {
+        posts: state.posts.concat(action.post),
+      };
+    }
+    case 'DELETE_POST':{
+      return {
+        posts: [
+          ...state.posts.slice(0, action.index),
+          ...state.posts.slice(
+            action.index + 1, state.posts.length
+          ),
+        ],
+      };
+    }
+    case 'SET_USER' :{
+      return {
+        userName: action.name
+      }
+    }
+    default: {
+      return state;
+    }
+
+  }
+
+}
+
+
+const store = createStore(reducer);
 
 ReactDOM.render(
-  <Router>
-    <App />
-  </Router>,
+    <App store = {store}/>,
   document.getElementById('root')
 );
 registerServiceWorker();

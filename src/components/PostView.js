@@ -1,19 +1,16 @@
 import React from 'react';
+import {bindActionCreators} from 'redux'
+import {deletePost} from '../actions/deletePost';
+import {connect} from 'react-redux'
 
 export class PostView extends React.Component {
-  handleClick = (index) => {
-    this.props.store.dispatch({
-      type: 'DELETE_POST',
-      index: index,
-    });
-  };
 
   render() {
     const posts = this.props.posts.map((post, index) => (
       <div
         className='comment'
         key={index}
-        onClick={() => this.handleClick(index)}
+        onClick={() => this.props.deletePost(index)}
       >
         {post}
       </div>
@@ -26,4 +23,8 @@ export class PostView extends React.Component {
   }
 }
 
-export default PostView
+function matchDispachToProps(dispatch) {
+  return bindActionCreators({deletePost: deletePost}, dispatch)
+}
+
+export default connect(null, matchDispachToProps)(PostView);

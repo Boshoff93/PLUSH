@@ -1,4 +1,7 @@
 import React from 'react';
+import {bindActionCreators} from 'redux'
+import {addPost} from '../actions/addPost';
+import {connect} from 'react-redux'
 
 export class PostInput extends React.Component {
   state = {
@@ -12,10 +15,7 @@ export class PostInput extends React.Component {
   };
 
   handleSubmit = () => {
-    this.props.store.dispatch({
-      type: 'ADD_POST',
-      post: this.state.value,
-    });
+    this.props.addPost(this.state.value)
     this.setState({
       value: '',
     });
@@ -30,9 +30,8 @@ export class PostInput extends React.Component {
           type='text'
         />
         <button
-          onClick={this.handleSubmit}
-          className='ui primary button'
-          style={{backgroundColor:'orange', color: 'black' }}
+          onClick={() => this.handleSubmit()}
+          className='ui inverted orange button'
           type='submit'
         >
           Submit
@@ -42,4 +41,8 @@ export class PostInput extends React.Component {
   }
 }
 
-export default PostInput
+function matchDispachToProps(dispatch) {
+  return bindActionCreators({addPost: addPost}, dispatch)
+}
+
+export default connect(null,matchDispachToProps)(PostInput);
