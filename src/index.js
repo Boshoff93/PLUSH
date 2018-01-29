@@ -5,6 +5,7 @@ import registerServiceWorker from './registerServiceWorker';
 import "./semantic-dist/semantic.css";
 import App from './components/App';
 import { createStore } from 'redux';
+import {loadState, saveState} from './components/localStorage';
 
 function reducer(state = {
   userName:'',
@@ -28,7 +29,6 @@ function reducer(state = {
       };
     }
     case 'SET_USER' :{
-      console.log(state.userName);
       return {
         ...state, userName: action.name,
       }
@@ -42,8 +42,11 @@ function reducer(state = {
 
 }
 
-
-const store = createStore(reducer);
+const persistedState = loadState();
+const store = createStore(reducer, persistedState);
+store.subscribe(() => {
+  saveState(store.getState());
+})
 
 ReactDOM.render(
     <App store = {store}/>,
