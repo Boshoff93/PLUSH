@@ -7,14 +7,14 @@ import App from './components/App';
 import { createStore } from 'redux';
 
 function reducer(state = {
-  userName: '',
+  userName:'',
   posts: [],
 }, action) {
 
   switch (action.type) {
     case 'ADD_POST': {
       return {
-        posts: state.posts.concat(action.post),
+        ...state, posts: state.posts.concat(action.post),
       };
     }
     case 'DELETE_POST':{
@@ -28,9 +28,11 @@ function reducer(state = {
       };
     }
     case 'SET_USER' :{
+      console.log(state.userName);
       return {
-        userName: action.name
+        ...state, userName: action.name,
       }
+
     }
     default: {
       return state;

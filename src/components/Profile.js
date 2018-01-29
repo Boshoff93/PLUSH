@@ -56,9 +56,8 @@ class Profile extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    posts: state.posts,
-    userName: state.userName
-
+    userName: state.userName,
+    posts: state.posts
   }
 }
 

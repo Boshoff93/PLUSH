@@ -55,7 +55,7 @@ class Login extends React.Component{
     this.setState({
       currentUser
     });
-    this.props.setUser(this.state.userName)
+    this.props.setUser(currentUser.userName)
   }
 
   onFindUserUnSuccessful(user) {
@@ -130,4 +130,11 @@ function matchDispachToProps(dispatch) {
   return bindActionCreators({setUser: setUser}, dispatch)
 }
 
-export default connect(null,matchDispachToProps)(Login);
+function mapStateToProps(state) {
+  return {
+    userName: state.userName,
+    posts: state.posts
+  }
+}
+
+export default connect(mapStateToProps,matchDispachToProps)(Login);
