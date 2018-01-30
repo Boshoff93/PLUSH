@@ -9,16 +9,17 @@ import {loadState, saveState} from './components/localStorage';
 
 function reducer(state = {
   userName:'',
+  id:'',
   posts: [],
 }, action) {
 
   switch (action.type) {
     case 'ADD_POST': {
       return {
-        ...state, posts: state.posts.concat(action.post),
+        ...state, ...state.posts.concat(action.post),
       };
     }
-    case 'DELETE_POST':{
+    case 'DELETE_POST': {
       return {
         posts: [
           ...state.posts.slice(0, action.index),
@@ -28,11 +29,15 @@ function reducer(state = {
         ],
       };
     }
-    case 'SET_USER' :{
+    case 'SET_USER': {
       return {
-        ...state, userName: action.name,
+        ...state, userName: action.name, posts: action.name,
       }
-
+    }
+    case 'REPLACE_POSTS': {
+      return {
+        ...state, posts: action.posts
+      }
     }
     default: {
       return state;
@@ -47,6 +52,11 @@ const store = createStore(reducer, persistedState);
 store.subscribe(() => {
   saveState(store.getState());
 })
+
+store.subscribe(() => {
+  console.log(store.getState());
+})
+
 
 ReactDOM.render(
     <App store = {store}/>,

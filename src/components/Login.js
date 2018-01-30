@@ -12,8 +12,6 @@ import {
   Switch,
 } from 'react-router-dom'
 
-let USERNAME = '';
-
 class Login extends React.Component{
   state = {
     value: '',
@@ -55,7 +53,7 @@ class Login extends React.Component{
     this.setState({
       currentUser
     });
-    this.props.setUser(currentUser.userName)
+    this.props.setUser(user.Name, user.Id)
   }
 
   onFindUserUnSuccessful(user) {
@@ -92,6 +90,7 @@ class Login extends React.Component{
 
   render(){
     if (this.state.userSet === '/profile') {
+      this.socket.close
       return <Redirect push to="/profile" />;
     } else {
     return (

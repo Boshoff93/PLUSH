@@ -2,22 +2,59 @@ import React from 'react';
 import PostView from './PostView';
 import PostInput from './PostInput';
 import Socket from './socket.js';
+import {bindActionCreators} from 'redux'
+import {addPost} from '../actions/addPost';
+import {replacePosts} from '../actions/replacePosts';
 import {connect} from 'react-redux'
 import '../App.css'
 
 class Profile extends React.Component {
 
+  state = {
+    connected: false,
+  }
+
+
   componentDidMount() {
     //store.subscribe(() => this.forceUpdate());
     let ws = new WebSocket('ws://localhost:4000')
     let socket = this.socket = new Socket(ws);
-    // socket.on('connect', this.onConnect.bind(this));
-    // socket.on('disconnect', this.onDisconnect.bind(this));
-    // socket.on('user add', this.onAddUser.bind(this));
-    // socket.on('username availible', this.onFindUserUnSuccessful.bind(this));
-    // socket.on('username unavailible', this.onAddUser.bind(this));
-    // socket.on('error', this.onError.bind(this));
+    socket.on('post add', this.onAddPost.bind(this));
+    socket.on('posts get', this.onGetPosts.bind(this));
+    socket.on('error', this.onError.bind(this));
+    socket.on('connect', this.onConnect.bind(this));
+    socket.on('disconnect', this.onDisconnect.bind(this));
+  }
 
+  onConnect(){
+    let user = {
+      userName: this.props.userName,
+      id: this.props.id
+    }
+    this.socket.emit('posts get', user);
+
+    this.setState({connected: true});
+  }
+
+  onDisconnect(){
+    this.setState({connected: false});
+  }
+
+  onGetPosts(posts) {
+    //console.log(posts)
+    //console.log(posts)
+    //console.log("^^^^^^^^^^^^^^")
+    this.props.replacePosts(posts)
+    //console.log(this.props.posts)
+    //console.log("^^^^^^^^^^^^^^")
+  }
+
+  onAddPost(post) {
+    this.props.addPost(post.Post);
+  }
+
+  onError(error){
+    //do nothing
   }
 
   render() {
@@ -38,10 +75,12 @@ class Profile extends React.Component {
           <div className='ui left aligned segment'
           style={{marginTop: '20px', color:'black' }}>
             <PostView
-            posts={this.props.posts}
+              posts={this.props.posts}
             />
             <div className='ui right aligned segment'>
             <PostInput
+              socket={this.socket}
+              id={this.props.id}
             />
             </div>
           </div>
@@ -57,9 +96,17 @@ class Profile extends React.Component {
 function mapStateToProps(state) {
   return {
     userName: state.userName,
-    posts: state.posts
+    posts: state.posts,
+    id: state.id,
   }
 }
 
+function matchDispachToProps(dispatch) {
+  return bindActionCreators({
+    addPost: addPost,
+    replacePosts: replacePosts
+  }, dispatch)
+}
 
-export default connect(mapStateToProps, null)(Profile);
+
+export default connect(mapStateToProps, matchDispachToProps)(Profile);

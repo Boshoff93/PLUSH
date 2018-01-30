@@ -15,7 +15,11 @@ export class PostInput extends React.Component {
   };
 
   handleSubmit = () => {
-    this.props.addPost(this.state.value)
+    let post = {
+      user_id: this.props.id,
+      post: this.state.value
+    }
+    this.props.socket.emit('post add', post);
     this.setState({
       value: '',
     });
@@ -41,8 +45,5 @@ export class PostInput extends React.Component {
   }
 }
 
-function matchDispachToProps(dispatch) {
-  return bindActionCreators({addPost: addPost}, dispatch)
-}
 
-export default connect(null,matchDispachToProps)(PostInput);
+export default PostInput

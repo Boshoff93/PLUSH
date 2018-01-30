@@ -1,6 +1,6 @@
-export const addPost = (value) => {
+export const addPost = (post) => {
   return {
     type: 'ADD_POST',
-    post: value,
+    post: post,
   }
 }
