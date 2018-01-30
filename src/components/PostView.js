@@ -6,7 +6,7 @@ import {connect} from 'react-redux'
 export class PostView extends React.Component {
 
   render() {
-    const posts = []||this.props.posts.map((post, index) => (
+    const posts = this.props.posts.map((post, index) => (
       <div
         className='comment'
         key={index}

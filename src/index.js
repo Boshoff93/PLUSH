@@ -16,7 +16,8 @@ function reducer(state = {
   switch (action.type) {
     case 'ADD_POST': {
       return {
-        ...state, ...state.posts.concat(action.post),
+          ...state, posts: state.posts.concat(action.post),
+
       };
     }
     case 'DELETE_POST': {
@@ -31,12 +32,12 @@ function reducer(state = {
     }
     case 'SET_USER': {
       return {
-        ...state, userName: action.name, posts: action.name,
+        ...state, userName: action.name, id: action.id,
       }
     }
     case 'REPLACE_POSTS': {
       return {
-        ...state, posts: action.posts
+        ...state, ...state.posts, posts: action.posts
       }
     }
     default: {
@@ -47,15 +48,17 @@ function reducer(state = {
 
 }
 
+
+//saveState({userName:'', id:'', posts:[]});
 const persistedState = loadState();
 const store = createStore(reducer, persistedState);
-store.subscribe(() => {
-  saveState(store.getState());
-})
 
 store.subscribe(() => {
+  saveState(store.getState());
   console.log(store.getState());
 })
+
+//store.subscribe(() => this.forceUpdate());
 
 
 ReactDOM.render(

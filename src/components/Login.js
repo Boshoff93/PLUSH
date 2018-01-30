@@ -53,7 +53,9 @@ class Login extends React.Component{
     this.setState({
       currentUser
     });
+    //console.log(this.props)
     this.props.setUser(user.Name, user.Id)
+    //console.log(this.props)
   }
 
   onFindUserUnSuccessful(user) {

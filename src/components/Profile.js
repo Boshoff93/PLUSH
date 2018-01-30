@@ -16,7 +16,7 @@ class Profile extends React.Component {
 
 
   componentDidMount() {
-    //store.subscribe(() => this.forceUpdate());
+
     let ws = new WebSocket('ws://localhost:4000')
     let socket = this.socket = new Socket(ws);
     socket.on('post add', this.onAddPost.bind(this));
@@ -66,6 +66,8 @@ class Profile extends React.Component {
 
         <div className='four wide centered column'>
           {this.props.userName}
+          " "
+          {this.props.id}
         </div>
 
         <div className='twelve wide centered column'>
