@@ -1,12 +1,13 @@
 import React from 'react';
 import PostView from './PostView';
 import PostInput from './PostInput';
+import ImageUpload from './ImageUpload'
 import Socket from './socket.js';
 import {bindActionCreators} from 'redux'
 import {addPost} from '../actions/addPost';
 import {replacePosts} from '../actions/replacePosts';
-import {connect} from 'react-redux'
-import '../App.css'
+import {connect} from 'react-redux';
+import '../App.css';
 
 class Profile extends React.Component {
 
@@ -60,35 +61,35 @@ class Profile extends React.Component {
   render() {
 
     return (
-      <div className="ui center aligned container">
+      <div className="ui container">
 
-      <div className= 'ui grid'>
-
-        <div className='four wide centered column'>
-          {this.props.userName}
-          " "
-          {this.props.id}
-        </div>
-
-        <div className='twelve wide centered column'>
-          <div className='Plush-blue Plush-font'>
-            PLUSH WALL POSTS
-          </div>
-          <div className='ui left aligned segment'
-          style={{marginTop: '20px', color:'black' }}>
-            <PostView
-              posts={this.props.posts}
-            />
-            <div className='ui right aligned segment'>
-            <PostInput
-              socket={this.socket}
-              id={this.props.id}
-            />
-            </div>
-          </div>
+      <div className="ui right aligned grid">
+        <div className="right floated left aligned four wide column">
+          <div className="ui segment center aligned">
+            {this.props.userName}
+            <ImageUpload/>
           </div>
         </div>
-
+        <div className="left floated right aligned twelve wide column">
+          <div className="ui segment center aligned">
+            <div className='Plush-blue Plush-font' style={{marginTop: '10px'}}>
+                PLUSH WALL POSTS
+              </div>
+              <div className='ui left aligned segment'
+              style={{marginTop: '20px', color:'black' }}>
+                <PostView
+                  posts={this.props.posts}
+                />
+                <div className='ui right aligned segment'>
+                <PostInput
+                  socket={this.socket}
+                  id={this.props.id}
+                />
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
       </div>
 
     );
