@@ -42,22 +42,15 @@ class Profile extends React.Component {
   }
 
   onGetPosts(posts) {
-    //console.log(posts)
-    //console.log(posts)
-    //console.log("^^^^^^^^^^^^^^")
     if(posts.Posts === null) {
-      this.props.replacePosts([],[])
+      this.props.replacePosts([],[],[])
     } else {
-      this.props.replacePosts(posts.Posts, posts.Post_Ids)
+      this.props.replacePosts(posts.Posts, posts.Post_Times, posts.Post_Ids)
     }
-
-    //console.log(this.props.posts)
-    //console.log("^^^^^^^^^^^^^^")
   }
 
   onAddPost(post) {
-    console.log(post.Post_Id);
-    this.props.addPost(post.Post, post.Post_Id);
+    this.props.addPost(post.Post, post.Post_Time, post.Post_Id);
   }
 
   onError(error){
@@ -69,27 +62,30 @@ class Profile extends React.Component {
     return (
       <div className="ui container">
 
-      <div className="ui right aligned grid">
-        <div className="right floated left aligned four wide column">
+      <div className="ui grid">
+        <div className="four wide column">
           <div className="ui segment center aligned">
             {this.props.userName}
           </div>
         </div>
-        <div className="left floated right aligned twelve wide column">
+        <div className="twelve wide column">
           <div className="ui segment center aligned">
             <div className='Plush-blue Plush-font' style={{marginTop: '10px'}}>
                 PLUSH WALL POSTS
               </div>
+              <div className='ui right aligned segment'>
+              <PostInput
+                socket={this.socket}
+                user_id={this.props.user_id}
+              />
               <div className='ui left aligned segment'
               style={{marginTop: '20px', color:'black' }}>
                 <PostView
+                  socket={this.socket}
                   posts={this.props.posts}
+                  post_ids={this.props.post_ids}
                   post_times={this.props.post_times}
                   userName={this.props.userName}
-                />
-                <div className='ui right aligned segment'>
-                <PostInput
-                  socket={this.socket}
                   user_id={this.props.user_id}
                 />
                 </div>
@@ -108,6 +104,7 @@ function mapStateToProps(state) {
     userName: state.userName,
     posts: state.posts,
     post_times: state.post_times,
+    post_ids: state.post_ids,
     user_id: state.user_id,
   }
 }

@@ -6,12 +6,24 @@ import uuid from 'uuid';
 
 export class PostView extends React.Component {
 
+  handleDelete = (index) => {
+    let deletePost = {
+      user_id: this.props.user_id,
+      post_id: this.props.post_ids[index],
+    }
+    this.props.socket.emit('post delete', deletePost);
+    this.props.deletePost(index);
+  };
+
   render() {
     const posts = this.props.posts.map((post, index) => (
-      <div className= 'ui segment' key={uuid.v4()}>
-        <div className='comment'
-          onClick={() => this.props.deletePost(index)}
-          >
+      <div className= 'row'>
+      <div className= 'fifteen wide column'>
+      <div className= 'ui segment'
+        key={uuid.v4()}
+        onClick={() => this.handleDelete(index)}
+        >
+        <div className='comment'>
           <div className="content">
             <a className="author">{this.props.userName}</a>
             <div className="metadata">
@@ -22,11 +34,23 @@ export class PostView extends React.Component {
             </div>
           </div>
         </div>
+        </div>
+      </div>
+      <div className= 'one wide column'>
+        <button class="circular ui icon button">
+          <i class="icon settings"></i>
+        </button>
+
+      </div>
+
       </div>
     ));
     return (
+
       <div className='ui comments'>
+      <div className= 'ui grid'>
         {posts}
+        </div>
       </div>
     );
   }
