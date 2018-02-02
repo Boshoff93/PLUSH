@@ -16,7 +16,7 @@ class Login extends React.Component{
   state = {
     value: '',
     connected: false,
-    id: '',
+    user_id: '',
     userName: '',
     userSet: '',
   }
@@ -46,16 +46,14 @@ class Login extends React.Component{
 
   onAddUser(user) {
     var currentUser = this.state;
-    currentUser.id = user.Id;
+    currentUser.user_id = user.User_Id;
     currentUser.userName = user.Name;
     currentUser.value = '';
     currentUser.userSet = '/profile' ;
     this.setState({
       currentUser
     });
-    //console.log(this.props)
-    this.props.setUser(user.Name, user.Id)
-    //console.log(this.props)
+    this.props.setUser(user.Name, user.User_Id)
   }
 
   onFindUserUnSuccessful(user) {
@@ -68,7 +66,7 @@ class Login extends React.Component{
 
   addUser(name){
     var newUser = {
-      id: uuid.v4().toString(),
+      user_id: uuid.v4().toString(),
       name: name,
     }
     this.socket.emit('user add', newUser);

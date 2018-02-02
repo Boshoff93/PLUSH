@@ -2,6 +2,7 @@ import React from 'react';
 import {bindActionCreators} from 'redux'
 import {addPost} from '../actions/addPost';
 import {connect} from 'react-redux'
+import uuid from 'uuid';
 
 export class PostInput extends React.Component {
   state = {
@@ -16,8 +17,10 @@ export class PostInput extends React.Component {
 
   handleSubmit = () => {
     let post = {
-      user_id: this.props.id,
+      user_id: this.props.user_id,
+      post_id: uuid.v1().toString(),
       post: this.state.value
+
     }
     this.props.socket.emit('post add', post);
     this.setState({

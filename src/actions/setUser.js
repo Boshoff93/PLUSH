@@ -1,7 +1,7 @@
-export const setUser = (name, id) => {
+export const setUser = (name, user_id) => {
   return {
     type: 'SET_USER',
     name: name,
-    id: id
+    user_id: user_id
   }
 }

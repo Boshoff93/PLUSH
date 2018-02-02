@@ -9,14 +9,17 @@ import {loadState, saveState} from './components/localStorage';
 
 function reducer(state = {
   userName:'',
-  id:'',
+  user_id:'',
+  post_times: [],
   posts: [],
 }, action) {
 
   switch (action.type) {
     case 'ADD_POST': {
       return {
-          ...state, posts: state.posts.concat(action.post),
+          ...state,
+          posts: [action.post].concat(state.posts),
+          post_times: [action.post_time].concat(state.post_times),
 
       };
     }
@@ -32,12 +35,12 @@ function reducer(state = {
     }
     case 'SET_USER': {
       return {
-        ...state, userName: action.name, id: action.id,
+        ...state, userName: action.name, user_id: action.user_id,
       }
     }
     case 'REPLACE_POSTS': {
       return {
-        ...state, ...state.posts, posts: action.posts
+        ...state, posts: action.posts, post_times: action.post_times
       }
     }
     default: {
@@ -47,7 +50,6 @@ function reducer(state = {
   }
 
 }
-
 
 //saveState({userName:'', id:'', posts:[]});
 const persistedState = loadState();

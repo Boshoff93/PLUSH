@@ -30,7 +30,7 @@ class Profile extends React.Component {
   onConnect(){
     let user = {
       userName: this.props.userName,
-      id: this.props.id
+      user_id: this.props.user_id
     }
     this.socket.emit('posts get', user);
 
@@ -45,13 +45,19 @@ class Profile extends React.Component {
     //console.log(posts)
     //console.log(posts)
     //console.log("^^^^^^^^^^^^^^")
-    this.props.replacePosts(posts)
+    if(posts.Posts === null) {
+      this.props.replacePosts([],[])
+    } else {
+      this.props.replacePosts(posts.Posts, posts.Post_Ids)
+    }
+
     //console.log(this.props.posts)
     //console.log("^^^^^^^^^^^^^^")
   }
 
   onAddPost(post) {
-    this.props.addPost(post.Post);
+    console.log(post.Post_Id);
+    this.props.addPost(post.Post, post.Post_Id);
   }
 
   onError(error){
@@ -67,7 +73,6 @@ class Profile extends React.Component {
         <div className="right floated left aligned four wide column">
           <div className="ui segment center aligned">
             {this.props.userName}
-            <ImageUpload/>
           </div>
         </div>
         <div className="left floated right aligned twelve wide column">
@@ -79,11 +84,13 @@ class Profile extends React.Component {
               style={{marginTop: '20px', color:'black' }}>
                 <PostView
                   posts={this.props.posts}
+                  post_times={this.props.post_times}
+                  userName={this.props.userName}
                 />
                 <div className='ui right aligned segment'>
                 <PostInput
                   socket={this.socket}
-                  id={this.props.id}
+                  user_id={this.props.user_id}
                 />
                 </div>
               </div>
@@ -100,7 +107,8 @@ function mapStateToProps(state) {
   return {
     userName: state.userName,
     posts: state.posts,
-    id: state.id,
+    post_times: state.post_times,
+    user_id: state.user_id,
   }
 }
 
