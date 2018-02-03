@@ -3,6 +3,7 @@ import {bindActionCreators} from 'redux'
 import {deletePost} from '../actions/deletePost';
 import {connect} from 'react-redux'
 import uuid from 'uuid';
+import "../animations/animations.css"
 
 export class PostView extends React.Component {
 
@@ -16,45 +17,45 @@ export class PostView extends React.Component {
   };
 
   render() {
-    const posts = this.props.posts.map((post, index) => (
-      <div className= 'row'>
-      <div className= 'fifteen wide column'>
-      <div className= 'ui segment'
-        key={uuid.v4()}
-        onClick={() => this.handleDelete(index)}
-        >
-        <div className='comment'>
-          <div className="content">
-            <a className="author">{this.props.userName}</a>
-            <div className="metadata">
-              <div className="date">{this.props.post_times[index]}</div>
-            </div>
-            <div className="text">
-              {post}
+      const posts = this.props.posts.map((post, index) => (
+        <div className= 'row'>
+        <div className= 'fourteen wide column'>
+        <div className= 'ui segment'
+          key={uuid.v4()}
+          >
+          <div className='comment'>
+            <div className="content">
+              <a className="author">{this.props.userName}</a>
+              <div className="metadata">
+                <div className="date">{this.props.post_times[index]}</div>
+              </div>
+              <div className="text">
+                {post}
+              </div>
             </div>
           </div>
+          </div>
         </div>
+        <div className= 'two wide column'>
+          <button className="circular ui icon button shake-it poop" data-tooltip="Delete Post"
+            onClick={() => this.handleDelete(index)}
+            >
+            <i className="icon trash"></i>
+          </button>
         </div>
-      </div>
-      <div className= 'one wide column'>
-        <button class="circular ui icon button">
-          <i class="icon settings"></i>
-        </button>
 
-      </div>
-
-      </div>
-    ));
-    return (
-
-      <div className='ui comments'>
-      <div className= 'ui grid'>
-        {posts}
         </div>
-      </div>
-    );
+      ));
+      return (
+
+        <div className='ui comments'>
+        <div className= 'ui middle aligned grid'>
+          {posts}
+          </div>
+        </div>
+      );
+    }
   }
-}
 
 function matchDispachToProps(dispatch) {
   return bindActionCreators({deletePost: deletePost}, dispatch)
