@@ -64,22 +64,22 @@ class Profile extends React.Component {
 
       <div className="ui grid">
         <div className="four wide column">
-          <div className="ui segment center aligned">
+          <div className="ui segment center aligned" style={{border:"2px solid black"}}>
             {this.props.userName}
           </div>
         </div>
         <div className="twelve wide column">
-          <div className="ui segment center aligned">
+          <div className="ui segment center aligned" style={{border:"2px solid orange"}}>
             <div className='Plush-blue Plush-font' style={{marginTop: '10px'}}>
                 PLUSH WALL POSTS
               </div>
-              <div className='ui right aligned segment'>
+              <div className='ui right aligned segment' style={{border:"2px solid #0080ff"}}>
               <PostInput
                 socket={this.socket}
                 user_id={this.props.user_id}
               />
               <div className='ui left aligned segment'
-              style={{marginTop: '20px', color:'black' }}>
+              style={{marginTop: '20px', color:'black', border:"1px solid orange"}}>
                 <PostView
                   socket={this.socket}
                   posts={this.props.posts}

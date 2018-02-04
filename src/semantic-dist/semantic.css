@@ -22156,8 +22156,7 @@ Floated Menu / Item
   color: #DB2828 !important;
 }
 
-.ui.menu .
-.active.item,
+.ui.menu .orange.active.item,
 .ui.orange.menu .active.item {
   border-color: #F2711C !important;
   color: #F2711C !important;

@@ -3,7 +3,10 @@ import {bindActionCreators} from 'redux'
 import {deletePost} from '../actions/deletePost';
 import {connect} from 'react-redux'
 import uuid from 'uuid';
+import "../App.css"
 import "../animations/animations.css"
+import "../Images/trash-bin.png"
+import "../Images/star.png"
 
 export class PostView extends React.Component {
 
@@ -19,9 +22,10 @@ export class PostView extends React.Component {
   render() {
       const posts = this.props.posts.map((post, index) => (
         <div className= 'row'>
-        <div className= 'fourteen wide column'>
+        <div className= 'twelve wide column'>
         <div className= 'ui segment'
           key={uuid.v4()}
+          style={{border:"1px solid #0080ff"}}
           >
           <div className='comment'>
             <div className="content">
@@ -36,20 +40,25 @@ export class PostView extends React.Component {
           </div>
           </div>
         </div>
-        <div className= 'two wide column'>
-          <button className="circular ui icon button shake-it poop" data-tooltip="Delete Post"
-            onClick={() => this.handleDelete(index)}
-            >
-            <i className="icon trash"></i>
-          </button>
-        </div>
 
+        {/*TODO:Fix this mess*/}
+          <div className= 'two wide column Row-height center aligned'>
+            <button data-tooltip="Delete Post" data-inverted="" style={{backgroundColor:"white", borderRadius:"100%", border:"2px solid orange", margin:"25% 20%", padding:"0 10%"}}
+              onClick={() => this.handleDelete(index)}
+            >
+              <img className="ui avatar image" src={require("../Images/trash-bin.png")} style={{padding:"30% 0px"}}></img>
+            </button>
+          </div>
+          <div className= 'two wide column Row-height center aligned'>
+            <button data-tooltip="Rate Post" data-inverted="" style={{backgroundColor:"white", borderRadius:"100%", border:"2px solid orange", margin:"25% 20%", padding:"0 10%"}}>
+              <img className="ui avatar image" src={require("../Images/star.png")} style={{padding:"30% 0px"}}></img>
+            </button>
+          </div>
         </div>
       ));
       return (
-
-        <div className='ui comments'>
-        <div className= 'ui middle aligned grid'>
+        <div className='ui comments' style={{margin: "0 auto"}}>
+        <div className= 'ui grid'>
           {posts}
           </div>
         </div>
