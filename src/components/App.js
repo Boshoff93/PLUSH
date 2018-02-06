@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-d
 import HeaderBar from './HeaderBar';
 import Profile from './Profile';
 import Login from './Login';
+import UserView from './UserView'
 
 const App = ({store}) => (
   <div className='ui grid'>
@@ -15,6 +16,7 @@ const App = ({store}) => (
     <Provider store = {store} >
       <Router>
         <Switch>
+          <Route path="/view/:name" component={UserView}/>
           <Route path="/profile" component={Profile}/>
           <Route exact path='/' component={Login}/>
         </Switch>

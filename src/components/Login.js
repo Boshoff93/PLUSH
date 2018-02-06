@@ -5,6 +5,7 @@ import Socket from './socket.js'
 import {bindActionCreators} from 'redux'
 import {setUser} from '../actions/setUser';
 import {connect} from 'react-redux'
+import "../App.css"
 
 import {
   Link,
@@ -18,7 +19,7 @@ class Login extends React.Component{
     connected: false,
     user_id: '',
     userName: '',
-    userSet: '',
+    userPath: '',
   }
 
   componentDidMount(){
@@ -49,7 +50,7 @@ class Login extends React.Component{
     currentUser.user_id = user.User_Id;
     currentUser.userName = user.Name;
     currentUser.value = '';
-    currentUser.userSet = '/profile' ;
+    currentUser.userPath = '/profile' ;
     this.setState({
       currentUser
     });
@@ -76,7 +77,7 @@ class Login extends React.Component{
     this.setState({
       value: e.target.value,
     })
-  };
+  };y
 
   handleSubmit = () => {
     if(this.state.value != ''){
@@ -89,19 +90,15 @@ class Login extends React.Component{
 
 
   render(){
-    if (this.state.userSet === '/profile') {
+    if (this.state.userPath === '/profile') {
       this.socket.close
       return <Redirect push to="/profile" />;
     } else {
     return (
-      <div className="ui center aligned container"
-        style={{fontFamily:'Risque', fontSize: '35px', color:'Orange', marginTop: '150px' }}
-      >
+      <div className="ui center aligned container Wallpost-heading">
       ENTER YOUR PLUSH USERNAME!
 
-      <div className="ui center aligned container"
-        style={{fontFamily:'Risque', fontSize: '25px', marginTop: '20px' }}
-      >
+      <div className="ui center aligned container Wallpost-container">
       <div className='ui input center'>
         <input
           onChange={this.onChange}
@@ -110,9 +107,8 @@ class Login extends React.Component{
         />
         <button
           onClick={this.handleSubmit}
-          className='ui inverted orange button'
+          className='ui inverted orange button Button-login-format'
           type='submit'
-          style={{fontFamily:'Risque', fontSize: '25px'}}
         >
           Submit
         </button>

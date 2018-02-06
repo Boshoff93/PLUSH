@@ -1,23 +1,12 @@
 import React from 'react';
 import {bindActionCreators} from 'redux'
-import {deletePost} from '../actions/deletePost';
 import {connect} from 'react-redux'
 import uuid from 'uuid';
 import "../App.css"
 import "../animations/animations.css"
-import "../Images/trash-bin.png"
 import "../Images/star.png"
 
-export class PostView extends React.Component {
-
-  handleDelete = (index) => {
-    let deletePost = {
-      user_id: this.props.user_id,
-      post_id: this.props.post_ids[index],
-    }
-    this.props.socket.emit('post delete', deletePost);
-    this.props.deletePost(index);
-  };
+export class UserPostView extends React.Component {
 
   render() {
       const posts = this.props.posts.map((post, index) => (
@@ -40,13 +29,6 @@ export class PostView extends React.Component {
 
         {/*TODO:Fix this mess*/}
           <div className= 'two wide column Row-height center aligned'>
-            <button className= "Button-wallpost-format" data-tooltip="Delete Post" data-inverted=""
-              onClick={() => this.handleDelete(index)}
-            >
-              <img className="ui avatar image Button-wallpost-padding" src={require("../Images/trash-bin.png")}></img>
-            </button>
-          </div>
-          <div className= 'two wide column Row-height center aligned'>
             <button className="Button-wallpost-format" data-tooltip="Rate Post" data-inverted="">
               <img className="ui avatar image Button-wallpost-padding" src={require("../Images/star.png")}></img>
             </button>
@@ -63,8 +45,4 @@ export class PostView extends React.Component {
     }
   }
 
-function matchDispachToProps(dispatch) {
-  return bindActionCreators({deletePost: deletePost}, dispatch)
-}
-
-export default connect(null, matchDispachToProps)(PostView);
+export default UserPostView;

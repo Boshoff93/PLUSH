@@ -32,10 +32,56 @@
 }
 
 .Plush-font {
-  font-Family:'Risque';
+  font-Family:Risque;
   font-size: 50px;
 }
 
-.Plush-blue-border {
-  border:"1px solid orange"
+.Wallpost-heading {
+  font-family:Risque;
+  font-size: 35px;
+  color: Orange;
+  margin-top: 150px;
+}
+
+.Wallpost-container {
+  font-family:Risque;
+  font-size: 25px;
+  color: Orange;
+  margin-top: 20px;
+}
+
+.Border-blue {
+  border: 1px solid #0080ff !important
+}
+
+.Border-orange {
+  border: 1px solid orange !important
+}
+
+.Postview-format {
+  margin-top: 20px;
+  color:black;
+}
+
+.Plush-margin {
+  margin-top: 10px;
+}
+
+.Button-login-format{
+  font-family:Risque !important;
+  font-size: 25px !important;
+}
+
+
+.Button-wallpost-format {
+   border: 2px solid orange !important;
+  background-color: white !important;
+  border-radius: 100% !important;
+  margin: 5% 20% !important;
+  padding: 0 10% !important;
+
+}
+
+.Button-wallpost-padding {
+  padding:30% 0px !important
 }

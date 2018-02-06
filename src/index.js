@@ -13,6 +13,14 @@ function reducer(state = {
   post_ids: [],
   post_times: [],
   posts: [],
+
+  userView : {
+    userViewName:'',
+    userViewId: '',
+    userViewPostTimes: [],
+    userViewPosts: [],
+  }
+
 }, action) {
 
   switch (action.type) {
@@ -51,6 +59,23 @@ function reducer(state = {
         ...state, posts: action.posts, post_times: action.post_times,
                   post_ids: action.post_ids
       }
+    }
+    case 'SET_USER_VIEW': {
+      return {
+        ...state, userView: { ...state.userView,
+           userViewName: action.name,
+           userViewId: action.user_id,
+         }
+
+      }
+    }
+    case 'REPLACE_USER_VIEW_POSTS': {
+      return {
+        ...state, userView: { ...state.userView,
+           userViewPosts: action.posts,
+           userViewPostTimes: action.post_times,
+         }
+       }
     }
     default: {
       return state;

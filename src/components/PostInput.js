@@ -31,8 +31,7 @@ export class PostInput extends React.Component {
   render() {
     return (
       <div className='ui fluid input'>
-        <input
-        style={{border:"1px solid #0080ff"}}
+        <input className = 'Border-blue'
           onChange={this.onChange}
           value={this.state.value}
           type='text'
