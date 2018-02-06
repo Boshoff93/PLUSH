@@ -10,7 +10,7 @@ import {setUserView} from '../actions/setUserView';
 import {replaceUserViewPosts} from '../actions/replaceUserViewPosts';
 import {connect} from 'react-redux';
 import '../App.css';
-import {Redirect, withRouter} from 'react-router-dom'
+import {Redirect} from 'react-router-dom'
 
 class UserView extends React.Component {
   state = {
@@ -101,6 +101,8 @@ class UserView extends React.Component {
           <div>
             <SearchUser
               socket={this.socket}
+              userName={this.props.userName}
+              onProfile={0}
             />
           </div>
         </div>
@@ -129,6 +131,7 @@ class UserView extends React.Component {
 function mapStateToProps(state) {
   return {
     userView: state.userView,
+    userName: state.userName,
   }
 }
 
@@ -141,4 +144,4 @@ function matchDispachToProps(dispatch) {
 }
 
 
-export default withRouter(connect(mapStateToProps, matchDispachToProps)(UserView));
+export default connect(mapStateToProps, matchDispachToProps)(UserView);

@@ -8,9 +8,7 @@ import {connect} from 'react-redux'
 import "../App.css"
 
 import {
-  Link,
   Redirect,
-  Switch,
 } from 'react-router-dom'
 
 class Login extends React.Component{
