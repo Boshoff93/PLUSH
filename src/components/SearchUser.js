@@ -3,9 +3,8 @@ import {bindActionCreators} from 'redux'
 import {addPost} from '../actions/addPost';
 import {connect} from 'react-redux'
 import uuid from 'uuid';
-import {
-  Redirect,
-} from 'react-router-dom'
+import {Redirect} from 'react-router-dom'
+import { Input } from 'semantic-ui-react'
 
 export class SearchUser extends React.Component {
   state = {
@@ -26,17 +25,19 @@ export class SearchUser extends React.Component {
 
   handleSubmit = (target) => {
     if(target.charCode==13){
-      if(this.state.value === this.props.userName) {
+      if(this.state.value != '') {
+        if(this.state.value === this.props.userName) {
+          this.setState({
+            value: '',
+            userPath: '/profile',
+          });
+        } else {
+        this.getUserView(this.state.value)
         this.setState({
           value: '',
-          userPath: '/profile',
+          userPath: '',
         });
-      } else {
-      this.getUserView(this.state.value)
-      this.setState({
-        value: '',
-        userPath: '',
-      });
+        }
       }
     }
   };
@@ -47,16 +48,14 @@ export class SearchUser extends React.Component {
       return <Redirect push to="/profile" />;
     } else {
       return (
-        <div className="ui left icon input" type="Submit" onSubmit={() => this.handleSubmit()}>
-          <input
-            onChange={this.onChange}
-            value={this.state.value}
-            type="text"
-            placeholder="Search users..."
-            onKeyPress={this.handleSubmit}
-            ></input>
-          <i className="users icon"></i>
-        </div>
+        <Input
+         onChange={this.onChange}
+         onKeyPress={this.handleSubmit}
+         icon='users'
+         iconPosition='left'
+         placeholder='Search users...'
+         />
+
         );
       }
   }

@@ -16,16 +16,18 @@ export class PostInput extends React.Component {
   };
 
   handleSubmit = () => {
-    let post = {
-      user_id: this.props.user_id,
-      post_id: uuid.v1().toString(),
-      post: this.state.value
+    if(this.state.value !== ""){
+      let post = {
+        user_id: this.props.user_id,
+        post_id: uuid.v1().toString(),
+        post: this.state.value
 
+      }
+      this.props.socket.emit('post add', post);
+      this.setState({
+        value: '',
+      });
     }
-    this.props.socket.emit('post add', post);
-    this.setState({
-      value: '',
-    });
   };
 
   render() {

@@ -7,6 +7,9 @@ import "../App.css"
 import "../animations/animations.css"
 import "../Images/trash-bin.png"
 import "../Images/star.png"
+import {Image, Popup} from 'semantic-ui-react'
+
+
 
 export class PostView extends React.Component {
 
@@ -22,7 +25,7 @@ export class PostView extends React.Component {
   render() {
       const posts = this.props.posts.map((post, index) => (
         <div className= 'row' key={uuid.v4()}>
-        <div className= 'twelve wide column'>
+        <div className= 'fourteen wide column'>
         <div className= 'ui segment Border-blue'>
           <div className='comment'>
             <div className="content">
@@ -38,18 +41,19 @@ export class PostView extends React.Component {
           </div>
         </div>
 
-        {/*TODO:Fix this mess*/}
           <div className= 'two wide column Row-height center aligned'>
-            <button className= "Button-wallpost-format" data-tooltip="Delete Post" data-inverted=""
-              onClick={() => this.handleDelete(index)}
-            >
-              <img className="ui avatar image Button-wallpost-padding" src={require("../Images/trash-bin.png")}></img>
-            </button>
+          <div className='row Row-height-half'>
+            <Popup
+              trigger={<Image className="shake-it" onClick={()=> this.handleDelete(index)} src={require("../Images/trash-bin.png")} avatar />}
+              content="Delete Post"
+              />
           </div>
-          <div className= 'two wide column Row-height center aligned'>
-            <button className="Button-wallpost-format" data-tooltip="Rate Post" data-inverted="">
-              <img className="ui avatar image Button-wallpost-padding" src={require("../Images/star.png")}></img>
-            </button>
+          <div className='row Row-height-half'>
+            <Popup
+              trigger={<Image src={require("../Images/star.png")} avatar />}
+              content="Rate Post"
+              />
+          </div>
           </div>
         </div>
       ));
