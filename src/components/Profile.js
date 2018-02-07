@@ -11,6 +11,7 @@ import {setUserView} from '../actions/setUserView';
 import {connect} from 'react-redux';
 import '../App.css';
 import {Redirect} from 'react-router-dom'
+import { withRouter } from 'react-router'
 
 class Profile extends React.Component {
 
@@ -22,7 +23,6 @@ class Profile extends React.Component {
 
 
   componentDidMount() {
-
     let ws = new WebSocket('ws://localhost:4000')
     let socket = this.socket = new Socket(ws);
     socket.on('get user', this.onGetUser.bind(this));
@@ -79,7 +79,6 @@ class Profile extends React.Component {
   render() {
     if (this.state.userPath === '/view') {
       this.socket.close
-      console.log(this.props);
       return <Redirect push to={`/view/${this.state.userViewName}`}/>;
     }
     return (
@@ -147,4 +146,4 @@ function matchDispachToProps(dispatch) {
 }
 
 
-export default connect(mapStateToProps, matchDispachToProps)(Profile);
+export default withRouter(connect(mapStateToProps, matchDispachToProps)(Profile));

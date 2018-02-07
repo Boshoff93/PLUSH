@@ -10,13 +10,14 @@ import {setUserView} from '../actions/setUserView';
 import {replaceUserViewPosts} from '../actions/replaceUserViewPosts';
 import {connect} from 'react-redux';
 import '../App.css';
-import {Redirect} from 'react-router-dom'
+import {Redirect,withRouter} from 'react-router-dom'
 
 class UserView extends React.Component {
   state = {
     conected: false,
     userPath: '',
     userViewName: '',
+    preventHistoryPush: 0,
   }
 
   componentDidMount() {
@@ -27,23 +28,52 @@ class UserView extends React.Component {
     socket.on('error', this.onError.bind(this));
     socket.on('connect', this.onConnect.bind(this));
     socket.on('disconnect', this.onDisconnect.bind(this));
+
+    const unlisten = this.unlisten = this.props.history.listen((location, action) => {
+      console.log("chop1");
+      console.log(this.props);
+      var newState = this.state;
+      newState.preventHistoryPush = 1;
+      this.setState({
+        newState
+      })
+      var getMatchName = {
+        name: this.props.match.params.name
+      }
+      this.socket.emit('get user', getMatchName);
+    });
+  }
+
+  componentWillUnmount() {
+    const unlisten = this.unlisten
+    unlisten()
   }
 
   onConnect(){
-    let user = {
-      userViewName: this.props.userView.userViewName,
-      user_id: this.props.userView.userViewId
+    console.log("chop2");
+    var getMatchName = {
+      name: this.props.match.params.name
     }
-    this.socket.emit('posts get', user);
-
-    this.setState({connected: true});
+    this.socket.emit('get user', getMatchName);
+    var newState = this.state;
+    newState.preventHistoryPush = 1;
+    newState.conected = true;
+    this.setState({
+      newState
+    })
   }
 
   onDisconnect(){
-    this.setState({connected: false});
+    console.log("chop3");
+    var newState = this.state;
+    newState.conected = false;
+    this.setState({
+      newState
+    })
   }
 
   onGetPosts(posts) {
+    console.log("chop4");
     if(posts.Posts === null) {
       this.props.replaceUserViewPosts([], [])
     } else {
@@ -56,38 +86,24 @@ class UserView extends React.Component {
   }
 
   onGetUser(user){
+    console.log("chop5");
    if(user.User_Id != "") {
       this.props.setUserView(user.Name, user.User_Id);
       var newState = this.state;
       newState.userViewName = user.Name;
       newState.userPath = '/view'
-
       this.socket.emit('posts get', user);
-
-      this.props.history.push(`/view/${user.Name}`)
+      if(newState.preventHistoryPush === 0) {
+        this.props.history.push(`/view/${user.Name}`)
+      }
+      newState.preventHistoryPush = 0;
+      console.log("chop6");
       this.setState({
         newState
       });
+      console.log("chop7");
     }
 
-  }
-
-  handleViewChange() {
-    this.props.match.params.name = this.state.userViewName
-
-    let user = {
-      userViewName: this.props.userView.userViewName,
-      user_id: this.props.userView.userViewId
-    }
-
-    this.socket.emit('posts get', user);
-    this.props.match.params.name = user.userViewName
-    this.props.history.push(`/view/${user.userViewName}`)
-    var reloadPage = this.state;
-    reloadPage.userPath = ''
-    this.setState({
-      reloadPage
-    });
   }
 
   render() {
@@ -102,7 +118,6 @@ class UserView extends React.Component {
             <SearchUser
               socket={this.socket}
               userName={this.props.userName}
-              onProfile={0}
             />
           </div>
         </div>
@@ -144,4 +159,4 @@ function matchDispachToProps(dispatch) {
 }
 
 
-export default connect(mapStateToProps, matchDispachToProps)(UserView);
+export default withRouter(connect(mapStateToProps, matchDispachToProps)(UserView));

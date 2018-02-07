@@ -7,7 +7,10 @@ import HeaderBar from './HeaderBar';
 import Profile from './Profile';
 import Login from './Login';
 import UserView from './UserView'
+import createHistory from 'history/createBrowserHistory'
 
+const history = createHistory()
+console.log(history);
 const App = ({store}) => (
   <div className='ui grid'>
     <HeaderBar />
@@ -16,7 +19,7 @@ const App = ({store}) => (
     <Provider store = {store} >
       <Router>
         <Switch>
-          <Route path="/view/:name" component={UserView}/>
+          <Route path="/view/:name" render={(props) => (<UserView history={this.history}/>)}/>
           <Route path="/profile" component={Profile}/>
           <Route exact path='/' component={Login}/>
         </Switch>

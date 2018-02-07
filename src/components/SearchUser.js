@@ -43,7 +43,7 @@ export class SearchUser extends React.Component {
   };
 
   render() {
-    if (this.state.userPath === '/profile' && this.props.onProfile !== 1) {
+    if (this.state.userPath === '/profile') {
       this.props.socket.close
       return <Redirect push to="/profile" />;
     } else {
@@ -51,6 +51,7 @@ export class SearchUser extends React.Component {
         <Input
          onChange={this.onChange}
          onKeyPress={this.handleSubmit}
+         value={this.state.value}
          icon='users'
          iconPosition='left'
          placeholder='Search users...'
