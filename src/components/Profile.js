@@ -93,7 +93,6 @@ class Profile extends React.Component {
             <SearchUser
               socket={this.socket}
               userName={this.props.userName}
-              onProfile={1}
             />
           </div>
         </div>

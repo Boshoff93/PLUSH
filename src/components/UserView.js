@@ -30,8 +30,6 @@ class UserView extends React.Component {
     socket.on('disconnect', this.onDisconnect.bind(this));
 
     const unlisten = this.unlisten = this.props.history.listen((location, action) => {
-      console.log("chop1");
-      console.log(this.props);
       var newState = this.state;
       newState.preventHistoryPush = 1;
       this.setState({
@@ -41,6 +39,8 @@ class UserView extends React.Component {
         name: this.props.match.params.name
       }
       this.socket.emit('get user', getMatchName);
+
+
     });
   }
 
@@ -50,7 +50,6 @@ class UserView extends React.Component {
   }
 
   onConnect(){
-    console.log("chop2");
     var getMatchName = {
       name: this.props.match.params.name
     }
@@ -64,7 +63,6 @@ class UserView extends React.Component {
   }
 
   onDisconnect(){
-    console.log("chop3");
     var newState = this.state;
     newState.conected = false;
     this.setState({
@@ -73,7 +71,6 @@ class UserView extends React.Component {
   }
 
   onGetPosts(posts) {
-    console.log("chop4");
     if(posts.Posts === null) {
       this.props.replaceUserViewPosts([], [])
     } else {
@@ -86,8 +83,7 @@ class UserView extends React.Component {
   }
 
   onGetUser(user){
-    console.log("chop5");
-   if(user.User_Id != "") {
+   if(user.User_Id !== "") {
       this.props.setUserView(user.Name, user.User_Id);
       var newState = this.state;
       newState.userViewName = user.Name;
@@ -97,11 +93,9 @@ class UserView extends React.Component {
         this.props.history.push(`/view/${user.Name}`)
       }
       newState.preventHistoryPush = 0;
-      console.log("chop6");
-      this.setState({
+      UserView.setState({
         newState
       });
-      console.log("chop7");
     }
 
   }
