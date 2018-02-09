@@ -8,9 +8,11 @@ import {bindActionCreators} from 'redux'
 import {addPost} from '../actions/addPost';
 import {setUserView} from '../actions/setUserView';
 import {replaceUserViewPosts} from '../actions/replaceUserViewPosts';
+import {addUserViewPP} from '../actions/addUserViewPP';
 import {connect} from 'react-redux';
 import '../App.css';
 import {Redirect,withRouter} from 'react-router-dom'
+import { Image, Label } from 'semantic-ui-react'
 
 class UserView extends React.Component {
   state = {
@@ -24,10 +26,11 @@ class UserView extends React.Component {
     let ws = new WebSocket('ws://localhost:4000')
     let socket = this.socket = new Socket(ws);
     socket.on('posts get', this.onGetPosts.bind(this));
-    socket.on('get user', this.onGetUser.bind(this));
+    socket.on('user get', this.onGetUser.bind(this));
     socket.on('error', this.onError.bind(this));
     socket.on('connect', this.onConnect.bind(this));
     socket.on('disconnect', this.onDisconnect.bind(this));
+    socket.on('profile picture get', this.onGetProfilePicture.bind(this));
 
     const unlisten = this.unlisten = this.props.history.listen((location, action) => {
       var newState = this.state;
@@ -38,9 +41,7 @@ class UserView extends React.Component {
       var getMatchName = {
         name: this.props.match.params.name
       }
-      this.socket.emit('get user', getMatchName);
-
-
+      this.socket.emit('user get', getMatchName);
     });
   }
 
@@ -53,7 +54,7 @@ class UserView extends React.Component {
     var getMatchName = {
       name: this.props.match.params.name
     }
-    this.socket.emit('get user', getMatchName);
+    this.socket.emit('user get', getMatchName);
     var newState = this.state;
     newState.preventHistoryPush = 1;
     newState.conected = true;
@@ -89,6 +90,7 @@ class UserView extends React.Component {
       newState.userViewName = user.Name;
       newState.userPath = '/view'
       this.socket.emit('posts get', user);
+      this.socket.emit('profile picture get', user);
       if(newState.preventHistoryPush === 0) {
         this.props.history.push(`/view/${user.Name}`)
       }
@@ -100,13 +102,23 @@ class UserView extends React.Component {
 
   }
 
+  onGetProfilePicture(blob) {
+    if(blob !== '') {
+      this.props.addUserViewPP(blob.Data);
+    } else {
+      this.props.addUserViewPP(require("../Images/DefaultAvatar.png"));
+      }
+
+  }
+
   render() {
     return (
       <div className="ui container">
       <div className="ui grid">
         <div className="four wide column">
           <div className="ui segment center aligned Border-orange">
-            {this.props.userView.userViewName}
+          <Label pointing='below' basic color='orange' size='big'>{this.props.userView.userViewName}</Label>
+          <Image src={this.props.userView.userViewProfilePicture} className = "Profile-border"/>
           </div>
           <div>
             <SearchUser
@@ -149,6 +161,7 @@ function matchDispachToProps(dispatch) {
     addPost: addPost,
     setUserView: setUserView,
     replaceUserViewPosts: replaceUserViewPosts,
+    addUserViewPP: addUserViewPP,
   }, dispatch)
 }
 

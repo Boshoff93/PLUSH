@@ -13,8 +13,10 @@ function reducer(state = {
   post_ids: [],
   post_times: [],
   posts: [],
+  profile_picture: '',
 
   userView : {
+    userViewProfilePicture:'',
     userViewName:'',
     userViewId: '',
     userViewPostTimes: [],
@@ -77,6 +79,22 @@ function reducer(state = {
          }
        }
     }
+
+    case 'ADD_PROFILE_PICTURE': {
+      return {
+        ...state, profile_picture: action.profile_picture
+      }
+    }
+
+    case 'ADD_USER_VIEW_PROFILE_PICTURE': {
+      return {
+        ...state, userView: { ...state.userView,
+           userViewProfilePicture: action.profile_picture,
+         }
+      }
+    }
+
+
     default: {
       return state;
     }

@@ -51,11 +51,11 @@
 }
 
 .Border-blue {
-  border: 1px solid #0080ff !important
+  border: 2px solid #0080ff !important;
 }
 
 .Border-orange {
-  border: 1px solid orange !important
+  border: 2px solid orange !important
 }
 
 .Postview-format {
@@ -88,4 +88,11 @@
 
 .Row-height-half {
   height: 50%
+}
+
+.Profile-border {
+  border: 3px solid orange;
+	-moz-border-radius: 15px;
+	-webkit-border-radius: 15px;
+  margin: 0 0 20px 0
 }

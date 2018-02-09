@@ -8,6 +8,8 @@ import {bindActionCreators} from 'redux'
 import {addPost} from '../actions/addPost';
 import {replacePosts} from '../actions/replacePosts';
 import {setUserView} from '../actions/setUserView';
+import {addProfilePicture} from "../actions/addProfilePicture";
+import { Image, Label } from 'semantic-ui-react'
 import {connect} from 'react-redux';
 import '../App.css';
 import {Redirect} from 'react-router-dom'
@@ -25,9 +27,11 @@ class Profile extends React.Component {
   componentDidMount() {
     let ws = new WebSocket('ws://localhost:4000')
     let socket = this.socket = new Socket(ws);
-    socket.on('get user', this.onGetUser.bind(this));
+    socket.on('user get', this.onGetUser.bind(this));
     socket.on('post add', this.onAddPost.bind(this));
     socket.on('posts get', this.onGetPosts.bind(this));
+    socket.on('profile picture add', this.onAddProfilePicture.bind(this))
+    socket.on('profile picture get', this.onGetProfilePicture.bind(this))
     socket.on('error', this.onError.bind(this));
     socket.on('connect', this.onConnect.bind(this));
     socket.on('disconnect', this.onDisconnect.bind(this));
@@ -39,11 +43,20 @@ class Profile extends React.Component {
       user_id: this.props.user_id
     }
     this.socket.emit('posts get', user);
-    this.setState({connected: true});
+    this.socket.emit('profile picture get', user )
+    var newState = this.state;
+    newState.connected = true;
+    this.setState({
+      newState
+    })
   }
 
   onDisconnect(){
-    this.setState({connected: false});
+    var newState = this.state;
+    newState.connected = false;
+    this.setState({
+      newState
+    })
   }
 
   onGetPosts(posts) {
@@ -72,6 +85,19 @@ class Profile extends React.Component {
     }
   }
 
+  onAddProfilePicture(blob) {
+    this.props.addProfilePicture(blob.Data);
+  }
+
+  onGetProfilePicture(blob) {
+
+    if(blob !== ""){
+      this.props.addProfilePicture(blob.Data);
+    } else {
+      this.props.addProfilePicture(require("../Images/DefaultAvatar.png"));
+    }
+  }
+
   onError(error){
     //do nothing
   }
@@ -81,13 +107,19 @@ class Profile extends React.Component {
       this.socket.close
       return <Redirect push to={`/view/${this.state.userViewName}`}/>;
     }
+
     return (
       <div className="ui container">
-
       <div className="ui grid">
         <div className="four wide column">
           <div className="ui segment center aligned Border-orange">
-            {this.props.userName}
+
+            <Label pointing='below' basic color='orange' size='big'>{this.props.userName}</Label>
+            <Image src={this.props.profile_picture} className = "Profile-border"/>
+            <ImageUpload
+              socket={this.socket}
+              user_id={this.props.user_id}
+            />
           </div>
           <div>
             <SearchUser
@@ -117,6 +149,7 @@ class Profile extends React.Component {
                 />
                 </div>
               </div>
+
           </div>
         </div>
       </div>
@@ -133,12 +166,14 @@ function mapStateToProps(state) {
     post_times: state.post_times,
     post_ids: state.post_ids,
     user_id: state.user_id,
+    profile_picture: state.profile_picture,
   }
 }
 
 function matchDispachToProps(dispatch) {
   return bindActionCreators({
     addPost: addPost,
+    addProfilePicture: addProfilePicture,
     replacePosts: replacePosts,
     setUserView: setUserView,
   }, dispatch)

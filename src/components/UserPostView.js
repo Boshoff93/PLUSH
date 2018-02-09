@@ -27,8 +27,6 @@ export class UserPostView extends React.Component {
           </div>
           </div>
         </div>
-
-        {/*TODO:Fix this mess*/}
           <div className= 'two wide column Row-height center aligned middle aligned'>
             <Popup
               trigger={<Image src={require("../Images/star.png")} avatar />}

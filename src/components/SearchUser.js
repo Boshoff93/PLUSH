@@ -20,7 +20,7 @@ export class SearchUser extends React.Component {
   };
 
   getUserView(name) {
-    this.props.socket.emit('get user', {name});
+    this.props.socket.emit('user get', {name});
   }
 
   handleSubmit = (target) => {
@@ -49,6 +49,8 @@ export class SearchUser extends React.Component {
     } else {
       return (
         <Input
+         className="Border-blue"
+         style={{borderRadius: "5px"}}
          onChange={this.onChange}
          onKeyPress={this.handleSubmit}
          value={this.state.value}

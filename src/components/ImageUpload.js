@@ -1,57 +1,41 @@
 import React from 'react';
+import { Button, Icon } from 'semantic-ui-react'
 
 class ImageUpload extends React.Component {
- state = {
-   file: '',
-   imagePreviewUrl: '',
- }
 
-
-  _handleSubmit(e) {
-    e.preventDefault();
-    // TODO: do something with -> this.state.file
-    console.log('handle uploading-', this.state.file);
-  }
-
-  _handleImageChange(e) {
+  handleImageChange(e) {
     e.preventDefault();
 
     let reader = new FileReader();
     let file = e.target.files[0];
 
     reader.onloadend = () => {
-      this.setState({
-        file: file,
-        imagePreviewUrl: reader.result
-      });
+      var picture = {
+        user_id: this.props.user_id,
+        data: reader.result
+      }
+      this.props.socket.emit('profile picture add', picture);
     }
 
     reader.readAsDataURL(file)
   }
 
   render() {
-    let {imagePreviewUrl} = this.state;
-    let $imagePreview = null;
-    if (imagePreviewUrl) {
-      $imagePreview = (<img src={imagePreviewUrl} height='50px' width='50pxcd ' />);
-    } else {
-      $imagePreview = (<div className="previewText">Please select an Image for Preview</div>);
-    }
-
     return (
-      <div className="previewComponent">
-        <form onSubmit={(e)=>this._handleSubmit(e)}>
-          <input className="fileInput"
-            type="file"
-            onChange={(e)=>this._handleImageChange(e)} />
-          <button className="submitButton"
-            type="submit"
-            onClick={(e)=>this._handleSubmit(e)}>Upload Image</button>
-        </form>
-        <div className="imgPreview" >
-          {$imagePreview}
-        </div>
+      <div>
+      <input type="file"
+        className="inputfile"
+        id="fileInput"
+        style={{display:"none", overflow:"hidden"}}
+        onChange={(e)=>this.handleImageChange(e)}
+
+       />
+      <label htmlFor="fileInput" className="ui inverted orange button">
+        <i className="ui upload icon"></i>
+        Upload Image!
+      </label>
       </div>
+
     )
   }
 }
