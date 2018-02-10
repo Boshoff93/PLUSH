@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Form, Label, Icon} from 'semantic-ui-react'
+import uuid from 'uuid';
 
 class CreateUserForm extends React.Component{
 
@@ -60,7 +61,9 @@ class CreateUserForm extends React.Component{
       firstname: this.state.firstname,
       lastname: this.state.lastname,
       email:  this.state.email,
+      user_id: uuid.v4().toString(),
       password: this.state.password,
+      created_at: uuid.v1().toString(),
     }
     this.addUser(user);
   };

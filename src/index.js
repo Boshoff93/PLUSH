@@ -8,7 +8,9 @@ import { createStore } from 'redux';
 import {loadState, saveState} from './components/localStorage';
 
 function reducer(state = {
-  userName:'',
+  firstname:'',
+  lastname:'',
+  email:'',
   user_id:'',
   post_ids: [],
   post_times: [],
@@ -17,7 +19,8 @@ function reducer(state = {
 
   userView : {
     userViewProfilePicture:'',
-    userViewName:'',
+    userViewFirstname:'',
+    userViewLastname:'',
     userViewId: '',
     userViewPostTimes: [],
     userViewPosts: [],
@@ -53,7 +56,8 @@ function reducer(state = {
     }
     case 'SET_USER': {
       return {
-        ...state, userName: action.name, user_id: action.user_id,
+        ...state, firstname: action.firstname, lastname: action.lastname,
+                  email: action.email, user_id: action.user_id,
       }
     }
     case 'REPLACE_POSTS': {
@@ -65,8 +69,11 @@ function reducer(state = {
     case 'SET_USER_VIEW': {
       return {
         ...state, userView: { ...state.userView,
-           userViewName: action.name,
+           userViewFirstname: action.firstname,
+           userViewLastname: action.lastname,
            userViewId: action.user_id,
+           userViewPosts: [],
+           userViewPostTimes: [],
          }
 
       }
@@ -93,7 +100,7 @@ function reducer(state = {
          }
       }
     }
-    
+
     default: {
       return state;
     }

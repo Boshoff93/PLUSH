@@ -1,5 +1,4 @@
 import React from 'react';
-import uuid from 'uuid';
 import Socket from './socket.js'
 import {bindActionCreators} from 'redux'
 import {setUser} from '../actions/setUser';
@@ -12,10 +11,7 @@ import LoginUserForm from './forms/LoginUserForm'
 
 class Login extends React.Component{
   state = {
-    value: '',
     connected: false,
-    user_id: '',
-    userName: '',
     userPath: '',
     disable_create: true,
   }
@@ -26,8 +22,10 @@ class Login extends React.Component{
     socket.on('connect', this.onConnect.bind(this));
     socket.on('disconnect', this.onDisconnect.bind(this));
     socket.on('user add', this.onAddUser.bind(this));
-    socket.on('username availible', this.onFindUserUnSuccessful.bind(this));
-    socket.on('username unavailible', this.onAddUser.bind(this));
+    socket.on('account not found', this.onFindUserUnSuccessful.bind(this));
+    socket.on('access granted', this.onAddUser.bind(this));
+    socket.on('access denied', this.onPasswordUnsuccessful.bind(this));
+    socket.on('email unavailible', this.onEmailUnavailible.bind(this));
     socket.on('error', this.onError.bind(this));
   }
 
@@ -49,17 +47,23 @@ class Login extends React.Component{
 
   onAddUser(user) {
     var currentUser = this.state;
-    currentUser.user_id = user.User_Id;
-    currentUser.userName = user.Name;
     currentUser.userPath = '/profile' ;
     this.setState({
       currentUser
     });
-    this.props.setUser(user.Name, user.User_Id)
+    this.props.setUser(user.Firstname, user.Lastname, user.Email, user.User_Id)
   }
 
   onFindUserUnSuccessful(user) {
-    this.addUser(user.Name);
+    console.log("email does not exist")
+  }
+
+  onPasswordUnsuccessful(user) {
+    console.log("incorrect password")
+  }
+
+  onEmailUnavailible(user){
+    console.log("email unavailible");
   }
 
   renderCreateUser = (e) => {
@@ -102,8 +106,7 @@ function matchDispachToProps(dispatch) {
 
 function mapStateToProps(state) {
   return {
-    userName: state.userName,
-    posts: state.posts
+
   }
 }
 

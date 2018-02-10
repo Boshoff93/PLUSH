@@ -18,7 +18,6 @@ class UserView extends React.Component {
   state = {
     conected: false,
     userPath: '',
-    userViewName: '',
     preventHistoryPush: 0,
   }
 
@@ -39,7 +38,7 @@ class UserView extends React.Component {
         newState
       })
       var getMatchName = {
-        name: this.props.match.params.name
+        user_id: this.props.match.params.id
       }
       this.socket.emit('user get', getMatchName);
     });
@@ -51,8 +50,9 @@ class UserView extends React.Component {
   }
 
   onConnect(){
+    console.log(this.props);
     var getMatchName = {
-      name: this.props.match.params.name
+      user_id: this.props.match.params.id
     }
     this.socket.emit('user get', getMatchName);
     var newState = this.state;
@@ -85,14 +85,14 @@ class UserView extends React.Component {
 
   onGetUser(user){
    if(user.User_Id !== "") {
-      this.props.setUserView(user.Name, user.User_Id);
+      this.props.setUserView(user.Firstname, user.Lastname, user.User_Id);
       var newState = this.state;
-      newState.userViewName = user.Name;
+      newState.userViewId = user.User_Id;
       newState.userPath = '/view'
       this.socket.emit('posts get', user);
       this.socket.emit('profile picture get', user);
       if(newState.preventHistoryPush === 0) {
-        this.props.history.push(`/view/${user.Name}`)
+        this.props.history.push(`/view/${user.User_Id}`)
       }
       newState.preventHistoryPush = 0;
       UserView.setState({
@@ -117,13 +117,13 @@ class UserView extends React.Component {
       <div className="ui grid">
         <div className="four wide column">
           <div className="ui segment center aligned Border-orange">
-          <Label pointing='below' basic color='orange' size='big'>{this.props.userView.userViewName}</Label>
-          <Image src={this.props.userView.userViewProfilePicture} className = "Profile-border"/>
+          <Label pointing='below' basic color='orange' size='big'>{this.props.userView.userViewFirstname} {this.props.userView.userViewLastname}</Label>
+          <Image className = "Profile-border" src={this.props.userView.userViewProfilePicture}/>
           </div>
           <div>
             <SearchUser
               socket={this.socket}
-              userName={this.props.userName}
+              email={this.props.email}
             />
           </div>
         </div>
@@ -136,7 +136,8 @@ class UserView extends React.Component {
                 <UserPostView
                   posts={this.props.userView.userViewPosts}
                   post_times={this.props.userView.userViewPostTimes}
-                  userName={this.props.userView.userViewName}
+                  firstname={this.props.userView.firstname}
+                  lastname={this.props.userView.lastname}
                 />
                 </div>
               </div>
@@ -152,7 +153,7 @@ class UserView extends React.Component {
 function mapStateToProps(state) {
   return {
     userView: state.userView,
-    userName: state.userName,
+    email: state.email,
   }
 }
 

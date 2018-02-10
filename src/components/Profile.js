@@ -19,7 +19,7 @@ class Profile extends React.Component {
 
   state = {
     connected: false,
-    userViewName: '',
+    userViewId: '',
     userPath: '',
   }
 
@@ -39,7 +39,6 @@ class Profile extends React.Component {
 
   onConnect(){
     let user = {
-      userName: this.props.userName,
       user_id: this.props.user_id
     }
     this.socket.emit('posts get', user);
@@ -75,10 +74,10 @@ class Profile extends React.Component {
     if(user.User_Id === null) {
       alert("User Does Not Exist");
     } else {
-      this.props.setUserView(user.Name, user.User_Id);
+      this.props.setUserView(user.Firstname, user.Lastname, user.User_Id);
       var newState = this.state;
       newState.userPath = '/view';
-      newState.userViewName = user.Name;
+      newState.userViewId = user.User_Id
       this.setState({
         newState
       });
@@ -90,7 +89,6 @@ class Profile extends React.Component {
   }
 
   onGetProfilePicture(blob) {
-
     if(blob !== ""){
       this.props.addProfilePicture(blob.Data);
     } else {
@@ -105,7 +103,7 @@ class Profile extends React.Component {
   render() {
     if (this.state.userPath === '/view') {
       this.socket.close
-      return <Redirect push to={`/view/${this.state.userViewName}`}/>;
+      return <Redirect push to={`/view/${this.state.userViewId}`}/>;
     }
 
     return (
@@ -114,7 +112,7 @@ class Profile extends React.Component {
         <div className="four wide column">
           <div className="ui segment center aligned Border-orange">
 
-            <Label pointing='below' basic color='orange' size='big'>{this.props.userName}</Label>
+            <Label pointing='below' basic color='orange' size='big'>{this.props.firstname} {this.props.lastname}</Label>
             <Image src={this.props.profile_picture} className = "Profile-border"/>
             <ImageUpload
               socket={this.socket}
@@ -124,7 +122,7 @@ class Profile extends React.Component {
           <div>
             <SearchUser
               socket={this.socket}
-              userName={this.props.userName}
+              email={this.props.email}
             />
           </div>
         </div>
@@ -144,12 +142,12 @@ class Profile extends React.Component {
                   posts={this.props.posts}
                   post_ids={this.props.post_ids}
                   post_times={this.props.post_times}
-                  userName={this.props.userName}
+                  firstname={this.props.firstname}
+                  lastname={this.props.lastname}
                   user_id={this.props.user_id}
                 />
                 </div>
               </div>
-
           </div>
         </div>
       </div>
@@ -161,7 +159,9 @@ class Profile extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    userName: state.userName,
+    firstname: state.firstname,
+    lastname: state.lastname,
+    email: state.email,
     posts: state.posts,
     post_times: state.post_times,
     post_ids: state.post_ids,

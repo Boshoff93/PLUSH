@@ -16,7 +16,7 @@ export class UserPostView extends React.Component {
         <div className= 'ui segment Border-blue'>
           <div className='comment'>
             <div className="content">
-              <a className="author">{this.props.userName}</a>
+              <a className="author">{this.props.firstname} {this.props.lastname}</a>
               <div className="metadata">
                 <div className="date">{this.props.post_times[index]}</div>
               </div>

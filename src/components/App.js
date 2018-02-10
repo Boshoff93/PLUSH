@@ -19,7 +19,7 @@ const App = ({store}) => (
     <Provider store = {store} >
       <Router>
         <Switch>
-          <Route path="/view/:name" render={(props) => (<UserView history={this.history}/>)}/>
+          <Route path="/view/:id" render={(props) => (<UserView history={this.history}/>)}/>
           <Route path="/profile" component={Profile}/>
           <Route exact path='/' component={Login}/>
         </Switch>

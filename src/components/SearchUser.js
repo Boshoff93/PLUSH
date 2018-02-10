@@ -19,14 +19,14 @@ export class SearchUser extends React.Component {
     })
   };
 
-  getUserView(name) {
-    this.props.socket.emit('user get', {name});
+  getUserView(email) {
+    this.props.socket.emit('user get', {email});
   }
 
   handleSubmit = (target) => {
     if(target.charCode==13){
       if(this.state.value != '') {
-        if(this.state.value === this.props.userName) {
+        if(this.state.value === (this.props.email)) {
           this.setState({
             value: '',
             userPath: '/profile',
