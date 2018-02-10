@@ -1,15 +1,14 @@
 import React from 'react';
-import WrappedApp from './Profile';
 import uuid from 'uuid';
 import Socket from './socket.js'
 import {bindActionCreators} from 'redux'
 import {setUser} from '../actions/setUser';
 import {connect} from 'react-redux'
 import "../App.css"
-
-import {
-  Redirect,
-} from 'react-router-dom'
+import { Button, Form, Label, Icon} from 'semantic-ui-react'
+import {Redirect} from 'react-router-dom'
+import CreateUserForm from './forms/CreateUserForm'
+import LoginUserForm from './forms/LoginUserForm'
 
 class Login extends React.Component{
   state = {
@@ -18,6 +17,7 @@ class Login extends React.Component{
     user_id: '',
     userName: '',
     userPath: '',
+    disable_create: true,
   }
 
   componentDidMount(){
@@ -32,11 +32,15 @@ class Login extends React.Component{
   }
 
   onConnect(){
-    this.setState({connected: true});
+    let newState = this.state;
+    newState.connectted = true;
+    this.setState(newState);
   }
 
   onDisconnect(){
-    this.setState({connected: false});
+    let newState = this.state;
+    newState.connectted = false;
+    this.setState(newState);
   }
 
   onError(error){
@@ -47,7 +51,6 @@ class Login extends React.Component{
     var currentUser = this.state;
     currentUser.user_id = user.User_Id;
     currentUser.userName = user.Name;
-    currentUser.value = '';
     currentUser.userPath = '/profile' ;
     this.setState({
       currentUser
@@ -59,62 +62,36 @@ class Login extends React.Component{
     this.addUser(user.Name);
   }
 
-  findUser(name) {
-    this.socket.emit('user find', {name});
-  }
-
-  addUser(name){
-    var newUser = {
-      user_id: uuid.v4().toString(),
-      name: name,
+  renderCreateUser = (e) => {
+    if(e.target.id === 'create_enable' || e.target.id === 'create_disable'){
+      this.setState({
+        disable_create: !this.state.disable_create,
+      });
     }
-    this.socket.emit('user add', newUser);
   }
-
-  onChange = (e) => {
-    this.setState({
-      value: e.target.value,
-    })
-  };y
-
-  handleSubmit = () => {
-    if(this.state.value != ''){
-      this.findUser(this.state.value);
-    }
-    this.setState({
-      value:'',
-    });
-  };
-
 
   render(){
     if (this.state.userPath === '/profile') {
       this.socket.close
       return <Redirect push to="/profile" />;
     } else {
-    return (
-      <div className="ui center aligned container Wallpost-heading">
-      ENTER YOUR PLUSH USERNAME!
 
-      <div className="ui center aligned container Wallpost-container">
-      <div className='ui input center'>
-        <input
-          onChange={this.onChange}
-          value={this.state.value}
-        type='text'
-        />
-        <button
-          onClick={this.handleSubmit}
-          className='ui inverted orange button Button-login-format'
-          type='submit'
-        >
-          Submit
-        </button>
-      </div>
-      </div>
+      if(this.state.disable_create === true) {
+        return (
+          <LoginUserForm
+            onClick={this.renderCreateUser}
+            socket={this.socket}
+          />
+        )
+      } else {
+        return (
+          <CreateUserForm
+            onClick={this.renderCreateUser}
+            socket={this.socket}
+          />
+        )
+      }
 
-      </div>
-    )
   }
 }
 }
