@@ -130,6 +130,14 @@ class CreateUserForm extends React.Component{
     return (
       <div className="ui center aligned container">
         <div className="ui grid centered">
+          <div className="center aligned sixteen wide column">
+          <h1 className='ui orange header'
+            style={{ marginLeft:"8%", fontSize:"150px" , fontFamily:'Risque' }}
+            >
+            PLUSH
+            <span><img height="150px" src={require("../../Images/Plush_Narwall.png")}/></span>
+          </h1>
+          </div>
           <div className="two wide column"></div>
           <div className="twelve wide column">
           <div className="row">
@@ -175,6 +183,7 @@ class CreateUserForm extends React.Component{
                     onChange={this.onChange}
                     value={this.state.password}
                     id="password"
+                    type="password"
                     />
                     {this.state.isPassword ? <Label basic color='red' pointing>Password requires at least eight characters,
                      one uppercase character, one lowercase characters, one special character (!@#$%^&*), and one number</Label> : null }
@@ -185,6 +194,7 @@ class CreateUserForm extends React.Component{
                     onChange={this.onChange}
                     value={this.state.confirm_password}
                     id="confirm password"
+                    type="password"
                     />
                     {this.state.isPasswordMatch ? <Label basic color='red' pointing>Password fields do not match</Label> : null }
                 </div>

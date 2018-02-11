@@ -48,9 +48,17 @@ class LoginUserForm extends React.Component{
     return (
       <div className="ui center aligned container">
         <div className="ui grid centered">
+          <div className="center aligned sixteen wide column">
+            <h1 className='ui orange header'
+              style={{ marginLeft:"8%", fontSize:"150px" , fontFamily:'Risque' }}
+              >
+              PLUSH
+              <span><img height="150px" src={require("../../Images/Plush_Narwall.png")}/></span>
+            </h1>
+          </div>
           <div className="four wide column"></div>
           <div className="eight wide column">
-            <div className="row" style={{marginTop:'100px'}}>
+            <div className="row" style={{marginTop:'10px'}}>
               <Button className="fluid"
                 inverted color='orange'
                 size="massive"
@@ -96,6 +104,7 @@ class LoginUserForm extends React.Component{
                       fluid placeholder='Password'
                       onChange={this.onChange}
                       value={this.state.password}
+                      type="password"
                       id="password"
                       />
                   </div>
