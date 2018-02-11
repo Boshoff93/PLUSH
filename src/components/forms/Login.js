@@ -1,19 +1,21 @@
 import React from 'react';
-import Socket from './socket.js'
+import Socket from '../socket.js'
 import {bindActionCreators} from 'redux'
-import {setUser} from '../actions/setUser';
+import {setUser} from '../../actions/setUser';
 import {connect} from 'react-redux'
-import "../App.css"
-import { Button, Form, Label, Icon} from 'semantic-ui-react'
+import "../../App.css"
+import {Form, Label, Icon} from 'semantic-ui-react'
 import {Redirect} from 'react-router-dom'
-import CreateUserForm from './forms/CreateUserForm'
-import LoginUserForm from './forms/LoginUserForm'
+import CreateUserForm from './CreateUserForm'
+import LoginUserForm from './LoginUserForm'
 
 class Login extends React.Component{
   state = {
     connected: false,
     userPath: '',
     disable_create: true,
+    emailTaken: false,
+    unsuccessful: false,
   }
 
   componentDidMount(){
@@ -22,9 +24,9 @@ class Login extends React.Component{
     socket.on('connect', this.onConnect.bind(this));
     socket.on('disconnect', this.onDisconnect.bind(this));
     socket.on('user add', this.onAddUser.bind(this));
-    socket.on('account not found', this.onFindUserUnSuccessful.bind(this));
+    socket.on('account not found', this.onUnSuccessful.bind(this));
     socket.on('access granted', this.onAddUser.bind(this));
-    socket.on('access denied', this.onPasswordUnsuccessful.bind(this));
+    socket.on('access denied', this.onUnSuccessful.bind(this));
     socket.on('email unavailible', this.onEmailUnavailible.bind(this));
     socket.on('error', this.onError.bind(this));
   }
@@ -48,31 +50,36 @@ class Login extends React.Component{
   onAddUser(user) {
     var currentUser = this.state;
     currentUser.userPath = '/profile' ;
+    currentUser.emailTaken = false;
+    currentUser.unsuccessful = false;
     this.setState({
       currentUser
     });
     this.props.setUser(user.Firstname, user.Lastname, user.Email, user.User_Id)
   }
 
-  onFindUserUnSuccessful(user) {
-    console.log("email does not exist")
-  }
-
-  onPasswordUnsuccessful(user) {
-    console.log("incorrect password")
+  onUnSuccessful(user) {
+    var currentUser = this.state;
+    currentUser.unsuccessful = true ;
+    this.setState({
+      currentUser
+    });
   }
 
   onEmailUnavailible(user){
-    console.log("email unavailible");
+    var currentUser = this.state;
+    currentUser.emailTaken = true ;
+    this.setState({
+      currentUser
+    });
   }
 
   renderCreateUser = (e) => {
-    if(e.target.id === 'create_enable' || e.target.id === 'create_disable'){
       this.setState({
         disable_create: !this.state.disable_create,
       });
-    }
   }
+
 
   render(){
     if (this.state.userPath === '/profile') {
@@ -85,6 +92,7 @@ class Login extends React.Component{
           <LoginUserForm
             onClick={this.renderCreateUser}
             socket={this.socket}
+            unsuccessful={this.state.unsuccessful}
           />
         )
       } else {
@@ -92,10 +100,10 @@ class Login extends React.Component{
           <CreateUserForm
             onClick={this.renderCreateUser}
             socket={this.socket}
+            emailTaken={this.state.emailTaken}
           />
         )
       }
-
   }
 }
 }

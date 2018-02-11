@@ -5,7 +5,7 @@ import {Provider} from 'react-redux'
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
 import HeaderBar from './HeaderBar';
 import Profile from './Profile';
-import Login from './Login';
+import Login from './forms/Login';
 import UserView from './UserView'
 import createHistory from 'history/createBrowserHistory'
 

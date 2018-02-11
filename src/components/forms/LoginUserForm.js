@@ -10,6 +10,7 @@ class LoginUserForm extends React.Component{
   state = {
     email:'',
     password:'',
+    isCorrect: false,
   }
 
   findUser(user) {
@@ -20,10 +21,12 @@ class LoginUserForm extends React.Component{
     if(e.target.id === 'password') {
       this.setState({
         password: e.target.value,
+        isCorrect: false,
       })
     } else {
       this.setState({
         email: e.target.value,
+        isCorrect: false,
       })
     }
   };
@@ -37,8 +40,7 @@ class LoginUserForm extends React.Component{
         this.findUser(user);
       }
       this.setState({
-        email:'',
-        password:'',
+        isCorrect: true
       })
   };
 
@@ -80,20 +82,27 @@ class LoginUserForm extends React.Component{
             </div>
             <div className="row">
               <Form size={'big'} >
-                <Form.Group widths='equal'>
-                  <Form.Input
-                    fluid placeholder='Email Adress'
-                    onChange={this.onChange}
-                    value={this.state.email}
-                    id="email"
-                    />
-                  <Form.Input
-                    fluid placeholder='Password'
-                    onChange={this.onChange}
-                    value={this.state.password}
-                    id="password"
-                    />
-                </Form.Group>
+                <div className="ui grid centered">
+                  <div className="center aligned eight wide column">
+                    <Form.Input
+                      fluid placeholder='Email Adress'
+                      onChange={this.onChange}
+                      value={this.state.email}
+                      id="email"
+                      />
+                  </div>
+                  <div className="center aligned eight wide column">
+                    <Form.Input
+                      fluid placeholder='Password'
+                      onChange={this.onChange}
+                      value={this.state.password}
+                      id="password"
+                      />
+                  </div>
+                  <div className="center aligned sixteen wide column">
+                    {this.state.isCorrect && this.props.unsuccessful ? <Label basic color='red' pointing>Invalid Email or Password</Label> : null }
+                  </div>
+                </div>
               </Form>
             </div>
           </div>
