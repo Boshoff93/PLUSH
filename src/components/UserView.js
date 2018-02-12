@@ -153,7 +153,7 @@ class UserView extends React.Component {
 function mapStateToProps(state) {
   return {
     userView: state.userView,
-    email: state.email,
+    email: state.user.email,
   }
 }
 
@@ -167,4 +167,5 @@ function matchDispachToProps(dispatch) {
 }
 
 
-export default withRouter(connect(mapStateToProps, matchDispachToProps)(UserView));
+
+export default withRouter(connect(mapStateToProps, matchDispachToProps,)(UserView));

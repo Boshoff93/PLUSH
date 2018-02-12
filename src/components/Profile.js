@@ -159,14 +159,14 @@ class Profile extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    firstname: state.firstname,
-    lastname: state.lastname,
-    email: state.email,
-    posts: state.posts,
-    post_times: state.post_times,
-    post_ids: state.post_ids,
-    user_id: state.user_id,
-    profile_picture: state.profile_picture,
+    firstname: state.user.firstname,
+    lastname: state.user.lastname,
+    email: state.user.email,
+    posts: state.user.posts,
+    post_times: state.user.post_times,
+    post_ids: state.user.post_ids,
+    user_id: state.user.user_id,
+    profile_picture: state.user.profile_picture,
   }
 }
 

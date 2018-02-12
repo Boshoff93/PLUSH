@@ -112,10 +112,4 @@ function matchDispachToProps(dispatch) {
   return bindActionCreators({setUser: setUser}, dispatch)
 }
 
-function mapStateToProps(state) {
-  return {
-
-  }
-}
-
-export default connect(mapStateToProps,matchDispachToProps)(Login);
+export default connect(null,matchDispachToProps)(Login);
