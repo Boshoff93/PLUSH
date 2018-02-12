@@ -221,12 +221,13 @@ class CreateUserForm extends React.Component{
               </Button>
             </div>
             <div className="six wide column">
-            <Button className="fluid inverted orange" animated size={'massive'}>
+            <Button className="fluid inverted orange"
+              animated size={'massive'}
+              onClick={this.handleSubmit}
+              >
               <Button.Content visible>Create Account</Button.Content>
               <Button.Content hidden>
-              <Icon name='right arrow'
-                onClick={this.handleSubmit}
-              />
+                <Icon name='right arrow'/>
               </Button.Content>
             </Button>
             </div>
