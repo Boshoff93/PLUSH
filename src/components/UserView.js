@@ -19,6 +19,8 @@ class UserView extends React.Component {
     conected: false,
     userPath: '',
     preventHistoryPush: 0,
+    searchUsers: [],
+    searchUsersEmail: [],
   }
 
   componentDidMount() {
@@ -30,6 +32,7 @@ class UserView extends React.Component {
     socket.on('connect', this.onConnect.bind(this));
     socket.on('disconnect', this.onDisconnect.bind(this));
     socket.on('profile picture get', this.onGetProfilePicture.bind(this));
+    socket.on('search users' , this.onSearchUsers.bind(this));
 
     const unlisten = this.unlisten = this.props.history.listen((location, action) => {
       var newState = this.state;
@@ -88,6 +91,8 @@ class UserView extends React.Component {
       this.props.setUserView(user.Firstname, user.Lastname, user.User_Id);
       var newState = this.state;
       newState.userViewId = user.User_Id;
+      newState.searchUsers = [],
+      newState.searchUsersEmail = [],
       newState.userPath = '/view'
       this.socket.emit('posts get', user);
       this.socket.emit('profile picture get', user);
@@ -111,6 +116,13 @@ class UserView extends React.Component {
 
   }
 
+  onSearchUsers(users) {
+      this.setState({
+        searchUsers: users.Fullnames,
+        searchUsersEmails: users.Emails
+      });
+  }
+
   render() {
     return (
       <div className="ui container">
@@ -124,6 +136,8 @@ class UserView extends React.Component {
             <SearchUser
               socket={this.socket}
               email={this.props.email}
+              searchUsers={this.state.searchUsers}
+              searchUsersEmails={this.state.searchUsersEmails}
             />
           </div>
         </div>

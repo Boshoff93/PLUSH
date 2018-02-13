@@ -21,6 +21,8 @@ class Profile extends React.Component {
     connected: false,
     userViewId: '',
     userPath: '',
+    searchUsers: [],
+    searchUsersEmail: [],
   }
 
 
@@ -35,6 +37,7 @@ class Profile extends React.Component {
     socket.on('error', this.onError.bind(this));
     socket.on('connect', this.onConnect.bind(this));
     socket.on('disconnect', this.onDisconnect.bind(this));
+    socket.on('search users' , this.onSearchUsers.bind(this));
   }
 
   onConnect(){
@@ -76,6 +79,8 @@ class Profile extends React.Component {
     } else {
       this.props.setUserView(user.Firstname, user.Lastname, user.User_Id);
       var newState = this.state;
+      newState.searchUsers = [],
+      newState.searchUsersEmail = [],
       newState.userPath = '/view';
       newState.userViewId = user.User_Id
       this.setState({
@@ -94,6 +99,13 @@ class Profile extends React.Component {
     } else {
       this.props.addProfilePicture(require("../Images/DefaultAvatar.png"));
     }
+  }
+
+  onSearchUsers(users) {
+      this.setState({
+        searchUsers: users.Fullnames,
+        searchUsersEmails: users.Emails
+      });
   }
 
   onError(error){
@@ -123,6 +135,8 @@ class Profile extends React.Component {
             <SearchUser
               socket={this.socket}
               email={this.props.email}
+              searchUsers={this.state.searchUsers}
+              searchUsersEmails={this.state.searchUsersEmails}
             />
           </div>
         </div>

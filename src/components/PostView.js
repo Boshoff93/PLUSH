@@ -23,7 +23,9 @@ export class PostView extends React.Component {
   };
 
   render() {
-      const posts = this.props.posts.map((post, index) => (
+      let posts = this.props.posts
+      if(posts !== null) {
+        posts = this.props.posts.map((post, index) => (
         <div className= 'row' key={uuid.v4()}>
         <div className= 'fourteen wide column'>
         <div className= 'ui segment Border-blue'>
@@ -40,8 +42,7 @@ export class PostView extends React.Component {
           </div>
           </div>
         </div>
-
-          <div className= 'two wide column Row-height center aligned'>
+        <div className= 'two wide column Row-height center aligned'>
           <div className='row Row-height-half'>
             <Popup
               trigger={<Image className="shake-it" onClick={()=> this.handleDelete(index)} src={require("../Images/trash-bin.png")} avatar />}
@@ -57,6 +58,7 @@ export class PostView extends React.Component {
           </div>
         </div>
       ));
+      }
       return (
         <div className='ui comments'>
         <div className= 'ui grid'>
