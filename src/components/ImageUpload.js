@@ -1,11 +1,11 @@
 import React from 'react';
 import { Button, Icon } from 'semantic-ui-react'
+import axios from 'axios';
 
 class ImageUpload extends React.Component {
 
   handleImageChange(e) {
     e.preventDefault();
-
     let reader = new FileReader();
     let file = e.target.files[0];
 
@@ -14,13 +14,19 @@ class ImageUpload extends React.Component {
         user_id: this.props.user_id,
         data: reader.result
       }
-      this.props.socket.emit('profile picture add', picture);
+      axios.post('http://localhost:8000/plush-api/profilePicture', JSON.stringify(picture)).then(res => {
+          this.props.onAddProfilePicture(res.data)
+      }).catch(err => {
+        // Handle the error here. E.g. use this.setState() to display an error msg.
+     })
     }
-
     reader.readAsDataURL(file)
   }
 
   render() {
+    if(this.props.loaded === false) {
+      return false
+    }
     return (
       <div>
       <input type="file"

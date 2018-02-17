@@ -5,33 +5,40 @@ import {connect} from 'react-redux'
 import uuid from 'uuid';
 import {Redirect} from 'react-router-dom'
 import { Input, List } from 'semantic-ui-react'
+import axios from 'axios';
 
 export class SearchUser extends React.Component {
   state = {
     value: '',
     userPath: '',
-    users: [],
   };
-
 
   onChange = (e) => {
     this.setState({
       value: e.target.value,
     })
-
-    if (this.state.value === '') {
-      this.setState({
-        users: [],
-      });
+    if (e.target.value === '') {
+      let emptyList = {
+        Fullnames:  [],
+        Emails: []
+      }
+      this.props.onSearchUsers(emptyList)
       return
     }
 
-    let search = e.target.value
-    this.props.socket.emit('search users', {search});
+    axios.get('http://localhost:8000/plush-api/searchUsers/' + e.target.value).then(res => {
+      this.props.onSearchUsers(res.data)
+    }).catch(err => {
+      // Handle the error here. E.g. use this.setState() to display an error msg.
+    })
   };
 
   getUserView(email) {
-    this.props.socket.emit('user get', {email});
+    axios.get('http://localhost:8000/plush-api/userViewEmail/' + email).then(res => {
+      this.props.onGetUser(res.data)
+    }).catch(err => {
+      // Handle the error here. E.g. use this.setState() to display an error msg.
+    })
   }
 
   handleSubmit = (index) => {
@@ -51,7 +58,6 @@ export class SearchUser extends React.Component {
 
   render() {
     if (this.state.userPath === '/profile') {
-      this.props.socket.close
       return <Redirect push to="/profile" />;
     } else {
       let searchedUsers = this.props.searchUsers
@@ -59,9 +65,9 @@ export class SearchUser extends React.Component {
         searchedUsers = this.props.searchUsers.map((user, index) => (
           <div className="ui segment center aligned"
             onClick={()=> this.handleSubmit(index)}
+            key={uuid.v4()}
             >
             <List.Item
-              key={uuid.v4()}
               style={{cursor:"pointer"}}
               >
               {user}
@@ -87,7 +93,6 @@ export class SearchUser extends React.Component {
           {searchedUsers}
         </List>
         </div>
-
         );
       }
   }

@@ -1,5 +1,4 @@
 import React from 'react';
-import Socket from '../socket.js'
 import {bindActionCreators} from 'redux'
 import {setUser} from '../../actions/setUser';
 import {connect} from 'react-redux'
@@ -11,7 +10,6 @@ import LoginUserForm from './LoginUserForm'
 
 class Login extends React.Component{
   state = {
-    connected: false,
     userPath: '',
     disable_create: true,
     emailTaken: false,
@@ -19,35 +17,11 @@ class Login extends React.Component{
   }
 
   componentDidMount(){
-    let ws = new WebSocket('ws://localhost:4000')
-    let socket = this.socket = new Socket(ws);
-    socket.on('connect', this.onConnect.bind(this));
-    socket.on('disconnect', this.onDisconnect.bind(this));
-    socket.on('user add', this.onAddUser.bind(this));
-    socket.on('account not found', this.onUnSuccessful.bind(this));
-    socket.on('access granted', this.onAddUser.bind(this));
-    socket.on('access denied', this.onUnSuccessful.bind(this));
-    socket.on('email unavailible', this.onEmailUnavailible.bind(this));
-    socket.on('error', this.onError.bind(this));
+
   }
 
-  onConnect(){
-    let newState = this.state;
-    newState.connectted = true;
-    this.setState(newState);
-  }
-
-  onDisconnect(){
-    let newState = this.state;
-    newState.connectted = false;
-    this.setState(newState);
-  }
-
-  onError(error){
-    //do nothing
-  }
-
-  onAddUser(user) {
+  onAddUser = (user) => {
+    this.props.setUser(user.Firstname, user.Lastname, user.Email, user.User_Id)
     var currentUser = this.state;
     currentUser.userPath = '/profile' ;
     currentUser.emailTaken = false;
@@ -55,10 +29,9 @@ class Login extends React.Component{
     this.setState({
       currentUser
     });
-    this.props.setUser(user.Firstname, user.Lastname, user.Email, user.User_Id)
   }
 
-  onUnSuccessful(user) {
+  onUnSuccessful = () => {
     var currentUser = this.state;
     currentUser.unsuccessful = true ;
     this.setState({
@@ -66,7 +39,7 @@ class Login extends React.Component{
     });
   }
 
-  onEmailUnavailible(user){
+  onEmailUnavailible = () => {
     var currentUser = this.state;
     currentUser.emailTaken = true ;
     this.setState({
@@ -83,7 +56,6 @@ class Login extends React.Component{
 
   render(){
     if (this.state.userPath === '/profile') {
-      this.socket.close
       return <Redirect push to="/profile" />;
     } else {
 
@@ -91,16 +63,17 @@ class Login extends React.Component{
         return (
           <LoginUserForm
             onClick={this.renderCreateUser}
-            socket={this.socket}
-            unsuccessful={this.state.unsuccessful}
+            onAddUser={this.onAddUser}
+            onUnSuccessful={this.onUnSuccessful}
           />
         )
       } else {
         return (
           <CreateUserForm
             onClick={this.renderCreateUser}
-            socket={this.socket}
             emailTaken={this.state.emailTaken}
+            onEmailUnavailible={this.onEmailUnavailible}
+            onAddUser={this.onAddUser}
           />
         )
       }

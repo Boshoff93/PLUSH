@@ -3,6 +3,7 @@ import {bindActionCreators} from 'redux'
 import {addPost} from '../actions/addPost';
 import {connect} from 'react-redux'
 import uuid from 'uuid';
+import axios from 'axios';
 
 export class PostInput extends React.Component {
   state = {
@@ -21,9 +22,14 @@ export class PostInput extends React.Component {
         user_id: this.props.user_id,
         post_id: uuid.v1().toString(),
         post: this.state.value
-
       }
-      this.props.socket.emit('post add', post);
+
+      axios.post('http://localhost:8000/plush-api/post', JSON.stringify(post)).then(res => {
+        this.props.onAddPost(res.data)
+      }).catch(err => {
+        // Handle the error here. E.g. use this.setState() to display an error msg.
+      })
+
       this.setState({
         value: '',
       });

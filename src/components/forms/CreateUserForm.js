@@ -2,9 +2,9 @@ import React from 'react';
 import { Button, Form, Label, Icon} from 'semantic-ui-react'
 import uuid from 'uuid';
 import Login from './Login'
+import axios from 'axios';
 
 class CreateUserForm extends React.Component{
-
   propTypes: {
     onClick: React.PropTypes.func.Required,
   }
@@ -24,7 +24,15 @@ class CreateUserForm extends React.Component{
   }
 
   addUser(user){
-    this.props.socket.emit('user add', user);
+    axios.post('http://localhost:8000/plush-api/user', JSON.stringify(user)).then(res => {
+      if(res.data === "email unavailible") {
+        this.props.onEmailUnavailible()
+      } else {
+        this.props.onAddUser(res.data)
+      }
+    }).catch(err => {
+      // Handle the error here. E.g. use this.setState() to display an error msg.
+    })
   }
 
   onChange = (e) => {

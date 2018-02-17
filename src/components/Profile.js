@@ -3,79 +3,70 @@ import PostView from './PostView';
 import PostInput from './PostInput';
 import SearchUser from './SearchUser';
 import ImageUpload from './ImageUpload'
-import Socket from './socket.js';
 import {bindActionCreators} from 'redux'
 import {addPost} from '../actions/addPost';
 import {replacePosts} from '../actions/replacePosts';
 import {setUserView} from '../actions/setUserView';
 import {addProfilePicture} from "../actions/addProfilePicture";
+import {deletePost} from '../actions/deletePost';
 import { Image, Label } from 'semantic-ui-react'
 import {connect} from 'react-redux';
 import '../App.css';
 import {Redirect} from 'react-router-dom'
 import { withRouter } from 'react-router'
+import axios from 'axios';
 
 class Profile extends React.Component {
-
   state = {
-    connected: false,
     userViewId: '',
     userPath: '',
     searchUsers: [],
     searchUsersEmail: [],
   }
 
-
   componentDidMount() {
-    let ws = new WebSocket('ws://localhost:4000')
-    let socket = this.socket = new Socket(ws);
-    socket.on('user get', this.onGetUser.bind(this));
-    socket.on('post add', this.onAddPost.bind(this));
-    socket.on('posts get', this.onGetPosts.bind(this));
-    socket.on('profile picture add', this.onAddProfilePicture.bind(this))
-    socket.on('profile picture get', this.onGetProfilePicture.bind(this))
-    socket.on('error', this.onError.bind(this));
-    socket.on('connect', this.onConnect.bind(this));
-    socket.on('disconnect', this.onDisconnect.bind(this));
-    socket.on('search users' , this.onSearchUsers.bind(this));
-  }
+    axios.get('http://localhost:8000/plush-api/getposts/' + this.props.user_id).then(res => {
+        let data = res.data
+        this.onGetPosts(data)
+    }).catch(err => {
+      // Handle the error here. E.g. use this.setState() to display an error msg.
+    })
 
-  onConnect(){
-    let user = {
-      user_id: this.props.user_id
-    }
-    this.socket.emit('posts get', user);
-    this.socket.emit('profile picture get', user )
-    var newState = this.state;
-    newState.connected = true;
-    this.setState({
-      newState
+    axios.get('http://localhost:8000/plush-api/profilePicture/' + this.props.user_id).then(res => {
+        let data = res.data
+        this.onGetProfilePicture(data)
+    }).catch(err => {
+      // Handle the error here. E.g. use this.setState() to display an error msg.
     })
   }
 
-  onDisconnect(){
-    var newState = this.state;
-    newState.connected = false;
-    this.setState({
-      newState
-    })
-  }
-
-  onGetPosts(posts) {
-    if(posts.Posts === null) {
+  onGetPosts = (data) => {
+    if(data.Posts === null) {
       this.props.replacePosts([],[],[])
     } else {
-      this.props.replacePosts(posts.Posts, posts.Post_Times, posts.Post_Ids)
+      this.props.replacePosts(data.Posts, data.Post_Times, data.Post_Ids)
     }
   }
 
-  onAddPost(post) {
+  onGetProfilePicture = (data) => {
+    if(data !== ""){
+      this.props.addProfilePicture(data.Data);
+    } else {
+      this.props.addProfilePicture(require("../Images/DefaultAvatar.png"));
+    }
+  }
+
+  onAddPost = (post) => {
     this.props.addPost(post.Post, post.Post_Time, post.Post_Id);
   }
 
-  onGetUser(user){
-    if(user.User_Id === null) {
-      alert("User Does Not Exist");
+  onDeletePost = (index) => {
+    this.props.deletePost(index);
+  }
+
+  onGetUser = (user) => {
+    if(user.User_Id === "") {
+      console.log("user does not exist");
     } else {
       this.props.setUserView(user.Firstname, user.Lastname, user.User_Id);
       var newState = this.state;
@@ -89,82 +80,71 @@ class Profile extends React.Component {
     }
   }
 
-  onAddProfilePicture(blob) {
+  onAddProfilePicture = (blob) => {
     this.props.addProfilePicture(blob.Data);
   }
 
-  onGetProfilePicture(blob) {
-    if(blob !== ""){
-      this.props.addProfilePicture(blob.Data);
-    } else {
-      this.props.addProfilePicture(require("../Images/DefaultAvatar.png"));
-    }
-  }
-
-  onSearchUsers(users) {
+  onSearchUsers = (users) => {
       this.setState({
         searchUsers: users.Fullnames,
         searchUsersEmails: users.Emails
       });
   }
 
-  onError(error){
-    //do nothing
-  }
-
   render() {
     if (this.state.userPath === '/view') {
-      this.socket.close
       return <Redirect push to={`/view/${this.state.userViewId}`}/>;
     }
-
     return (
       <div className="ui container">
-      <div className="ui grid">
-        <div className="four wide column">
-          <div className="ui segment center aligned Border-orange">
-
-            <Label pointing='below' basic color='orange' size='big'>{this.props.firstname} {this.props.lastname}</Label>
-            <Image src={this.props.profile_picture} className = "Profile-border"/>
-            <ImageUpload
-              socket={this.socket}
-              user_id={this.props.user_id}
-            />
-          </div>
-          <div>
-            <SearchUser
-              socket={this.socket}
-              email={this.props.email}
-              searchUsers={this.state.searchUsers}
-              searchUsersEmails={this.state.searchUsersEmails}
-            />
-          </div>
-        </div>
-        <div className="twelve wide column">
-          <div className="ui segment center aligned Border-orange">
-            <div className='Plush-blue Plush-font Plush-margin'>
-                PLUSH WALL POSTS
-              </div>
-              <div className='ui right aligned segment Border-blue'>
-              <PostInput
+        <div className="ui grid">
+          <div className="four wide column">
+            <div className="ui segment center aligned Border-orange">
+              <Label pointing='below' basic color='orange' size='big'>{this.props.firstname} {this.props.lastname}</Label>
+              <Image src={this.props.profile_picture} className = "Profile-border"/>
+              <ImageUpload
                 socket={this.socket}
                 user_id={this.props.user_id}
+                onAddProfilePicture={this.onAddProfilePicture}
               />
-              <div className='ui left aligned segment Border-orange Postview-format'>
-                <PostView
-                  socket={this.socket}
-                  posts={this.props.posts}
-                  post_ids={this.props.post_ids}
-                  post_times={this.props.post_times}
-                  firstname={this.props.firstname}
-                  lastname={this.props.lastname}
-                  user_id={this.props.user_id}
-                />
+            </div>
+            <div>
+              <SearchUser
+                email={this.props.email}
+                onSearchUsers={this.onSearchUsers}
+                onGetUser={this.onGetUser}
+                searchUsers={this.state.searchUsers}
+                searchUsersEmails={this.state.searchUsersEmails}
+              />
+            </div>
+          </div>
+          <div className="twelve wide column">
+            <div className="ui segment center aligned Border-orange">
+              <div className='Plush-blue Plush-font Plush-margin'>
+                  PLUSH WALL POSTS
                 </div>
-              </div>
+                <div className='ui right aligned segment Border-blue'>
+                <PostInput
+                  socket={this.socket}
+                  user_id={this.props.user_id}
+                  onAddPost={this.onAddPost}
+                />
+                <div className='ui left aligned segment Border-orange Postview-format'>
+                  <PostView
+                    socket={this.socket}
+                    posts={this.props.posts}
+                    post_ids={this.props.post_ids}
+                    post_times={this.props.post_times}
+                    firstname={this.props.firstname}
+                    lastname={this.props.lastname}
+                    user_id={this.props.user_id}
+                    onDeletePost={this.onDeletePost}
+                  />
+                  </div>
+                </div>
+            </div>
           </div>
         </div>
-      </div>
       </div>
 
     );
@@ -190,6 +170,7 @@ function matchDispachToProps(dispatch) {
     addProfilePicture: addProfilePicture,
     replacePosts: replacePosts,
     setUserView: setUserView,
+    deletePost: deletePost,
   }, dispatch)
 }
 

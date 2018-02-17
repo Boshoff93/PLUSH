@@ -3,7 +3,6 @@ import PostInput from './PostInput';
 import ImageUpload from './ImageUpload'
 import UserPostView from './UserPostView'
 import SearchUser from './SearchUser';
-import Socket from './socket.js';
 import {bindActionCreators} from 'redux'
 import {addPost} from '../actions/addPost';
 import {setUserView} from '../actions/setUserView';
@@ -13,10 +12,10 @@ import {connect} from 'react-redux';
 import '../App.css';
 import {Redirect,withRouter} from 'react-router-dom'
 import { Image, Label } from 'semantic-ui-react'
+import axios from 'axios';
 
 class UserView extends React.Component {
   state = {
-    conected: false,
     userPath: '',
     preventHistoryPush: 0,
     searchUsers: [],
@@ -24,15 +23,10 @@ class UserView extends React.Component {
   }
 
   componentDidMount() {
-    let ws = new WebSocket('ws://localhost:4000')
-    let socket = this.socket = new Socket(ws);
-    socket.on('posts get', this.onGetPosts.bind(this));
-    socket.on('user get', this.onGetUser.bind(this));
-    socket.on('error', this.onError.bind(this));
-    socket.on('connect', this.onConnect.bind(this));
-    socket.on('disconnect', this.onDisconnect.bind(this));
-    socket.on('profile picture get', this.onGetProfilePicture.bind(this));
-    socket.on('search users' , this.onSearchUsers.bind(this));
+    this.getUser()
+    this.setState({
+      preventHistoryPush: 1
+    })
 
     const unlisten = this.unlisten = this.props.history.listen((location, action) => {
       var newState = this.state;
@@ -40,38 +34,23 @@ class UserView extends React.Component {
       this.setState({
         newState
       })
-      var getMatchName = {
-        user_id: this.props.match.params.id
-      }
-      this.socket.emit('user get', getMatchName);
+      this.getUser()
     });
+  }
+
+  getUser = () => {
+    axios.get('http://localhost:8000/plush-api/userViewId/' + this.props.match.params.id).then(res => {
+      if(res.data !== "User does not exist") {
+        this.onGetUser(res.data)
+      }
+    }).catch(err => {
+      // Handle the error here. E.g. use this.setState() to display an error msg.
+    })
   }
 
   componentWillUnmount() {
     const unlisten = this.unlisten
     unlisten()
-  }
-
-  onConnect(){
-    console.log(this.props);
-    var getMatchName = {
-      user_id: this.props.match.params.id
-    }
-    this.socket.emit('user get', getMatchName);
-    var newState = this.state;
-    newState.preventHistoryPush = 1;
-    newState.conected = true;
-    this.setState({
-      newState
-    })
-  }
-
-  onDisconnect(){
-    var newState = this.state;
-    newState.conected = false;
-    this.setState({
-      newState
-    })
   }
 
   onGetPosts(posts) {
@@ -86,7 +65,7 @@ class UserView extends React.Component {
     //do nothing
   }
 
-  onGetUser(user){
+  onGetUser = (user) => {
    if(user.User_Id !== "") {
       this.props.setUserView(user.Firstname, user.Lastname, user.User_Id);
       var newState = this.state;
@@ -94,8 +73,21 @@ class UserView extends React.Component {
       newState.searchUsers = [],
       newState.searchUsersEmail = [],
       newState.userPath = '/view'
-      this.socket.emit('posts get', user);
-      this.socket.emit('profile picture get', user);
+
+      axios.get('http://localhost:8000/plush-api/getposts/' + user.User_Id).then(res => {
+          let data = res.data
+          this.onGetPosts(data)
+      }).catch(err => {
+        // Handle the error here. E.g. use this.setState() to display an error msg.
+      })
+
+      axios.get('http://localhost:8000/plush-api/profilePicture/' + user.User_Id).then(res => {
+          let data = res.data
+          this.onGetProfilePicture(data)
+      }).catch(err => {
+        // Handle the error here. E.g. use this.setState() to display an error msg.
+      })
+
       if(newState.preventHistoryPush === 0) {
         this.props.history.push(`/view/${user.User_Id}`)
       }
@@ -107,16 +99,15 @@ class UserView extends React.Component {
 
   }
 
-  onGetProfilePicture(blob) {
-    if(blob !== '') {
+  onGetProfilePicture = (blob) => {
+    if(blob !== "") {
       this.props.addUserViewPP(blob.Data);
     } else {
       this.props.addUserViewPP(require("../Images/DefaultAvatar.png"));
-      }
-
+    }
   }
 
-  onSearchUsers(users) {
+  onSearchUsers = (users) => {
       this.setState({
         searchUsers: users.Fullnames,
         searchUsersEmails: users.Emails
@@ -134,7 +125,8 @@ class UserView extends React.Component {
           </div>
           <div>
             <SearchUser
-              socket={this.socket}
+              onSearchUsers={this.onSearchUsers}
+              onGetUser={this.onGetUser}
               email={this.props.email}
               searchUsers={this.state.searchUsers}
               searchUsersEmails={this.state.searchUsersEmails}
@@ -158,8 +150,6 @@ class UserView extends React.Component {
           </div>
         </div>
       </div>
-
-
     );
   }
 }

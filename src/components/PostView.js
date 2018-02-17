@@ -1,6 +1,5 @@
 import React from 'react';
 import {bindActionCreators} from 'redux'
-import {deletePost} from '../actions/deletePost';
 import {connect} from 'react-redux'
 import uuid from 'uuid';
 import "../App.css"
@@ -8,6 +7,7 @@ import "../animations/animations.css"
 import "../Images/trash-bin.png"
 import "../Images/star.png"
 import {Image, Popup} from 'semantic-ui-react'
+import axios from 'axios';
 
 
 
@@ -18,8 +18,12 @@ export class PostView extends React.Component {
       user_id: this.props.user_id,
       post_id: this.props.post_ids[index],
     }
-    this.props.socket.emit('post delete', deletePost);
-    this.props.deletePost(index);
+
+    axios.delete('http://localhost:8000/plush-api/post', {data: JSON.stringify(deletePost)}).then(res => {
+      this.props.onDeletePost(index);
+    }).catch(err => {
+      // Handle the error here. E.g. use this.setState() to display an error msg.
+    })
   };
 
   render() {
@@ -69,8 +73,6 @@ export class PostView extends React.Component {
     }
   }
 
-function matchDispachToProps(dispatch) {
-  return bindActionCreators({deletePost: deletePost}, dispatch)
-}
 
-export default connect(null, matchDispachToProps)(PostView);
+
+export default PostView;

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button, Form, Label, Icon} from 'semantic-ui-react'
+import axios from 'axios';
 
 class LoginUserForm extends React.Component{
-
   propTypes: {
     onClick: React.PropTypes.func.Required,
   }
@@ -14,7 +14,15 @@ class LoginUserForm extends React.Component{
   }
 
   findUser(user) {
-    this.props.socket.emit('user find', user);
+    axios.get('http://localhost:8000/plush-api/user/' + this.state.email).then(res => {
+      if(res.data === "access denied") {
+        this.props.onUnSuccessful()
+      } else {
+        this.props.onAddUser(res.data)
+      }
+    }).catch(err => {
+      // Handle the error here. E.g. use this.setState() to display an error msg.
+   })
   }
 
   onChange = (e) => {
@@ -34,8 +42,7 @@ class LoginUserForm extends React.Component{
   handleSubmit = (e) => {
       if(this.state.email !== '' && this.state.password !== ''){
         let user = {
-          email:    this.state.email,
-          password: this.state.password
+          email: this.state.email,
         }
         this.findUser(user);
       }
