@@ -7,6 +7,11 @@ import {Form, Label, Icon} from 'semantic-ui-react'
 import {Redirect} from 'react-router-dom'
 import CreateUserForm from './CreateUserForm'
 import LoginUserForm from './LoginUserForm'
+import { GoogleLogin, GoogleLogout } from 'react-google-login';
+import axios from 'axios'
+import uuid from 'uuid';
+
+
 
 class Login extends React.Component{
   state = {
@@ -32,11 +37,12 @@ class Login extends React.Component{
   }
 
   onUnSuccessful = () => {
-    var currentUser = this.state;
+    {/*var currentUser = this.state;
     currentUser.unsuccessful = true ;
     this.setState({
       currentUser
-    });
+    });*/}
+    console.log("Permission Dinied");
   }
 
   onEmailUnavailible = () => {
@@ -53,6 +59,27 @@ class Login extends React.Component{
       });
   }
 
+  responseGoogle = (response) => {
+    console.log(response);
+    let user_info = {
+      firstname:response.w3.ofa,
+      lastname:response.w3.wea,
+      user_id: uuid.v4().toString(),
+      created_at: uuid.v1().toString(),
+    }
+    axios.post('http://localhost:8000/plush-api/login', JSON.stringify(user_info), {headers: {'Authorization': response.tokenId} }).then(res => {
+      if(res.data === "access denied") {
+        this.onUnSuccessful()
+      } else {
+        this.onAddUser(res.data)
+      }
+    }).catch(err => {
+      // Handle the error here. E.g. use this.setState() to display an error msg.
+   })
+  }
+  logout = (response) => {
+    console.log("user logged out");
+  }
 
   render(){
     if (this.state.userPath === '/profile') {
@@ -61,11 +88,19 @@ class Login extends React.Component{
 
       if(this.state.disable_create === true) {
         return (
-          <LoginUserForm
-            onClick={this.renderCreateUser}
-            onAddUser={this.onAddUser}
-            onUnSuccessful={this.onUnSuccessful}
-          />
+          <div>
+          <GoogleLogin
+            clientId="729356241272-g4gtvdrpvhsts6ogat3n8kv0ma1vidhm.apps.googleusercontent.com"
+            buttonText="Login"
+            onSuccess={this.responseGoogle}
+            onFailure={this.responseGoogle}
+            />
+            <GoogleLogout
+              buttonText="Logout"
+              onLogoutSuccess={this.logout}
+            >
+            </GoogleLogout>
+            </div>
         )
       } else {
         return (
