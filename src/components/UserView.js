@@ -16,6 +16,7 @@ import axios from 'axios';
 
 class UserView extends React.Component {
   state = {
+    onProfile: false,
     redirect: false,
     preventHistoryPush: 0,
     searchUsers: [],
@@ -29,9 +30,12 @@ class UserView extends React.Component {
     })
 
     const unlisten = this.unlisten = this.props.history.listen((location, action) => {
+      let newState = this.state
+      newState.preventHistoryPush = 1
       this.setState({
-        preventHistoryPush: 1,
+        newState
       })
+      console.log("this is next: " + this.state.preventHistoryPush);
       this.getUser()
     });
   }
@@ -81,16 +85,18 @@ class UserView extends React.Component {
         // Handle the error here. E.g. use this.setState() to display an error msg.
       })
 
-      if(this.state.preventHistoryPush === 0) {
+      let newState = this.state
+      newState.userViewId = user.User_Id
+      newState.searchUsers = []
+      newState.searchUsersIds = []
+      newState.redirect = true
+      if(newState.preventHistoryPush === 0) {
+        console.log("pushed too");
         this.props.history.push(`/view/${user.User_Id}`)
       }
-
+      newState.preventHistoryPush = 0
       UserView.setState({
-        userViewId: user.User_Id,
-        searchUsers: [],
-        searchUsersIds: [],
-        redirect: true,
-        preventHistoryPush: 0,
+        newState
       });
     }
   }
@@ -121,6 +127,7 @@ class UserView extends React.Component {
           </div>
           <div>
             <SearchUser
+              onProfile={this.state.onProfile}
               user_id={this.props.user_id}
               onSearchUsers={this.onSearchUsers}
               onGetUser={this.onGetUser}

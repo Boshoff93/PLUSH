@@ -18,6 +18,7 @@ import axios from 'axios';
 
 class Profile extends React.Component {
   state = {
+    onProfile: true,
     userViewId: '',
     redirect: false,
     searchUsers: [],
@@ -107,6 +108,7 @@ class Profile extends React.Component {
             </div>
             <div>
               <SearchUser
+                onProfile={this.state.onProfile}
                 user_id={this.props.user_id}
                 onSearchUsers={this.onSearchUsers}
                 onGetUser={this.onGetUser}

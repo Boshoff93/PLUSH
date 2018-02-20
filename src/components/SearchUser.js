@@ -18,11 +18,7 @@ export class SearchUser extends React.Component {
       value: e.target.value,
     })
     if (e.target.value === '') {
-      let emptyList = {
-        Display_Names:  [],
-        User_Ids: []
-      }
-      this.props.onSearchUsers(emptyList)
+      this.clearList()
       return
     }
 
@@ -41,10 +37,21 @@ export class SearchUser extends React.Component {
     })
   }
 
+  clearList() {
+    let emptyList = {
+      Display_Names:  [],
+      User_Ids: []
+    }
+    this.props.onSearchUsers(emptyList)
+  }
+
   handleSubmit = (index) => {
-    console.log(this.props.searchUsersIds[index])
-    console.log(this.props.user_id);
-    if(this.props.searchUsersIds[index] === (this.props.user_id)) {
+    if(this.props.searchUsersIds[index] === (this.props.user_id) && this.props.onProfile) {
+      this.clearList()
+      this.setState({
+        value: '',
+      });
+    } else if(this.props.searchUsersIds[index] === (this.props.user_id)) {
       this.setState({
         value: '',
         redirect: true,
@@ -60,7 +67,7 @@ export class SearchUser extends React.Component {
 
   render() {
     if (this.state.redirect === true) {
-      console.log("redirectings");
+      console.log("then got here");
       return <Redirect push to="/profile" />;
     } else {
       let searchedUsers = this.props.searchUsers
