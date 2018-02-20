@@ -1,6 +1,5 @@
 export function userReducer(state = {
-  firstname:'',
-  lastname:'',
+  display_name: '',
   email:'',
   user_id:'',
   post_ids: [],
@@ -37,7 +36,7 @@ export function userReducer(state = {
     }
     case 'SET_USER': {
       return {
-        ...state, firstname: action.firstname, lastname: action.lastname,
+        ...state, display_name: action.display_name,
                   email: action.email, user_id: action.user_id,
       }
     }

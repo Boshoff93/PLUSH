@@ -16,10 +16,10 @@ import axios from 'axios';
 
 class UserView extends React.Component {
   state = {
-    userPath: '',
+    redirect: false,
     preventHistoryPush: 0,
     searchUsers: [],
-    searchUsersEmail: [],
+    searchUsersIds: [],
   }
 
   componentDidMount() {
@@ -29,10 +29,8 @@ class UserView extends React.Component {
     })
 
     const unlisten = this.unlisten = this.props.history.listen((location, action) => {
-      var newState = this.state;
-      newState.preventHistoryPush = 1;
       this.setState({
-        newState
+        preventHistoryPush: 1,
       })
       this.getUser()
     });
@@ -67,12 +65,7 @@ class UserView extends React.Component {
 
   onGetUser = (user) => {
    if(user.User_Id !== "") {
-      this.props.setUserView(user.Firstname, user.Lastname, user.User_Id);
-      var newState = this.state;
-      newState.userViewId = user.User_Id;
-      newState.searchUsers = [],
-      newState.searchUsersEmail = [],
-      newState.userPath = '/view'
+      this.props.setUserView(user.Display_Name, user.User_Id);
 
       axios.get('http://localhost:8000/plush-api/getposts/' + user.User_Id).then(res => {
           let data = res.data
@@ -88,15 +81,18 @@ class UserView extends React.Component {
         // Handle the error here. E.g. use this.setState() to display an error msg.
       })
 
-      if(newState.preventHistoryPush === 0) {
+      if(this.state.preventHistoryPush === 0) {
         this.props.history.push(`/view/${user.User_Id}`)
       }
-      newState.preventHistoryPush = 0;
+
       UserView.setState({
-        newState
+        userViewId: user.User_Id,
+        searchUsers: [],
+        searchUsersIds: [],
+        redirect: true,
+        preventHistoryPush: 0,
       });
     }
-
   }
 
   onGetProfilePicture = (blob) => {
@@ -109,8 +105,8 @@ class UserView extends React.Component {
 
   onSearchUsers = (users) => {
       this.setState({
-        searchUsers: users.Fullnames,
-        searchUsersEmails: users.Emails
+        searchUsers: users.Display_Names,
+        searchUsersIds: users.User_Ids
       });
   }
 
@@ -120,16 +116,16 @@ class UserView extends React.Component {
       <div className="ui grid">
         <div className="four wide column">
           <div className="ui segment center aligned Border-orange">
-          <Label pointing='below' basic color='orange' size='big'>{this.props.userView.userViewFirstname} {this.props.userView.userViewLastname}</Label>
+          <Label pointing='below' basic color='orange' size='big'>{this.props.userView.userViewDisplayName}</Label>
           <Image className = "Profile-border" src={this.props.userView.userViewProfilePicture}/>
           </div>
           <div>
             <SearchUser
+              user_id={this.props.user_id}
               onSearchUsers={this.onSearchUsers}
               onGetUser={this.onGetUser}
-              email={this.props.email}
               searchUsers={this.state.searchUsers}
-              searchUsersEmails={this.state.searchUsersEmails}
+              searchUsersIds={this.state.searchUsersIds}
             />
           </div>
         </div>
@@ -142,8 +138,7 @@ class UserView extends React.Component {
                 <UserPostView
                   posts={this.props.userView.userViewPosts}
                   post_times={this.props.userView.userViewPostTimes}
-                  firstname={this.props.userView.firstname}
-                  lastname={this.props.userView.lastname}
+                  display_name={this.props.userView.userViewDisplayName}
                 />
                 </div>
               </div>
@@ -157,7 +152,7 @@ class UserView extends React.Component {
 function mapStateToProps(state) {
   return {
     userView: state.userView,
-    email: state.user.email,
+    user_id: state.user.user_id,
   }
 }
 

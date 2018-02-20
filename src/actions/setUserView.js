@@ -1,8 +1,7 @@
-export const setUserView = (firstname, lastname, user_id) => {
+export const setUserView = (display_name, user_id) => {
   return {
     type: 'SET_USER_VIEW',
-    firstname: firstname,
-    lastname: lastname,
+    display_name: display_name,
     user_id: user_id,
   }
 }

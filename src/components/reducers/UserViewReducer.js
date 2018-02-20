@@ -1,7 +1,6 @@
 export function userViewReducer(state = {
   userViewProfilePicture:'',
-  userViewFirstname:'',
-  userViewLastname:'',
+  userViewDisplayName: '',
   userViewId: '',
   userViewPostTimes: [],
   userViewPosts: [],
@@ -10,8 +9,7 @@ export function userViewReducer(state = {
   switch (action.type) {
     case 'SET_USER_VIEW': {
       return {
-        ...state, userViewFirstname: action.firstname,
-                  userViewLastname: action.lastname,
+        ...state, userViewDisplayName: action.display_name,
                   userViewId: action.user_id,
                   userViewPosts: [],
                   userViewPostTimes: [],

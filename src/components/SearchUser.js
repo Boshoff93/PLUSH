@@ -10,7 +10,7 @@ import axios from 'axios';
 export class SearchUser extends React.Component {
   state = {
     value: '',
-    userPath: '',
+    redirect: false,
   };
 
   onChange = (e) => {
@@ -19,8 +19,8 @@ export class SearchUser extends React.Component {
     })
     if (e.target.value === '') {
       let emptyList = {
-        Fullnames:  [],
-        Emails: []
+        Display_Names:  [],
+        User_Ids: []
       }
       this.props.onSearchUsers(emptyList)
       return
@@ -33,8 +33,8 @@ export class SearchUser extends React.Component {
     })
   };
 
-  getUserView(email) {
-    axios.get('http://localhost:8000/plush-api/userViewEmail/' + email).then(res => {
+  getUserView(user_id) {
+    axios.get('http://localhost:8000/plush-api/userViewId/' + user_id).then(res => {
       this.props.onGetUser(res.data)
     }).catch(err => {
       // Handle the error here. E.g. use this.setState() to display an error msg.
@@ -42,22 +42,25 @@ export class SearchUser extends React.Component {
   }
 
   handleSubmit = (index) => {
-    if(this.props.searchUsersEmails[index] === (this.props.email)) {
+    console.log(this.props.searchUsersIds[index])
+    console.log(this.props.user_id);
+    if(this.props.searchUsersIds[index] === (this.props.user_id)) {
       this.setState({
         value: '',
-        userPath: '/profile',
+        redirect: true,
       });
       } else {
-        this.getUserView(this.props.searchUsersEmails[index])
+        this.getUserView(this.props.searchUsersIds[index])
         this.setState({
           value: '',
-          userPath: '',
+          redirect: false,
         });
       }
     }
 
   render() {
-    if (this.state.userPath === '/profile') {
+    if (this.state.redirect === true) {
+      console.log("redirectings");
       return <Redirect push to="/profile" />;
     } else {
       let searchedUsers = this.props.searchUsers

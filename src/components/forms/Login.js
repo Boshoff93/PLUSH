@@ -10,14 +10,11 @@ import LoginUserForm from './LoginUserForm'
 import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import axios from 'axios'
 import uuid from 'uuid';
-
-
+import {fire, googleProvider, facebookProvider} from './Config'
 
 class Login extends React.Component{
   state = {
-    userPath: '',
-    disable_create: true,
-    emailTaken: false,
+    redirect: false,
     unsuccessful: false,
   }
 
@@ -26,48 +23,28 @@ class Login extends React.Component{
   }
 
   onAddUser = (user) => {
-    this.props.setUser(user.Firstname, user.Lastname, user.Email, user.User_Id)
-    var currentUser = this.state;
-    currentUser.userPath = '/profile' ;
-    currentUser.emailTaken = false;
-    currentUser.unsuccessful = false;
+    this.props.setUser(user.Display_Name, user.Email, user.User_Id)
     this.setState({
-      currentUser
+      redirect: true,
+      unsuccessful: false,
     });
   }
 
   onUnSuccessful = () => {
-    {/*var currentUser = this.state;
-    currentUser.unsuccessful = true ;
     this.setState({
-      currentUser
-    });*/}
-    console.log("Permission Dinied");
-  }
-
-  onEmailUnavailible = () => {
-    var currentUser = this.state;
-    currentUser.emailTaken = true ;
-    this.setState({
-      currentUser
+      unsuccessful : true
     });
-  }
-
-  renderCreateUser = (e) => {
-      this.setState({
-        disable_create: !this.state.disable_create,
-      });
+    console.log("Permission Dinied");
   }
 
   responseGoogle = (response) => {
     console.log(response);
     let user_info = {
-      firstname:response.w3.ofa,
-      lastname:response.w3.wea,
-      user_id: uuid.v4().toString(),
+      display_name: response.user.displayName,
+      user_id: response.user.uid,
       created_at: uuid.v1().toString(),
     }
-    axios.post('http://localhost:8000/plush-api/login', JSON.stringify(user_info), {headers: {'Authorization': response.tokenId} }).then(res => {
+    axios.post('http://localhost:8000/plush-api/login', JSON.stringify(user_info), {headers: {'Authorization': response.credential.idToken} }).then(res => {
       if(res.data === "access denied") {
         this.onUnSuccessful()
       } else {
@@ -77,44 +54,45 @@ class Login extends React.Component{
       // Handle the error here. E.g. use this.setState() to display an error msg.
    })
   }
-  logout = (response) => {
+
+  signOut = () => {
     console.log("user logged out");
+    fire.auth().signOut().then((user) => {
+      console.log(user);
+    })
+  }
+
+  authWithGoogle = () => {
+    console.log("authed with google");
+    fire.auth().signInWithPopup(googleProvider).then((result,error) => {
+      if(error) {
+        console.log("error could not connect");
+      } else {
+        this.responseGoogle(result)
+      }
+    })
   }
 
   render(){
-    if (this.state.userPath === '/profile') {
+    if (this.state.redirect === true) {
       return <Redirect push to="/profile" />;
     } else {
-
-      if(this.state.disable_create === true) {
-        return (
-          <div>
-          <GoogleLogin
-            clientId="729356241272-g4gtvdrpvhsts6ogat3n8kv0ma1vidhm.apps.googleusercontent.com"
-            buttonText="Login"
-            onSuccess={this.responseGoogle}
-            onFailure={this.responseGoogle}
-            />
-            <GoogleLogout
-              buttonText="Logout"
-              onLogoutSuccess={this.logout}
-            >
-            </GoogleLogout>
-            </div>
-        )
-      } else {
-        return (
-          <CreateUserForm
-            onClick={this.renderCreateUser}
-            emailTaken={this.state.emailTaken}
-            onEmailUnavailible={this.onEmailUnavailible}
-            onAddUser={this.onAddUser}
-          />
-        )
-      }
+      return (
+        <div>
+          <button style={{width: "100%"}}
+            className="semantic ui button primary"
+            onClick={() => {this.authWithGoogle()}}> Login with Google
+          </button>
+          <button style={{width: "100%"}}
+            className="semantic ui button primary"
+            onClick={() => {this.signOut()}}> Logout with Google
+          </button>
+          </div>
+      )
+    }
   }
 }
-}
+
 
 function matchDispachToProps(dispatch) {
   return bindActionCreators({setUser: setUser}, dispatch)
