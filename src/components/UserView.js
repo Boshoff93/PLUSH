@@ -16,6 +16,7 @@ import axios from 'axios';
 
 class UserView extends React.Component {
   state = {
+    loggedIn: false,
     onProfile: false,
     redirect: false,
     preventHistoryPush: 0,
@@ -23,26 +24,38 @@ class UserView extends React.Component {
     searchUsersIds: [],
   }
 
-  componentDidMount() {
-    this.getUser()
-    this.setState({
-      preventHistoryPush: 1
-    })
-
-    const unlisten = this.unlisten = this.props.history.listen((location, action) => {
-      let newState = this.state
-      newState.preventHistoryPush = 1
+  componentWillMount() {
+    if(this.props.access_token != "") {
       this.setState({
-        newState
+        loggedIn: true
       })
-      console.log("this is next: " + this.state.preventHistoryPush);
+    }
+  }
+
+
+  componentDidMount() {
+    if(this.state.loggedIn != false) {
       this.getUser()
-    });
+      this.setState({
+        preventHistoryPush: 1
+      })
+
+      const unlisten = this.unlisten = this.props.history.listen((location, action) => {
+        let newState = this.state
+        newState.preventHistoryPush = 1
+        this.setState({
+          newState
+        })
+        this.getUser()
+      });
+    }
   }
 
   getUser = () => {
-    axios.get('http://localhost:8000/plush-api/userViewId/' + this.props.match.params.id).then(res => {
-      if(res.data !== "User does not exist") {
+    axios.get('http://localhost:8000/plush-api/userViewId/' + this.props.match.params.id,  {headers: {'Authorization': this.props.access_token}}).then(res => {
+      if('Error' in res.data) {
+        console.log(res.Data.Error);
+      } else {
         this.onGetUser(res.data)
       }
     }).catch(err => {
@@ -51,8 +64,10 @@ class UserView extends React.Component {
   }
 
   componentWillUnmount() {
-    const unlisten = this.unlisten
-    unlisten()
+    if(this.state.loggedIn != false) {
+      const unlisten = this.unlisten
+      unlisten()
+    }
   }
 
   onGetPosts(posts) {
@@ -71,16 +86,24 @@ class UserView extends React.Component {
    if(user.User_Id !== "") {
       this.props.setUserView(user.Display_Name, user.User_Id);
 
-      axios.get('http://localhost:8000/plush-api/getposts/' + user.User_Id).then(res => {
+      axios.get('http://localhost:8000/plush-api/getposts/' + user.User_Id,  {headers: {'Authorization': this.props.access_token}}).then(res => {
+        if('Error' in res.data) {
+          console.log(res.Data.Error);
+        } else {
           let data = res.data
           this.onGetPosts(data)
+        }
       }).catch(err => {
         // Handle the error here. E.g. use this.setState() to display an error msg.
       })
 
-      axios.get('http://localhost:8000/plush-api/profilePicture/' + user.User_Id).then(res => {
+      axios.get('http://localhost:8000/plush-api/profilePicture/' + user.User_Id,  {headers: {'Authorization': this.props.access_token}}).then(res => {
+        if('Error' in res.data) {
+          console.log(res.Data.Error);
+        } else {
           let data = res.data
           this.onGetProfilePicture(data)
+        }
       }).catch(err => {
         // Handle the error here. E.g. use this.setState() to display an error msg.
       })
@@ -91,7 +114,6 @@ class UserView extends React.Component {
       newState.searchUsersIds = []
       newState.redirect = true
       if(newState.preventHistoryPush === 0) {
-        console.log("pushed too");
         this.props.history.push(`/view/${user.User_Id}`)
       }
       newState.preventHistoryPush = 0
@@ -117,6 +139,9 @@ class UserView extends React.Component {
   }
 
   render() {
+    if (!this.state.loggedIn) {
+      return <Redirect push to={`/`}/>;
+    }
     return (
       <div className="ui container">
       <div className="ui grid">
@@ -133,6 +158,7 @@ class UserView extends React.Component {
               onGetUser={this.onGetUser}
               searchUsers={this.state.searchUsers}
               searchUsersIds={this.state.searchUsersIds}
+              access_token={this.props.access_token}
             />
           </div>
         </div>
@@ -160,6 +186,7 @@ function mapStateToProps(state) {
   return {
     userView: state.userView,
     user_id: state.user.user_id,
+    access_token: state.user.access_token,
   }
 }
 

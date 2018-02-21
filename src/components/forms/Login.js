@@ -1,6 +1,7 @@
 import React from 'react';
 import {bindActionCreators} from 'redux'
 import {setUser} from '../../actions/setUser';
+import {signOut} from '../../actions/signOut';
 import {connect} from 'react-redux'
 import "../../App.css"
 import {Form, Label, Icon} from 'semantic-ui-react'
@@ -23,7 +24,7 @@ class Login extends React.Component{
   }
 
   onAddUser = (user) => {
-    this.props.setUser(user.Display_Name, user.Email, user.User_Id)
+    this.props.setUser(user.Display_Name, user.Email, user.User_Id, user.Token)
     this.setState({
       redirect: true,
       unsuccessful: false,
@@ -45,7 +46,7 @@ class Login extends React.Component{
       created_at: uuid.v1().toString(),
     }
     axios.post('http://localhost:8000/plush-api/login', JSON.stringify(user_info), {headers: {'Authorization': response.credential.idToken} }).then(res => {
-      if(res.data === "access denied") {
+      if('Error' in res.data) {
         this.onUnSuccessful()
       } else {
         this.onAddUser(res.data)
@@ -56,9 +57,8 @@ class Login extends React.Component{
   }
 
   signOut = () => {
-    console.log("user logged out");
-    fire.auth().signOut().then((user) => {
-      console.log(user);
+    fire.auth().signOut().then(() => {
+      this.props.signOut()
     })
   }
 
@@ -66,7 +66,7 @@ class Login extends React.Component{
     console.log("authed with google");
     fire.auth().signInWithPopup(googleProvider).then((result,error) => {
       if(error) {
-        console.log("error could not connect");
+        console.log("Error could not connect");
       } else {
         this.responseGoogle(result)
       }
@@ -95,7 +95,10 @@ class Login extends React.Component{
 
 
 function matchDispachToProps(dispatch) {
-  return bindActionCreators({setUser: setUser}, dispatch)
+  return bindActionCreators({
+    setUser: setUser,
+    signOut: signOut
+  }, dispatch)
 }
 
 export default connect(null,matchDispachToProps)(Login);

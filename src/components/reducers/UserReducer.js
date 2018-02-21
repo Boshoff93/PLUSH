@@ -1,5 +1,6 @@
 export function userReducer(state = {
   display_name: '',
+  access_token: '',
   email:'',
   user_id:'',
   post_ids: [],
@@ -37,7 +38,17 @@ export function userReducer(state = {
     case 'SET_USER': {
       return {
         ...state, display_name: action.display_name,
-                  email: action.email, user_id: action.user_id,
+                  email: action.email,
+                  user_id: action.user_id,
+                  access_token: action.access_token
+      }
+    }
+    case 'SIGN_OUT': {
+      return {
+        ...state, display_name: '',
+                  email: '',
+                  user_id: '',
+                  access_token: ''
       }
     }
     case 'REPLACE_POSTS': {

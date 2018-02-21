@@ -12,7 +12,6 @@ const HeaderBar = () => (
       </h1>
       <img style={{margin: "0 auto 12px"}} src={require("../Images/Plush_Narwall.png")}></img>
     </div>
-
   </div>
 );
 

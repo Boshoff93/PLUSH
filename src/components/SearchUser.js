@@ -22,16 +22,24 @@ export class SearchUser extends React.Component {
       return
     }
 
-    axios.get('http://localhost:8000/plush-api/searchUsers/' + e.target.value).then(res => {
-      this.props.onSearchUsers(res.data)
+    axios.get('http://localhost:8000/plush-api/searchUsers/' + e.target.value, {headers: {'Authorization': this.props.access_token}}).then(res => {
+      if('Error' in res.data) {
+        console.log(res.Data.Error);
+      } else {
+        this.props.onSearchUsers(res.data)
+      }
     }).catch(err => {
       // Handle the error here. E.g. use this.setState() to display an error msg.
     })
   };
 
   getUserView(user_id) {
-    axios.get('http://localhost:8000/plush-api/userViewId/' + user_id).then(res => {
-      this.props.onGetUser(res.data)
+    axios.get('http://localhost:8000/plush-api/userViewId/' + user_id, {headers: {'Authorization': this.props.access_token}}).then(res => {
+      if('Error' in res.data) {
+        console.log(res.Data.Error);
+      } else {
+        this.props.onGetUser(res.data)
+      }
     }).catch(err => {
       // Handle the error here. E.g. use this.setState() to display an error msg.
     })

@@ -18,6 +18,7 @@ import axios from 'axios';
 
 class Profile extends React.Component {
   state = {
+    loggedIn: false,
     onProfile: true,
     userViewId: '',
     redirect: false,
@@ -25,15 +26,23 @@ class Profile extends React.Component {
     searchUsersIds: [],
   }
 
+  componentWillMount() {
+    if(this.props.access_token != "") {
+      this.setState({
+        loggedIn: true
+      })
+    }
+  }
+
   componentDidMount() {
-    axios.get('http://localhost:8000/plush-api/getposts/' + this.props.user_id).then(res => {
+    axios.get('http://localhost:8000/plush-api/getposts/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res => {
         let data = res.data
         this.onGetPosts(data)
     }).catch(err => {
       // Handle the error here. E.g. use this.setState() to display an error msg.
     })
 
-    axios.get('http://localhost:8000/plush-api/profilePicture/' + this.props.user_id).then(res => {
+    axios.get('http://localhost:8000/plush-api/profilePicture/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res => {
         let data = res.data
         this.onGetProfilePicture(data)
     }).catch(err => {
@@ -91,6 +100,9 @@ class Profile extends React.Component {
   }
 
   render() {
+    if (!this.state.loggedIn) {
+      return <Redirect push to={`/`}/>;
+    }
     if (this.state.redirect === true) {
       return <Redirect push to={`/view/${this.state.userViewId}`}/>;
     }
@@ -104,6 +116,7 @@ class Profile extends React.Component {
               <ImageUpload
                 user_id={this.props.user_id}
                 onAddProfilePicture={this.onAddProfilePicture}
+                access_token={this.props.access_token}
               />
             </div>
             <div>
@@ -114,6 +127,7 @@ class Profile extends React.Component {
                 onGetUser={this.onGetUser}
                 searchUsers={this.state.searchUsers}
                 searchUsersIds={this.state.searchUsersIds}
+                access_token={this.props.access_token}
               />
             </div>
           </div>
@@ -127,6 +141,7 @@ class Profile extends React.Component {
                   socket={this.socket}
                   user_id={this.props.user_id}
                   onAddPost={this.onAddPost}
+                  access_token={this.props.access_token}
                 />
                 <div className='ui left aligned segment Border-orange Postview-format'>
                   <PostView
@@ -137,6 +152,7 @@ class Profile extends React.Component {
                     display_name={this.props.display_name}
                     user_id={this.props.user_id}
                     onDeletePost={this.onDeletePost}
+                    access_token={this.props.access_token}
                   />
                   </div>
                 </div>
@@ -151,6 +167,7 @@ class Profile extends React.Component {
 
 function mapStateToProps(state) {
   return {
+    access_token: state.user.access_token,
     display_name: state.user.display_name,
     posts: state.user.posts,
     post_times: state.user.post_times,

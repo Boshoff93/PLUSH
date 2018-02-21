@@ -14,8 +14,13 @@ class ImageUpload extends React.Component {
         user_id: this.props.user_id,
         data: reader.result
       }
-      axios.post('http://localhost:8000/plush-api/profilePicture', JSON.stringify(picture)).then(res => {
-          this.props.onAddProfilePicture(res.data)
+      axios.post('http://localhost:8000/plush-api/profilePicture', JSON.stringify(picture),  {headers: {'Authorization': this.props.access_token}}).then(res => {
+          if('Error' in res.data) {
+            console.log(res.Data.Error);
+          } else {
+            this.props.onAddProfilePicture(res.data)
+          }
+
       }).catch(err => {
         // Handle the error here. E.g. use this.setState() to display an error msg.
      })

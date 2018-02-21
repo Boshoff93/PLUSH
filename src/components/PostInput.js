@@ -24,8 +24,12 @@ export class PostInput extends React.Component {
         post: this.state.value
       }
 
-      axios.post('http://localhost:8000/plush-api/post', JSON.stringify(post)).then(res => {
-        this.props.onAddPost(res.data)
+      axios.post('http://localhost:8000/plush-api/post', JSON.stringify(post), {headers: {'Authorization': this.props.access_token}}).then(res => {
+        if('Error' in res.data) {
+          console.log(res.Data.Error);
+        } else {
+          this.props.onAddPost(res.data)
+        }
       }).catch(err => {
         // Handle the error here. E.g. use this.setState() to display an error msg.
       })
