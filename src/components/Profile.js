@@ -24,6 +24,7 @@ class Profile extends React.Component {
     redirect: false,
     searchUsers: [],
     searchUsersIds: [],
+    path: '',
   }
 
   componentWillMount() {
@@ -103,6 +104,7 @@ class Profile extends React.Component {
     if (!this.state.loggedIn) {
       return <Redirect push to={`/`}/>;
     }
+
     if (this.state.redirect === true) {
       return <Redirect push to={`/view/${this.state.userViewId}`}/>;
     }
@@ -160,7 +162,6 @@ class Profile extends React.Component {
           </div>
         </div>
       </div>
-
     );
   }
 }

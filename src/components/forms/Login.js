@@ -84,11 +84,11 @@ class Login extends React.Component{
     } else {
       return (
         <div style={{ backgroundImage: `url(${imageUrl})`, width:"100%", height:"100vh"}}>
-        <Grid style={{marginTop:"10%"}}>
+        <Grid >
           <Row center="xs" >
             <Col xs={6}>
               <Paper style={{height: "550px", width: "100%", borderRadius: "5px"}} zDepth={3}>
-              <Row center="xs">
+              <Row center="xs "style={{marginTop:"20%"}}>
                 <Paper style={{width: "80%", marginTop: "30px", borderRadius: "5px"}} zDepth={5}>
                   <h1 className="Plush-font">
                     PLUSH Social Media! Sign Up Now!

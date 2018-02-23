@@ -3,9 +3,9 @@ import logo from '../logo.svg';
 import '../App.css';
 import {Provider} from 'react-redux'
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
-import HeaderBar from './HeaderBar';
-import Profile from './Profile';
-import Login from './forms/Login';
+import AppBarHeader from './AppBarHeader'
+import Profile from './Profile'
+import Login from './forms/Login'
 import UserView from './UserView'
 import createHistory from 'history/createBrowserHistory'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
@@ -23,20 +23,17 @@ const muiTheme = getMuiTheme({
 })
 
 const App = ({store}) => (
-  <div className='ui grid'>
-  <MuiThemeProvider muiTheme={muiTheme}>
-    <HeaderBar />
-    <Provider store = {store} >
+  <Provider store = {store} >
+    <MuiThemeProvider muiTheme={muiTheme}>
       <Router>
         <Switch>
-          <Route path="/view/:id" render={(props) => (<UserView history={this.history}/>)}/>
-          <Route path="/profile" component={Profile}/>
+          <Route path="/view/:id" render={(props) => (<div><AppBarHeader/> <UserView history={this.history}/></div>)}/>
+          <Route path="/profile" component={() => (<div><AppBarHeader/> <Profile/></div>)}/>
           <Route exact path='/' component={Login}/>
         </Switch>
       </Router>
-    </Provider>
     </MuiThemeProvider>
-  </div>
+  </Provider>
 );
 
 export default App;
