@@ -8,14 +8,24 @@ import Profile from './Profile';
 import Login from './forms/Login';
 import UserView from './UserView'
 import createHistory from 'history/createBrowserHistory'
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import {deepOrange500, orange500} from 'material-ui/styles/colors'
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
 
 const history = createHistory()
 console.log(history);
+
+const muiTheme = getMuiTheme({
+  palette: {
+    primary1Color: orange500,
+    accent1Color: orange500
+  }
+})
+
 const App = ({store}) => (
   <div className='ui grid'>
+  <MuiThemeProvider muiTheme={muiTheme}>
     <HeaderBar />
-    <div className='spacer row' />
-    <div className='row'>
     <Provider store = {store} >
       <Router>
         <Switch>
@@ -25,8 +35,7 @@ const App = ({store}) => (
         </Switch>
       </Router>
     </Provider>
-    </div>
-
+    </MuiThemeProvider>
   </div>
 );
 

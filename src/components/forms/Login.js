@@ -4,23 +4,25 @@ import {setUser} from '../../actions/setUser';
 import {signOut} from '../../actions/signOut';
 import {connect} from 'react-redux'
 import "../../App.css"
-import {Form, Label, Icon} from 'semantic-ui-react'
 import {Redirect} from 'react-router-dom'
-import CreateUserForm from './CreateUserForm'
-import LoginUserForm from './LoginUserForm'
-import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import axios from 'axios'
 import uuid from 'uuid';
 import {fire, googleProvider, facebookProvider} from './Config'
+import {FacebookLoginButton, GoogleLoginButton, TwitterLoginButton} from 'react-social-login-buttons';
+import { Grid, Row, Col } from 'react-flexbox-grid';
+import Paper from 'material-ui/Paper';
+
+
+
+const style = {
+  margin: "0, auto",
+  display: 'inline-block',
+};
 
 class Login extends React.Component{
   state = {
     redirect: false,
     unsuccessful: false,
-  }
-
-  componentDidMount(){
-
   }
 
   onAddUser = (user) => {
@@ -74,20 +76,29 @@ class Login extends React.Component{
   }
 
   render(){
+    const imageUrl = require(`../../Images/test.jpg`)
     if (this.state.redirect === true) {
       return <Redirect push to="/profile" />;
     } else {
       return (
-        <div>
-          <button style={{width: "100%"}}
-            className="semantic ui button primary"
-            onClick={() => {this.authWithGoogle()}}> Login with Google
-          </button>
-          <button style={{width: "100%"}}
-            className="semantic ui button primary"
-            onClick={() => {this.signOut()}}> Logout with Google
-          </button>
-          </div>
+        <div style={{ backgroundImage: `url(${imageUrl})`, width:"100%", height:"100vh"}}>
+        <Grid style={{marginTop:"10%"}}>
+          <Row >
+            <Col xs={12}>
+              <Row center="xs">
+                <Col xs={6}>
+                  <Paper style={style} zDepth={3}>
+                    <FacebookLoginButton onClick={() => alert('Hello')} />
+                    <GoogleLoginButton onClick={() => alert('Hello')} />
+                    <TwitterLoginButton onClick={() => alert('Hello')} />
+                  </Paper>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </Grid>
+        </div>
+
       )
     }
   }

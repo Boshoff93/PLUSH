@@ -100,3 +100,14 @@
 	-webkit-border-radius: 15px;
   margin: 0 auto 20px
 }
+
+.bg {
+    /* The image used */
+    background-image: url("/Images/test.jpg");
+    /* Full height */
+    height: 100%;
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
