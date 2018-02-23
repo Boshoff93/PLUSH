@@ -5,7 +5,7 @@ const HeaderBar = () => (
     <div className='item'/>
     <div className='item '>
       <h1
-        className='ui orange header'
+        className='ui header'
         style={{ marginTop: '10px', fontFamily:'Risque' }}
       >
         PLUSH

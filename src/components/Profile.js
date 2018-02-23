@@ -152,6 +152,7 @@ class Profile extends React.Component {
                     display_name={this.props.display_name}
                     user_id={this.props.user_id}
                     onDeletePost={this.onDeletePost}
+                    access_token={this.props.access_token}
                   />
                   </div>
                 </div>

@@ -18,7 +18,6 @@ export class PostView extends React.Component {
       user_id: this.props.user_id,
       post_id: this.props.post_ids[index],
     }
-
     axios.delete('http://localhost:8000/plush-api/post', {data: JSON.stringify(deletePost), headers: {'Authorization': this.props.access_token}}).then(res => {
       if('Error' in res.data) {
         console.log(res.Data.Error);
