@@ -4,6 +4,10 @@ import {addPost} from '../actions/addPost';
 import {connect} from 'react-redux'
 import uuid from 'uuid';
 import axios from 'axios';
+import TextField from 'material-ui/TextField';
+import FloatingActionButton from 'material-ui/FloatingActionButton';
+import ContentAdd from 'material-ui/svg-icons/content/add';
+import {Row, Col } from 'react-flexbox-grid';
 
 export class PostInput extends React.Component {
   state = {
@@ -42,7 +46,30 @@ export class PostInput extends React.Component {
 
   render() {
     return (
-      <div className='ui fluid input'>
+      <Row>
+        <Col xs={10}>
+          <Row center="xs">
+            <TextField
+              style={{width: "90%"}}
+              hintText="Tell people what's on your mind"
+              fullWidth={true}
+              onChange={this.onChange}
+              value={this.state.value}
+            />
+          </Row>
+        </Col>
+        <Col xs={2}>
+          <Row center="xs" style={{marginTop: "3%"}}>
+            <FloatingActionButton mini={true}
+              onClick={() => this.handleSubmit()}
+            >
+              <ContentAdd />
+            </FloatingActionButton>
+          </Row>
+        </Col>
+      </Row>
+
+      /*<div className='ui fluid input'>
         <input className = 'Border-blue'
           onChange={this.onChange}
           value={this.state.value}
@@ -56,6 +83,7 @@ export class PostInput extends React.Component {
           Submit
         </button>
        </div>
+      */
     );
   }
 }

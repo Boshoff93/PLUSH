@@ -25,9 +25,9 @@ class AppBarHeader extends React.Component {
   }
 
   Logged = (props) => (
-    <IconMenu
+    <IconMenu iconStyle={{color: "white"}}
       iconButtonElement={
-        <IconButton><MoreVertIcon /></IconButton>
+        <IconButton><MoreVertIcon/></IconButton>
       }
       targetOrigin={{horizontal: 'right', vertical: 'top'}}
       anchorOrigin={{horizontal: 'right', vertical: 'top'}}
@@ -49,7 +49,7 @@ class AppBarHeader extends React.Component {
     return (
       <AppBar
         title="PLUSH"
-        style={{width: "100%", marginBottom: "10px"}}
+        style={{width: "100%"}}
         titleStyle={{fontFamily:"Risque"}}
         iconElementRight={<this.Logged />}
       />

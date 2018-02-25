@@ -15,6 +15,10 @@ import '../App.css';
 import {Redirect} from 'react-router-dom'
 import { withRouter } from 'react-router'
 import axios from 'axios';
+import { Grid, Row, Col } from 'react-flexbox-grid';
+import Paper from 'material-ui/Paper';
+import RaisedButton from 'material-ui/RaisedButton';
+import Avatar from 'material-ui/Avatar';
 
 class Profile extends React.Component {
   state = {
@@ -108,8 +112,53 @@ class Profile extends React.Component {
     if (this.state.redirect === true) {
       return <Redirect push to={`/view/${this.state.userViewId}`}/>;
     }
+    const imageUrl = require(`../Images/loginBackground.png`)
     return (
-      <div className="ui container">
+      <div style={{ backgroundImage: `url(${imageUrl})`, width:"100%", height:"100vh"}}>
+      <Grid >
+        <Row center="xs">
+          <Col xs={4} style={{alignItems: "center"}}>
+            <Row center="xs">
+              <h1 style={{fontFamily:"Risque", marginTop:"10px", color:"white"}}>
+                {this.props.display_name}
+                <Paper style={{width: "250px", height:"250px"}} circle={true} zDepth={5}>
+                  <Avatar src={this.props.profile_picture} style={{width: "95%", height:"95%", marginTop: "2.5%"}} />
+                </Paper>
+              </h1>
+            </Row>
+          </Col>
+        </Row>
+        <Row center="xs">
+          <Col xs={8}>
+            <Row>
+              <Paper style={{height: "100%", width: "100%", borderRadius: "25px", marginTop: "10px"}} zDepth={3}>
+              <PostInput
+                socket={this.socket}
+                user_id={this.props.user_id}
+                onAddPost={this.onAddPost}
+                access_token={this.props.access_token}
+              />
+              </Paper>
+            </Row>
+            <Row>
+              <Paper style={{height: "100%", width: "100%", borderRadius: "25px", marginTop: "10px"}} zDepth={3}>
+                <PostView
+                  socket={this.socket}
+                  posts={this.props.posts}
+                  post_ids={this.props.post_ids}
+                  post_times={this.props.post_times}
+                  display_name={this.props.display_name}
+                  user_id={this.props.user_id}
+                  onDeletePost={this.onDeletePost}
+                  access_token={this.props.access_token}
+                />
+              </Paper>
+            </Row>
+          </Col>
+        </Row>
+      </Grid>
+      </div>
+      /*<div className="ui container">
         <div className="ui grid">
           <div className="four wide column">
             <div className="ui segment center aligned Border-orange">
@@ -162,6 +211,7 @@ class Profile extends React.Component {
           </div>
         </div>
       </div>
+      */
     );
   }
 }
