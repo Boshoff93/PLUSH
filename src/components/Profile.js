@@ -140,7 +140,7 @@ class Profile extends React.Component {
               />
               </Paper>
             </Row>
-            <Row>
+            <Row start="xs">
               <Paper style={{height: "100%", width: "100%", borderRadius: "25px", marginTop: "10px"}} zDepth={3}>
                 <PostView
                   socket={this.socket}
@@ -151,6 +151,7 @@ class Profile extends React.Component {
                   user_id={this.props.user_id}
                   onDeletePost={this.onDeletePost}
                   access_token={this.props.access_token}
+                  profile_picture={this.props.profile_picture}
                 />
               </Paper>
             </Row>

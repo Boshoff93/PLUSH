@@ -13,8 +13,11 @@ import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
-import {List, ListItem} from 'material-ui/List';
+import {List} from 'material-ui/List';
+import FlatButton from 'material-ui/FlatButton';
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import Paper from 'material-ui/Paper';
+import Divider from 'material-ui/Divider';
 
 
 export class PostView extends React.Component {
@@ -35,10 +38,10 @@ export class PostView extends React.Component {
     })
   };
 
-
         iconButtonElement(){
           return (
           <IconButton
+            style={{marginTop: "0px"}}
             touch={true}
             tooltipPosition="bottom-left"
           >
@@ -48,15 +51,16 @@ export class PostView extends React.Component {
         };
         rightIconMenu(index) {
           return (
-          <IconMenu
-            iconButtonElement={this.iconButtonElement()}
-            anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-            targetOrigin={{horizontal: 'right', vertical: 'top'}}
-          >
+            <IconMenu
+              iconButtonElement={this.iconButtonElement()}
+              anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+              targetOrigin={{horizontal: 'right', vertical: 'top'}}
+            >
             <MenuItem
               onClick={()=> this.handleDelete(index)}
             >
-              Delete</MenuItem>
+              Delete
+            </MenuItem>
           </IconMenu>
         )
         };
@@ -65,31 +69,33 @@ export class PostView extends React.Component {
       let posts = this.props.posts
       if(posts !== null) {
         posts = this.props.posts.map((post, index) => (
-          <Row center="xs">
-          <Paper style={{width: "95%", borderRadius: "25px"}} zDepth={3}>
-            <Row>
-              <Col xs={10}>
+          <Row style={{margin:"1% 0"}}key={uuid.v4()}>
+              <Col xs={11}>
                 <Row>
-                  <ListItem
-                    style={{width: "100%"}}
-                    disabled={true}
-                    primaryText={this.props.display_name}
-                    secondaryText={
-                      <p>
-                        <span style={{color: "black"}}>{post}</span><br />
-                        {this.props.post_times[index]}
-                      </p>
-                    }
-                  />
+                  <Col xs={12}>
+                  <Card style={{borderRadius: "25px", marginLeft:"1%"}}>
+                    <CardHeader
+                      title={this.props.display_name}
+                      subtitle={this.props.post_times[index]}
+                      avatar={this.props.profile_picture}
+                    />
+                    <CardText style={{marginLeft:"1%", wordWrap: 'break-word'}}>
+                      {post}
+                    </CardText>
+                    <CardActions>
+                      <FlatButton label="Comment" />
+                      <FlatButton label="Like" />
+                      <FlatButton label="Dislike" />
+                    </CardActions>
+                  </Card>
+                  </Col>
                 </Row>
               </Col>
-              <Col xs={2}>
+              <Col xs={1}>
                 <Row center="xs">
-                  {this.rightIconMenu(index)}
+                    {this.rightIconMenu(index)}
                 </Row>
               </Col>
-            </Row>
-          </Paper>
           </Row>
         // <div className= 'row' key={uuid.v4()}>
         // <div className= 'fourteen wide column'>
@@ -124,18 +130,18 @@ export class PostView extends React.Component {
         // </div>
       ));
       }
-      return (
-
-              <List>
-                {posts}
-              </List>
-
-      //   <div className='ui comments'>
-      //   <div className= 'ui grid'>
-      //     {posts}
-      //     </div>
-      //   </div>
-      );
+      if(!{posts}.length) {
+        return (
+                <List>
+                  {posts}
+                </List>
+        );
+      } else {
+        return (
+          <div>
+          </div>
+        )
+      }
     }
   }
 
