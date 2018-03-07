@@ -47,7 +47,7 @@ export class PostInput extends React.Component {
   render() {
     return (
       <Row>
-        <Col xs={10}>
+        <Col xs={11}>
           <Row center="xs">
             <TextField
               style={{width: "90%"}}
@@ -58,8 +58,8 @@ export class PostInput extends React.Component {
             />
           </Row>
         </Col>
-        <Col xs={2}>
-          <Row center="xs" style={{marginTop: "3%"}}>
+        <Col xs={1}>
+          <Row style={{marginTop: "10%"}}>
             <FloatingActionButton mini={true}
               onClick={() => this.handleSubmit()}
             >
@@ -68,22 +68,6 @@ export class PostInput extends React.Component {
           </Row>
         </Col>
       </Row>
-
-      /*<div className='ui fluid input'>
-        <input className = 'Border-blue'
-          onChange={this.onChange}
-          value={this.state.value}
-          type='text'
-        />
-        <button
-          onClick={() => this.handleSubmit()}
-          className='ui inverted orange button'
-          type='submit'
-        >
-          Submit
-        </button>
-       </div>
-      */
     );
   }
 }

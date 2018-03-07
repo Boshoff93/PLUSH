@@ -17,8 +17,8 @@ console.log(history);
 
 const muiTheme = getMuiTheme({
   palette: {
-    primary1Color: "#FF5722",
-    accent1Color: "#FF5722"
+    primary1Color: "#FF5522",
+    accent1Color: "#FF5522"
   }
 })
 

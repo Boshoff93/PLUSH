@@ -132,9 +132,9 @@ export class PostView extends React.Component {
       }
       if(!{posts}.length) {
         return (
-                <List>
-                  {posts}
-                </List>
+          <List>
+            {posts}
+          </List>
         );
       } else {
         return (

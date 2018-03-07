@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button, Icon } from 'semantic-ui-react'
 import axios from 'axios';
+import MenuItem from 'material-ui/MenuItem';
 
 class ImageUpload extends React.Component {
 
@@ -33,20 +34,18 @@ class ImageUpload extends React.Component {
       return false
     }
     return (
-      <div>
+      <MenuItem
+        primaryText="Upload Profile Picture"
+        style={{textAlign: "center",  borderRadius: "25px", margin: "0px 10px"}}
+        containerElement='label'
+      >
       <input type="file"
         className="inputfile"
         id="fileInput"
         style={{display:"none", overflow:"hidden"}}
         onChange={(e)=>this.handleImageChange(e)}
-
        />
-      <label htmlFor="fileInput" className="ui inverted orange button">
-        <i className="ui upload icon"></i>
-        Upload Image!
-      </label>
-      </div>
-
+      </MenuItem>
     )
   }
 }

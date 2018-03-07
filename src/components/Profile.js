@@ -19,6 +19,8 @@ import { Grid, Row, Col } from 'react-flexbox-grid';
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import Avatar from 'material-ui/Avatar';
+import Popover from 'material-ui/Popover';
+import Menu from 'material-ui/Menu';
 
 class Profile extends React.Component {
   state = {
@@ -29,6 +31,7 @@ class Profile extends React.Component {
     searchUsers: [],
     searchUsersIds: [],
     path: '',
+    open: false,
   }
 
   componentWillMount() {
@@ -104,6 +107,21 @@ class Profile extends React.Component {
       });
   }
 
+  handleProfileClick = (event) => {
+    // This prevents ghost click.
+    event.preventDefault();
+    this.setState({
+      open: true,
+      anchorEl: event.currentTarget,
+    });
+  };
+
+  handleProfileRequestClose = () => {
+    this.setState({
+      open: false,
+    });
+  };
+
   render() {
     if (!this.state.loggedIn) {
       return <Redirect push to={`/`}/>;
@@ -114,24 +132,47 @@ class Profile extends React.Component {
     }
     const imageUrl = require(`../Images/loginBackground.png`)
     return (
-      <div style={{ backgroundImage: `url(${imageUrl})`, width:"100%", height:"100vh"}}>
+      <div style={{ backgroundImage: `url(${imageUrl})`, width:"100%", minHeight:"100vh", height:"auto", overflowY: "auto"}}>
       <Grid >
         <Row center="xs">
           <Col xs={4} style={{alignItems: "center"}}>
             <Row center="xs">
               <h1 style={{fontFamily:"Risque", marginTop:"10px", color:"white"}}>
                 {this.props.display_name}
-                <Paper style={{width: "250px", height:"250px"}} circle={true} zDepth={5}>
+              </h1>
+              <div>
+                <Paper
+                  style={{width: "250px", height:"250px"}}
+                  circle={true}
+                  zDepth={5}
+                  onClick={this.handleProfileClick}>
                   <Avatar src={this.props.profile_picture} style={{width: "95%", height:"95%", marginTop: "2.5%"}} />
                 </Paper>
-              </h1>
+                <Popover
+                  style={{marginLeft: "1%", borderRadius: "25px"}}
+                  open={this.state.open}
+                  anchorEl={this.state.anchorEl}
+                  anchorOrigin={{horizontal: 'right', vertical: 'center'}}
+                  targetOrigin={{horizontal: 'left', vertical: 'center'}}
+                  onRequestClose={this.handleProfileRequestClose}
+                  autoCloseWhenOffScreen={true}
+                >
+                  <Menu>
+                    <ImageUpload
+                      user_id={this.props.user_id}
+                      onAddProfilePicture={this.onAddProfilePicture}
+                      access_token={this.props.access_token}
+                    />
+                  </Menu>
+                </Popover>
+              </div>
             </Row>
           </Col>
         </Row>
         <Row center="xs">
           <Col xs={8}>
             <Row>
-              <Paper style={{height: "100%", width: "100%", borderRadius: "25px", marginTop: "10px"}} zDepth={3}>
+              <Paper style={{height: "100%", width: "100%", borderRadius: "25px", marginTop: "25px"}} zDepth={3}>
               <PostInput
                 socket={this.socket}
                 user_id={this.props.user_id}
@@ -141,7 +182,7 @@ class Profile extends React.Component {
               </Paper>
             </Row>
             <Row start="xs">
-              <Paper style={{height: "100%", width: "100%", borderRadius: "25px", marginTop: "10px"}} zDepth={3}>
+              <Paper style={{height: "100%", width: "100%", borderRadius: "25px", margin: "10px 0px"}} zDepth={3}>
                 <PostView
                   socket={this.socket}
                   posts={this.props.posts}
