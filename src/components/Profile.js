@@ -9,7 +9,6 @@ import {replacePosts} from '../actions/replacePosts';
 import {setUserView} from '../actions/setUserView';
 import {addProfilePicture} from "../actions/addProfilePicture";
 import {deletePost} from '../actions/deletePost';
-import { Image, Label } from 'semantic-ui-react'
 import {connect} from 'react-redux';
 import '../App.css';
 import {Redirect} from 'react-router-dom'
@@ -30,6 +29,7 @@ class Profile extends React.Component {
     redirect: false,
     searchUsers: [],
     searchUsersIds: [],
+    searchUsersAvatars: [],
     path: '',
     open: false,
   }
@@ -89,7 +89,8 @@ class Profile extends React.Component {
       this.props.setUserView(user.Display_Name, user.User_Id);
       this.setState({
         searchUsers: [],
-        searchUsersEmails: [],
+        searchUsersIds: [],
+        searchUsersAvatars: [],
         redirect: true,
         userViewId: user.User_Id
       });
@@ -103,7 +104,8 @@ class Profile extends React.Component {
   onSearchUsers = (users) => {
       this.setState({
         searchUsers: users.Display_Names,
-        searchUsersIds: users.User_Ids
+        searchUsersIds: users.User_Ids,
+        searchUsersAvatars: users.Avatars,
       });
   }
 
@@ -140,9 +142,8 @@ class Profile extends React.Component {
               <h1 style={{fontFamily:"Risque", marginTop:"10px", color:"white"}}>
                 {this.props.display_name}
               </h1>
-              <div>
                 <Paper
-                  style={{width: "250px", height:"250px"}}
+                  style={{width: "250px", height:"250px", cursor:"pointer"}}
                   circle={true}
                   zDepth={5}
                   onClick={this.handleProfileClick}>
@@ -165,20 +166,31 @@ class Profile extends React.Component {
                     />
                   </Menu>
                 </Popover>
-              </div>
             </Row>
           </Col>
         </Row>
-        <Row center="xs">
-          <Col xs={8}>
+        <Row>
+          <Col xs={3}>
+            <SearchUser
+              onProfile={this.state.onProfile}
+              user_id={this.props.user_id}
+              onSearchUsers={this.onSearchUsers}
+              onGetUser={this.onGetUser}
+              searchUsers={this.state.searchUsers}
+              searchUsersIds={this.state.searchUsersIds}
+              searchUsersAvatars={this.state.searchUsersAvatars}
+              access_token={this.props.access_token}
+            />
+          </Col>
+          <Col xs={9}>
             <Row>
               <Paper style={{height: "100%", width: "100%", borderRadius: "25px", marginTop: "25px"}} zDepth={3}>
-              <PostInput
-                socket={this.socket}
-                user_id={this.props.user_id}
-                onAddPost={this.onAddPost}
-                access_token={this.props.access_token}
-              />
+                <PostInput
+                  socket={this.socket}
+                  user_id={this.props.user_id}
+                  onAddPost={this.onAddPost}
+                  access_token={this.props.access_token}
+                />
               </Paper>
             </Row>
             <Row start="xs">
@@ -200,60 +212,6 @@ class Profile extends React.Component {
         </Row>
       </Grid>
       </div>
-      /*<div className="ui container">
-        <div className="ui grid">
-          <div className="four wide column">
-            <div className="ui segment center aligned Border-orange">
-              <Label pointing='below' basic color='orange' size='big'>{this.props.display_name}</Label>
-              <Image src={this.props.profile_picture} className = "Profile-border"/>
-              <ImageUpload
-                user_id={this.props.user_id}
-                onAddProfilePicture={this.onAddProfilePicture}
-                access_token={this.props.access_token}
-              />
-            </div>
-            <div>
-              <SearchUser
-                onProfile={this.state.onProfile}
-                user_id={this.props.user_id}
-                onSearchUsers={this.onSearchUsers}
-                onGetUser={this.onGetUser}
-                searchUsers={this.state.searchUsers}
-                searchUsersIds={this.state.searchUsersIds}
-                access_token={this.props.access_token}
-              />
-            </div>
-          </div>
-          <div className="twelve wide column">
-            <div className="ui segment center aligned Border-orange">
-              <div className='Plush-blue Plush-font Plush-margin'>
-                  PLUSH WALL POSTS
-                </div>
-                <div className='ui right aligned segment Border-blue'>
-                <PostInput
-                  socket={this.socket}
-                  user_id={this.props.user_id}
-                  onAddPost={this.onAddPost}
-                  access_token={this.props.access_token}
-                />
-                <div className='ui left aligned segment Border-orange Postview-format'>
-                  <PostView
-                    socket={this.socket}
-                    posts={this.props.posts}
-                    post_ids={this.props.post_ids}
-                    post_times={this.props.post_times}
-                    display_name={this.props.display_name}
-                    user_id={this.props.user_id}
-                    onDeletePost={this.onDeletePost}
-                    access_token={this.props.access_token}
-                  />
-                  </div>
-                </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      */
     );
   }
 }

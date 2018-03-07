@@ -37,7 +37,6 @@ export class PostInput extends React.Component {
       }).catch(err => {
         // Handle the error here. E.g. use this.setState() to display an error msg.
       })
-
       this.setState({
         value: '',
       });
@@ -52,14 +51,14 @@ export class PostInput extends React.Component {
             <TextField
               style={{width: "90%"}}
               hintText="Tell people what's on your mind"
-              fullWidth={true}
+              hintStyle={{color:"#FF5522"}}
               onChange={this.onChange}
               value={this.state.value}
             />
           </Row>
         </Col>
         <Col xs={1}>
-          <Row style={{marginTop: "10%"}}>
+          <Row style={{marginTop: "7%"}}>
             <FloatingActionButton mini={true}
               onClick={() => this.handleSubmit()}
             >

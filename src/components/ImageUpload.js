@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button, Icon } from 'semantic-ui-react'
 import axios from 'axios';
 import MenuItem from 'material-ui/MenuItem';
 

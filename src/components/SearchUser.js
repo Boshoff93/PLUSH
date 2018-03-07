@@ -4,8 +4,13 @@ import {addPost} from '../actions/addPost';
 import {connect} from 'react-redux'
 import uuid from 'uuid';
 import {Redirect} from 'react-router-dom'
-import { Input, List } from 'semantic-ui-react'
 import axios from 'axios';
+import {Row, Col } from 'react-flexbox-grid';
+import TextField from 'material-ui/TextField';
+import {List, ListItem} from 'material-ui/List';
+import Avatar from 'material-ui/Avatar';
+import Subheader from 'material-ui/Subheader';
+import Paper from 'material-ui/Paper';
 
 export class SearchUser extends React.Component {
   state = {
@@ -81,38 +86,46 @@ export class SearchUser extends React.Component {
       let searchedUsers = this.props.searchUsers
       if(searchedUsers !== null) {
         searchedUsers = this.props.searchUsers.map((user, index) => (
-          <div className="ui segment center aligned"
+          <ListItem
             onClick={()=> this.handleSubmit(index)}
             key={uuid.v4()}
-            >
-            <List.Item
-              style={{cursor:"pointer"}}
-              >
-              {user}
-              </List.Item>
-          </div>
+            style={{cursor:"pointer", borderRadius: "25px", fontSize:"12px"}}
+            primaryText={user}
+            leftAvatar={<Avatar src={this.props.searchUsersAvatars[index]} />}
+          />
         ));
       }
       return (
         <div>
-        <Input
-         className="Border-blue"
-         style={{borderRadius: "5px"}}
-         onChange={this.onChange}
-         value={this.state.value}
-         icon='users'
-         iconPosition='left'
-         placeholder='Search users...'
-         />
-        <List
-          className="ui segment center aligned"
-          style={{paddingBottom: "15px"}}
-          >
-          {searchedUsers}
-        </List>
-        </div>
-        );
-      }
+        <Paper style={{height: "100%", width: "90%", borderRadius: "25px", marginTop: "25px"}} zDepth={3}>
+          <Row>
+            <Col xs={12}>
+              <Row center="xs">
+                <TextField
+                  style={{width: "70%"}}
+                  hintText="Search Users"
+                  hintStyle={{color:"#FF5522"}}
+                  onChange={this.onChange}
+                  value={this.state.value}
+                />
+              </Row>
+            </Col>
+         </Row>
+         </Paper>
+         <Paper style={{height: "100%", width: "90%", borderRadius: "25px", margin: "10px 0px"}} zDepth={3}>
+         <Row>
+            <Col xs={12}>
+              <Row center="xs">
+                <List>
+                  {searchedUsers}
+                </List>
+              </Row>
+            </Col>
+        </Row>
+      </Paper>
+      </div>
+    );
+    }
   }
 }
 
