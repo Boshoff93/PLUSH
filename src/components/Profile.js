@@ -142,30 +142,32 @@ class Profile extends React.Component {
               <h1 style={{fontFamily:"Risque", marginTop:"10px", color:"white"}}>
                 {this.props.display_name}
               </h1>
-                <Paper
-                  style={{width: "250px", height:"250px", cursor:"pointer"}}
-                  circle={true}
-                  zDepth={5}
-                  onClick={this.handleProfileClick}>
-                  <Avatar src={this.props.profile_picture} style={{width: "95%", height:"95%", marginTop: "2.5%"}} />
-                </Paper>
-                <Popover
-                  style={{marginLeft: "1%", borderRadius: "25px"}}
-                  open={this.state.open}
-                  anchorEl={this.state.anchorEl}
-                  anchorOrigin={{horizontal: 'right', vertical: 'center'}}
-                  targetOrigin={{horizontal: 'left', vertical: 'center'}}
-                  onRequestClose={this.handleProfileRequestClose}
-                  autoCloseWhenOffScreen={true}
+            </Row>
+            <Row center="xs">
+              <Paper
+                style={{width: "250px", height:"250px", cursor:"pointer",marginTop:"10px"}}
+                circle={true}
+                zDepth={5}
+                onClick={this.handleProfileClick}>
+                <Avatar src={this.props.profile_picture} style={{width: "95%", height:"95%", marginTop: "2.5%"}} />
+              </Paper>
+              <Popover
+                style={{marginLeft: "1%", borderRadius: "25px"}}
+                open={this.state.open}
+                anchorEl={this.state.anchorEl}
+                anchorOrigin={{horizontal: 'right', vertical: 'center'}}
+                targetOrigin={{horizontal: 'left', vertical: 'center'}}
+                onRequestClose={this.handleProfileRequestClose}
+                autoCloseWhenOffScreen={true}
                 >
-                  <Menu>
-                    <ImageUpload
-                      user_id={this.props.user_id}
-                      onAddProfilePicture={this.onAddProfilePicture}
-                      access_token={this.props.access_token}
-                    />
-                  </Menu>
-                </Popover>
+                <Menu>
+                  <ImageUpload
+                  user_id={this.props.user_id}
+                  onAddProfilePicture={this.onAddProfilePicture}
+                  access_token={this.props.access_token}
+                  />
+                </Menu>
+              </Popover>
             </Row>
           </Col>
         </Row>

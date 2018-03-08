@@ -11,8 +11,10 @@ import {addUserViewPP} from '../actions/addUserViewPP';
 import {connect} from 'react-redux';
 import '../App.css';
 import {Redirect,withRouter} from 'react-router-dom'
-import { Image, Label } from 'semantic-ui-react'
 import axios from 'axios';
+import Avatar from 'material-ui/Avatar';
+import { Grid, Row, Col } from 'react-flexbox-grid';
+import Paper from 'material-ui/Paper';
 
 class UserView extends React.Component {
   state = {
@@ -22,6 +24,7 @@ class UserView extends React.Component {
     preventHistoryPush: 0,
     searchUsers: [],
     searchUsersIds: [],
+    searchUsersAvatars: [],
   }
 
   componentWillMount() {
@@ -112,6 +115,7 @@ class UserView extends React.Component {
       newState.userViewId = user.User_Id
       newState.searchUsers = []
       newState.searchUsersIds = []
+      newState.searchUsersAvatars = []
       newState.redirect = true
       if(newState.preventHistoryPush === 0) {
         this.props.history.push(`/view/${user.User_Id}`)
@@ -134,7 +138,8 @@ class UserView extends React.Component {
   onSearchUsers = (users) => {
       this.setState({
         searchUsers: users.Display_Names,
-        searchUsersIds: users.User_Ids
+        searchUsersIds: users.User_Ids,
+        searchUsersAvatars: users.Avatars,
       });
   }
 
@@ -142,15 +147,30 @@ class UserView extends React.Component {
     if (!this.state.loggedIn) {
       return <Redirect push to={`/`}/>;
     }
+    const imageUrl = require(`../Images/loginBackground.png`)
     return (
-      <div className="ui container">
-      <div className="ui grid">
-        <div className="four wide column">
-          <div className="ui segment center aligned Border-orange">
-          <Label pointing='below' basic color='orange' size='big'>{this.props.userView.userViewDisplayName}</Label>
-          <Image className = "Profile-border" src={this.props.userView.userViewProfilePicture}/>
-          </div>
-          <div>
+      <div style={{ backgroundImage: `url(${imageUrl})`, width:"100%", minHeight:"100vh", height:"auto", overflowY: "auto"}}>
+      <Grid >
+        <Row center="xs">
+          <Col xs={4} style={{alignItems: "center"}}>
+            <Row center="xs">
+              <h1 style={{fontFamily:"Risque", marginTop:"10px", color:"white"}}>
+                {this.props.userView.userViewDisplayName}
+              </h1>
+            </Row>
+            <Row center="xs">
+                <Paper
+                  style={{width: "250px", height:"250px", marginTop:"10px"}}
+                  circle={true}
+                  zDepth={5}
+                  >
+                  <Avatar src={this.props.userView.userViewProfilePicture} style={{width: "95%", height:"95%", marginTop: "2.5%"}} />
+                </Paper>
+            </Row>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={3}>
             <SearchUser
               onProfile={this.state.onProfile}
               user_id={this.props.user_id}
@@ -158,25 +178,24 @@ class UserView extends React.Component {
               onGetUser={this.onGetUser}
               searchUsers={this.state.searchUsers}
               searchUsersIds={this.state.searchUsersIds}
+              searchUsersAvatars={this.state.searchUsersAvatars}
               access_token={this.props.access_token}
             />
-          </div>
-        </div>
-        <div className="twelve wide column">
-          <div className="ui segment center aligned Border-orange">
-            <div className='Plush-blue Plush-font Plush-margin'>
-                PLUSH WALL POSTS
-              </div>
-              <div className='ui left aligned segment Border-orange Postview-format'>
+          </Col>
+          <Col xs={9}>
+            <Row start="xs">
+              <Paper style={{height: "100%", width: "100%", borderRadius: "25px", margin: "25px 0px"}} zDepth={3}>
                 <UserPostView
                   posts={this.props.userView.userViewPosts}
                   post_times={this.props.userView.userViewPostTimes}
                   display_name={this.props.userView.userViewDisplayName}
+                  profile_picture={this.props.userView.userViewProfilePicture}
                 />
-                </div>
-              </div>
-          </div>
-        </div>
+              </Paper>
+            </Row>
+          </Col>
+        </Row>
+      </Grid>
       </div>
     );
   }

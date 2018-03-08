@@ -80,7 +80,6 @@ export class SearchUser extends React.Component {
 
   render() {
     if (this.state.redirect === true) {
-      console.log("then got here");
       return <Redirect push to="/profile" />;
     } else {
       let searchedUsers = this.props.searchUsers
