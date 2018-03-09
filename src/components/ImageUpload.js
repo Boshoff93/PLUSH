@@ -11,9 +11,11 @@ class ImageUpload extends React.Component {
 
     reader.onloadend = () => {
       var picture = {
+        //path: "./images/" + this.props.user_id + "/profile_picture/",
         user_id: this.props.user_id,
         data: reader.result
       }
+      //axios.post('http://localhost:8001/plush-file-server/addProfilePicture', JSON.stringify(picture),  {headers: {'Authorization': this.props.access_token}}).then(res => {
       axios.post('http://localhost:8000/plush-api/profilePicture', JSON.stringify(picture),  {headers: {'Authorization': this.props.access_token}}).then(res => {
           if('Error' in res.data) {
             console.log(res.Data.Error);
