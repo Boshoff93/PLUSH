@@ -160,13 +160,13 @@ class Profile extends React.Component {
                 onRequestClose={this.handleProfileRequestClose}
                 autoCloseWhenOffScreen={true}
                 >
-                <Menu>
-                  <ImageUpload
-                  user_id={this.props.user_id}
-                  onAddProfilePicture={this.onAddProfilePicture}
-                  access_token={this.props.access_token}
-                  />
-                </Menu>
+              <Menu>
+                <ImageUpload
+                user_id={this.props.user_id}
+                onAddProfilePicture={this.onAddProfilePicture}
+                access_token={this.props.access_token}
+                />
+              </Menu>
               </Popover>
             </Row>
           </Col>
