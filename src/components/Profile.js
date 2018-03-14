@@ -44,16 +44,32 @@ class Profile extends React.Component {
 
   componentDidMount() {
     axios.get('http://localhost:8000/plush-api/getposts/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res => {
+      if('Error' in res.data) {
+        console.log(res.Data.Error);
+      } else {
         let data = res.data
         this.onGetPosts(data)
+      }
     }).catch(err => {
       // Handle the error here. E.g. use this.setState() to display an error msg.
     })
 
-    axios.get('http://localhost:8000/plush-api/profilePicture/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res => {
-        let data = res.data
-        this.onGetProfilePicture(data)
+    axios.get('http://localhost:8000/plush-api/profilePicture/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res1 => {
+      if('Error' in res1.data) {
+        console.log(res1.Data.Error);
+      } else {
+        axios.get('http://localhost:8001/plush-file-server/profilePicture/' + res1.data.Pp_Name, {headers: {'Authorization': this.props.access_token}}).then(res2 => {
+          if('Error' in res2.data) {
+            console.log(res2.Data.Error);
+          } else {
+            this.onGetProfilePicture(res2.data)
+          }
+        }).catch(err => {
+          console.log(err);
+        })
+      }
     }).catch(err => {
+      console.log(err);
       // Handle the error here. E.g. use this.setState() to display an error msg.
     })
   }
@@ -68,7 +84,7 @@ class Profile extends React.Component {
 
   onGetProfilePicture = (data) => {
     if(data !== ""){
-      this.props.addProfilePicture(data.Data);
+      this.props.addProfilePicture("data:image/jpeg;base64," + data.Data);
     } else {
       this.props.addProfilePicture(require("../Images/DefaultAvatar.png"));
     }

@@ -10,28 +10,30 @@ class ImageUpload extends React.Component {
     let file = e.target.files[0];
 
     reader.onloadend = () => {
-      var picture = {
-        path: "./images/" + this.props.user_id + "/profile_picture/",
+      var picture_user_id = {
         user_id: this.props.user_id,
-        data: reader.result
       }
-      // var getPath = {
-      //   path: "./images/" + this.props.user_id + "/profile_picture/" + this.props.user_id + "_pp_image",
-      //   user_id: this.props.user_id,
-      //   data: reader.result
-      // }
-      //axios.post('http://localhost:8001/plush-file-server/getProfilePicture', JSON.stringify(getPath), {headers: {'Authorization': this.props.access_token}}).then(res => {
-      //axios.post('http://localhost:8001/plush-file-server/addProfilePicture', JSON.stringify(picture),  {headers: {'Authorization': this.props.access_token}}).then(res => {
-      axios.post('http://localhost:8000/plush-api/profilePicture', JSON.stringify(picture),  {headers: {'Authorization': this.props.access_token}}).then(res => {
-          if('Error' in res.data) {
-            console.log(res.Data.Error);
+      axios.post('http://localhost:8000/plush-api/profilePicture', JSON.stringify(picture_user_id),  {headers: {'Authorization': this.props.access_token}}).then(res1 => {
+          if('Error' in res1.data) {
+            console.log(res1.data.Error);
           } else {
-            console.log(res.data);
-            //this.props.onAddProfilePicture(res.data)
+            var picture_info = {
+              pp_name: res1.data.Pp_Name,
+              data: reader.result
+            }
+            axios.post('http://localhost:8001/plush-file-server/profilePicture', JSON.stringify(picture_info),  {headers: {'Authorization': this.props.access_token}}).then(res2 => {
+              if('Error' in res2.data) {
+                console.log(res2.data.Error);
+              } else {
+                this.props.onAddProfilePicture(res2.data)
+              }
+            }).catch(err => {
+               console.log(err);
+                // Handle the error here. E.g. use this.setState() to display an error msg.
+            })
           }
-
       }).catch(err => {
-        // Handle the error here. E.g. use this.setState() to display an error msg.
+        console.log(err);
      })
     }
     reader.readAsDataURL(file)

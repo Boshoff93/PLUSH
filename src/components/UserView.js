@@ -100,12 +100,20 @@ class UserView extends React.Component {
         // Handle the error here. E.g. use this.setState() to display an error msg.
       })
 
-      axios.get('http://localhost:8000/plush-api/profilePicture/' + user.User_Id,  {headers: {'Authorization': this.props.access_token}}).then(res => {
-        if('Error' in res.data) {
-          console.log(res.Data.Error);
+      axios.get('http://localhost:8000/plush-api/profilePicture/' + user.User_Id,  {headers: {'Authorization': this.props.access_token}}).then(res1 => {
+        if('Error' in res1.data) {
+          console.log(res1.Data.Error);
         } else {
-          let data = res.data
-          this.onGetProfilePicture(data)
+          axios.get('http://localhost:8001/plush-file-server/profilePicture/' + res1.data.Pp_Name, {headers: {'Authorization': this.props.access_token}}).then(res2 => {
+            if('Error' in res1.data) {
+              console.log(res1.Data.Error);
+            } else {
+              this.onGetProfilePicture(res2.data)
+            }
+          }).catch(err => {
+            console.log(err);
+          })
+
         }
       }).catch(err => {
         // Handle the error here. E.g. use this.setState() to display an error msg.
@@ -129,7 +137,7 @@ class UserView extends React.Component {
 
   onGetProfilePicture = (blob) => {
     if(blob !== "") {
-      this.props.addUserViewPP(blob.Data);
+      this.props.addUserViewPP("data:image/jpeg;base64," +blob.Data);
     } else {
       this.props.addUserViewPP(require("../Images/DefaultAvatar.png"));
     }
