@@ -116,6 +116,8 @@ class UserView extends React.Component {
 
         }
       }).catch(err => {
+        console.log(err);
+        this.onGetProfilePicture("")
         // Handle the error here. E.g. use this.setState() to display an error msg.
       })
 

@@ -1,16 +1,17 @@
-import React, {Component} from 'react';
-import AppBar from 'material-ui/AppBar';
-import IconButton from 'material-ui/IconButton';
-import IconMenu from 'material-ui/IconMenu';
-import MenuItem from 'material-ui/MenuItem';
-import FlatButton from 'material-ui/FlatButton';
-import Toggle from 'material-ui/Toggle';
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
-import NavigationClose from 'material-ui/svg-icons/navigation/close';
+import React, {Component} from 'react'
+import AppBar from 'material-ui/AppBar'
+import IconButton from 'material-ui/IconButton'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import FlatButton from 'material-ui/FlatButton'
+import Toggle from 'material-ui/Toggle'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import {bindActionCreators} from 'redux'
-import {signOut} from '../actions/signOut';
+import {signOut} from '../actions/signOut'
 import {connect} from 'react-redux'
 import {Redirect} from "react-router-dom"
+import {fire} from './forms/Config'
 
 class AppBarHeader extends React.Component {
   state = {
@@ -21,7 +22,9 @@ class AppBarHeader extends React.Component {
     this.setState({
       loggedIn:false
     })
-    this.props.signOut()
+    fire.auth().signOut().then(() => {
+      this.props.signOut()
+    })
   }
 
   Logged = (props) => (

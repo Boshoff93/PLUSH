@@ -56,11 +56,11 @@ class Profile extends React.Component {
 
     axios.get('http://localhost:8000/plush-api/profilePicture/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res1 => {
       if('Error' in res1.data) {
-        console.log(res1.Data.Error);
+        console.log(res1.Data.Error)
       } else {
         axios.get('http://localhost:8001/plush-file-server/profilePicture/' + res1.data.Pp_Name, {headers: {'Authorization': this.props.access_token}}).then(res2 => {
           if('Error' in res2.data) {
-            console.log(res2.Data.Error);
+            console.log(res2.Data.Error)
           } else {
             this.onGetProfilePicture(res2.data)
           }
@@ -70,6 +70,7 @@ class Profile extends React.Component {
       }
     }).catch(err => {
       console.log(err);
+      this.onGetProfilePicture("")
       // Handle the error here. E.g. use this.setState() to display an error msg.
     })
   }

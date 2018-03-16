@@ -27,13 +27,28 @@ export class SearchUser extends React.Component {
       return
     }
 
-    axios.get('http://localhost:8000/plush-api/searchUsers/' + e.target.value, {headers: {'Authorization': this.props.access_token}}).then(res => {
-      if('Error' in res.data) {
-        console.log(res.Data.Error);
+    axios.get('http://localhost:8000/plush-api/searchUsers/' + e.target.value, {headers: {'Authorization': this.props.access_token}}).then(res1 => {
+      if('Error' in res1.data) {
+        console.log(res1.data.Error);
       } else {
-        this.props.onSearchUsers(res.data)
+        axios.get('http://localhost:8001/plush-file-server/searchedUserProfilePictures/' + res1.data.Pp_Names, {headers: {'Authorization': this.props.access_token}}).then(res2 => {
+          if('Error' in res2.data) {
+            console.log(res2.data.Error);
+          } else {
+            console.log(res2.data.Data);
+            var usersFound = {
+              Display_Names: res1.data.Display_Names,
+              User_Ids: res1.data.User_Ids,
+              Avatars: res2.data.Data,
+            }
+            this.props.onSearchUsers(usersFound)
+          }
+        }).catch(err => {
+          console.log(err);
+        })
       }
     }).catch(err => {
+      console.log(err);
       // Handle the error here. E.g. use this.setState() to display an error msg.
     })
   };
@@ -90,7 +105,7 @@ export class SearchUser extends React.Component {
             key={uuid.v4()}
             style={{cursor:"pointer", borderRadius: "25px", fontSize:"12px"}}
             primaryText={user}
-            leftAvatar={<Avatar src={this.props.searchUsersAvatars[index]} />}
+            leftAvatar={<Avatar src={this.props.searchUsersAvatars[index] === "empty" ? require("../Images/DefaultAvatar.png") : this.props.searchUsersAvatars[index]} />}
           />
         ));
       }

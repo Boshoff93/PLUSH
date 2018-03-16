@@ -11,7 +11,6 @@ import {fire, googleProvider, facebookProvider} from './Config'
 import {FacebookLoginButton, GoogleLoginButton, TwitterLoginButton} from 'react-social-login-buttons';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import Paper from 'material-ui/Paper';
-import RaisedButton from 'material-ui/RaisedButton';
 
 
 
@@ -60,13 +59,6 @@ class Login extends React.Component{
    })
   }
 
-  signOut = () => {
-    fire.auth().signOut().then(() => {
-      this.props.signOut()
-    })
-    alert('Signed Out!')
-  }
-
   authWithGoogle = () => {
     fire.auth().signInWithPopup(googleProvider).then((result,error) => {
       if(error) {
@@ -87,7 +79,7 @@ class Login extends React.Component{
         <Grid >
           <Row center="xs" >
             <Col xs={6}>
-              <Paper style={{height: "550px", width: "100%", borderRadius: "5px"}} zDepth={3}>
+              <Paper style={{height: "475px", width: "100%", borderRadius: "5px"}} zDepth={3}>
               <Row center="xs" style={{marginTop:"20%"}}>
                 <Paper style={{width: "80%", marginTop: "30px", borderRadius: "5px"}} zDepth={5}>
                   <h1 className="Plush-font">
@@ -103,7 +95,6 @@ class Login extends React.Component{
                   <FacebookLoginButton onClick={() => alert('Facebook Signup Not Availible Yet')} />
                   <GoogleLoginButton onClick={() => this.authWithGoogle()} />
                   <TwitterLoginButton onClick={() => alert('Facebook Signup Not Availible Yet')} />
-                  <RaisedButton label="Log Out" secondary={true} style={{marginBottom: "5px"}} onClick={() => this.signOut()} />
                 </Paper>
               </Row>
               </Paper>
