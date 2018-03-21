@@ -44,6 +44,7 @@ class Profile extends React.Component {
 
   componentDidMount() {
     axios.get('http://localhost:8000/plush-api/getposts/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res => {
+
       if('Error' in res.data) {
         console.log(res.Data.Error);
       } else {
@@ -51,7 +52,7 @@ class Profile extends React.Component {
         this.onGetPosts(data)
       }
     }).catch(err => {
-      // Handle the error here. E.g. use this.setState() to display an error msg.
+      console.log(err);
     })
 
     axios.get('http://localhost:8000/plush-api/profilePicture/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res1 => {

@@ -26,22 +26,23 @@ export class SearchUser extends React.Component {
       this.clearList()
       return
     }
-
     axios.get('http://localhost:8000/plush-api/searchUsers/' + e.target.value, {headers: {'Authorization': this.props.access_token}}).then(res1 => {
       if('Error' in res1.data) {
         console.log(res1.data.Error);
       } else {
         axios.get('http://localhost:8001/plush-file-server/searchedUserProfilePictures/' + res1.data.Pp_Names, {headers: {'Authorization': this.props.access_token}}).then(res2 => {
-          if('Error' in res2.data) {
-            console.log(res2.data.Error);
-          } else {
-            console.log(res2.data.Data);
-            var usersFound = {
-              Display_Names: res1.data.Display_Names,
-              User_Ids: res1.data.User_Ids,
-              Avatars: res2.data.Data,
+          if(res2.data != null) {
+            if('Error' in res2.data) {
+              console.log(res2.data.Error);
+            } else {
+              console.log(res2.data.Data);
+              var usersFound = {
+                Display_Names: res1.data.Display_Names,
+                User_Ids: res1.data.User_Ids,
+                Avatars: res2.data.Data,
+              }
+              this.props.onSearchUsers(usersFound)
             }
-            this.props.onSearchUsers(usersFound)
           }
         }).catch(err => {
           console.log(err);
