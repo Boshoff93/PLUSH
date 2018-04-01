@@ -15,6 +15,9 @@ import axios from 'axios';
 import Avatar from 'material-ui/Avatar';
 import { Grid, Row, Col } from 'react-flexbox-grid';
 import Paper from 'material-ui/Paper';
+import Popover from 'material-ui/Popover';
+import Menu from 'material-ui/Menu';
+import MenuItem from 'material-ui/MenuItem';
 
 class UserView extends React.Component {
   state = {
@@ -25,6 +28,8 @@ class UserView extends React.Component {
     searchUsers: [],
     searchUsersIds: [],
     searchUsersAvatars: [],
+    open: false,
+    following: false,
   }
 
   componentWillMount() {
@@ -39,6 +44,7 @@ class UserView extends React.Component {
   componentDidMount() {
     if(this.state.loggedIn != false) {
       this.getUser()
+      this.checkFollowing()
       this.setState({
         preventHistoryPush: 1
       })
@@ -50,6 +56,7 @@ class UserView extends React.Component {
           newState
         })
         this.getUser()
+        this.checkFollowing()
       });
     }
   }
@@ -62,7 +69,22 @@ class UserView extends React.Component {
         this.onGetUser(res.data)
       }
     }).catch(err => {
-      // Handle the error here. E.g. use this.setState() to display an error msg.
+      console.log(err);
+    })
+  }
+
+  checkFollowing = () => {
+    let id_fields = [this.props.user_id, this.props.match.params.id];
+    axios.get('http://localhost:8000/plush-api/checkFollowing/' + id_fields,  {headers: {'Authorization': this.props.access_token}}).then(res => {
+      if('Error' in res.data) {
+        console.log(res.data.Error);
+      } else {
+        this.setState({
+          following: res.data.Condition
+        })
+      }
+    }).catch(err => {
+      console.log(err);
     })
   }
 
@@ -131,7 +153,7 @@ class UserView extends React.Component {
         this.props.history.push(`/view/${user.User_Id}`)
       }
       newState.preventHistoryPush = 0
-      UserView.setState({
+      this.setState({
         newState
       });
     }
@@ -153,11 +175,47 @@ class UserView extends React.Component {
       });
   }
 
+  handleProfileClick = (event) => {
+    // This prevents ghost click.
+    event.preventDefault();
+    this.setState({
+      open: true,
+      anchorEl: event.currentTarget,
+    });
+  };
+
+  handleProfileRequestClose = () => {
+    this.setState({
+      open: false,
+    });
+  };
+
+  addFollow = () => {
+    if(this.state.following === false) {
+      var id_fields = {
+        user_id: this.props.user_id,
+        follower_id: this.props.userView.userViewId,
+      }
+      axios.post('http://localhost:8000/plush-api/follower', JSON.stringify(id_fields),  {headers: {'Authorization': this.props.access_token}}).then(res => {
+        if('Error' in res.data) {
+          console.log(res.Data.Error);
+        } else {
+          this.setState({
+            following: true
+          })
+        }
+      }).catch(err => {
+        console.log(err);
+      })
+    }
+  }
+
   render() {
     if (!this.state.loggedIn) {
       return <Redirect push to={`/`}/>;
     }
     const imageUrl = require(`../Images/loginBackground.png`)
+    //put logic here to figure out if already folowwing or not.
     return (
       <div style={{ backgroundImage: `url(${imageUrl})`, width:"100%", minHeight:"100vh", height:"auto", overflowY: "auto"}}>
       <Grid >
@@ -170,12 +228,40 @@ class UserView extends React.Component {
             </Row>
             <Row center="xs">
                 <Paper
-                  style={{width: "250px", height:"250px", marginTop:"10px"}}
+                  style={{width: "250px", height:"250px", cursor:"pointer", marginTop:"10px"}}
                   circle={true}
                   zDepth={5}
-                  >
+                  onClick={this.handleProfileClick}>
                   <Avatar src={this.props.userView.userViewProfilePicture} style={{width: "95%", height:"95%", marginTop: "2.5%"}} />
                 </Paper>
+                <Popover
+                  style={{marginLeft: "1%", borderRadius: "25px"}}
+                  open={this.state.open}
+                  anchorEl={this.state.anchorEl}
+                  anchorOrigin={{horizontal: 'right', vertical: 'center'}}
+                  targetOrigin={{horizontal: 'left', vertical: 'center'}}
+                  onRequestClose={this.handleProfileRequestClose}
+                  autoCloseWhenOffScreen={true}
+                  >
+                  <Menu>
+                    {this.state.following ?
+                      <MenuItem
+                        primaryText="Following"
+                        style={{textAlign: "center", backgroundColor:"#FF5522", color:"#FFFFFF",fontFamily:"Risque", borderRadius: "25px", margin: "0px 10px"}}
+                        containerElement='label'
+                        onClick={this.addFollow}
+                      >
+                      </MenuItem>
+                    :
+                      <MenuItem
+                        primaryText="Follow"
+                        style={{textAlign: "center",  borderRadius: "25px",fontFamily:"Risque", margin: "0px 10px"}}
+                        containerElement='label'
+                        onClick={this.unFollow}
+                      >
+                      </MenuItem>}
+                  </Menu>
+                </Popover>
             </Row>
           </Col>
         </Row>
