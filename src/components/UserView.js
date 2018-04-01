@@ -194,14 +194,36 @@ class UserView extends React.Component {
     if(this.state.following === false) {
       var id_fields = {
         user_id: this.props.user_id,
-        follower_id: this.props.userView.userViewId,
+        follow_id: this.props.userView.userViewId,
       }
-      axios.post('http://localhost:8000/plush-api/follower', JSON.stringify(id_fields),  {headers: {'Authorization': this.props.access_token}}).then(res => {
+      axios.post('http://localhost:8000/plush-api/follow', JSON.stringify(id_fields),  {headers: {'Authorization': this.props.access_token}}).then(res => {
         if('Error' in res.data) {
           console.log(res.Data.Error);
         } else {
           this.setState({
-            following: true
+            following: true,
+            open: false
+          })
+        }
+      }).catch(err => {
+        console.log(err);
+      })
+    }
+  }
+
+  unFollow = () => {
+    if(this.state.following === true) {
+      var id_fields = {
+        user_id: this.props.user_id,
+        follow_id: this.props.userView.userViewId,
+      }
+      axios.delete('http://localhost:8000/plush-api/follow', {data: JSON.stringify(id_fields), headers: {'Authorization': this.props.access_token}}).then(res => {
+        if('Error' in res.data) {
+          console.log(res.Data.Error);
+        } else {
+          this.setState({
+            following: false,
+            open: false
           })
         }
       }).catch(err => {
@@ -249,7 +271,7 @@ class UserView extends React.Component {
                         primaryText="Following"
                         style={{textAlign: "center", backgroundColor:"#FF5522", color:"#FFFFFF",fontFamily:"Risque", borderRadius: "25px", margin: "0px 10px"}}
                         containerElement='label'
-                        onClick={this.addFollow}
+                        onClick={this.unFollow}
                       >
                       </MenuItem>
                     :
@@ -257,7 +279,7 @@ class UserView extends React.Component {
                         primaryText="Follow"
                         style={{textAlign: "center",  borderRadius: "25px",fontFamily:"Risque", margin: "0px 10px"}}
                         containerElement='label'
-                        onClick={this.unFollow}
+                        onClick={this.addFollow}
                       >
                       </MenuItem>}
                   </Menu>
