@@ -7,10 +7,12 @@ import { createStore, combineReducers } from 'redux';
 import {loadState, saveState} from './components/localStorage';
 import {userReducer} from './components/reducers/UserReducer';
 import {userViewReducer} from './components/reducers/UserViewReducer';
+import {homeReducer} from './components/reducers/HomeReducer';
 
 const reducer = combineReducers({
   user: userReducer,
   userView: userViewReducer,
+  home: homeReducer,
 });
 
 //saveState();

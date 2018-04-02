@@ -206,7 +206,6 @@ class Profile extends React.Component {
             <Row>
               <Paper style={{height: "100%", width: "100%", borderRadius: "25px", marginTop: "25px"}} zDepth={3}>
                 <PostInput
-                  socket={this.socket}
                   user_id={this.props.user_id}
                   onAddPost={this.onAddPost}
                   access_token={this.props.access_token}
@@ -216,7 +215,6 @@ class Profile extends React.Component {
             <Row start="xs">
               <Paper style={{height: "100%", width: "100%", borderRadius: "25px", margin: "10px 0px"}} zDepth={3}>
                 <PostView
-                  socket={this.socket}
                   posts={this.props.posts}
                   post_ids={this.props.post_ids}
                   post_times={this.props.post_times}

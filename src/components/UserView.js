@@ -277,7 +277,7 @@ class UserView extends React.Component {
                     :
                       <MenuItem
                         primaryText="Follow"
-                        style={{textAlign: "center",  borderRadius: "25px",fontFamily:"Risque", margin: "0px 10px"}}
+                        style={{textAlign: "center", borderRadius: "25px",fontFamily:"Risque", margin: "0px 10px"}}
                         containerElement='label'
                         onClick={this.addFollow}
                       >
