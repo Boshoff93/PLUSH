@@ -23,16 +23,26 @@ export class Home extends React.Component {
         console.log(res.Data.Error);
       } else {
         console.log("got it");
+        let data = res.data
+        this.onGetFollowingPosts(data)
       }
     }).catch(err => {
       console.log(err);
     })
   }
 
+  onGetFollowingPosts = (data) => {
+    if(data.Posts === null) {
+      this.props.replaceHomePosts([],[],[],[])
+    } else {
+      this.props.replaceHomePosts(data.Posts, data.Post_Times, [], data.Display_Names)
+    }
+  }
+
   render() {
       let posts = this.props.home_posts
       if(posts !== null) {
-        posts = this.props.posts.map((post, index) => (
+        posts = this.props.home_posts.map((post, index) => (
           <Row style={{margin:"1% 0"}}key={uuid.v4()}>
               <Col xs={12}>
                 <Row>
@@ -41,7 +51,7 @@ export class Home extends React.Component {
                     <CardHeader
                       title={this.props.home_display_names[index]}
                       subtitle={this.props.home_post_times[index]}
-                      avatar={this.props.home_profile_pictures[index]}
+                      //avatar={this.props.home_profile_pictures[index]}
                     />
                     <CardText style={{marginLeft:"1%", wordWrap: 'break-word'}}>
                       {post}
@@ -77,10 +87,10 @@ export class Home extends React.Component {
     return {
       access_token: state.user.access_token,
       user_id: state.user.user_id,
-      home_posts: home.home_posts,
-      home_post_times: home.home_post_times,
-      home_profile_pictures: home.home_profile_pictures,
-      home_display_names: home.home_display_names,
+      home_posts: state.home.home_posts,
+      home_post_times: state.home.home_post_times,
+      home_profile_pictures: state.home.home_profile_pictures,
+      home_display_names: state.home.home_display_names,
     }
   }
 

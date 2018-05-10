@@ -43,7 +43,7 @@ class Profile extends React.Component {
   }
 
   componentDidMount() {
-    axios.get('http://localhost:8000/plush-api/getposts/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res => {
+    axios.get('http://localhost:8000/plush-api/getPosts/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res => {
 
       if('Error' in res.data) {
         console.log(res.Data.Error);

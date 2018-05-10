@@ -5,6 +5,7 @@ import {Provider} from 'react-redux'
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
 import AppBarHeader from './AppBarHeader'
 import Profile from './Profile'
+import Home from './Home'
 import Login from './forms/Login'
 import UserView from './UserView'
 import createHistory from 'history/createBrowserHistory'
@@ -29,6 +30,7 @@ const App = ({store}) => (
         <Switch>
           <Route path="/view/:id" render={(props) => (<div><AppBarHeader/> <UserView history={this.history}/></div>)}/>
           <Route path="/profile" component={() => (<div><AppBarHeader/> <Profile/></div>)}/>
+          <Route path="/home" component={() => (<div><AppBarHeader/> <Home/></div>)}/>
           <Route exact path='/' component={Login}/>
         </Switch>
       </Router>

@@ -111,7 +111,7 @@ class UserView extends React.Component {
    if(user.User_Id !== "") {
       this.props.setUserView(user.Display_Name, user.User_Id);
 
-      axios.get('http://localhost:8000/plush-api/getposts/' + user.User_Id,  {headers: {'Authorization': this.props.access_token}}).then(res => {
+      axios.get('http://localhost:8000/plush-api/getPosts/' + user.User_Id,  {headers: {'Authorization': this.props.access_token}}).then(res => {
         if('Error' in res.data) {
           console.log(res.Data.Error);
         } else {
