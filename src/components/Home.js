@@ -18,24 +18,41 @@ import axios from 'axios';
 export class Home extends React.Component {
 
   componentDidMount() {
-    axios.get('http://localhost:8000/plush-api/getAllFollowPosts/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res => {
-      if('Error' in res.data) {
-        console.log(res.Data.Error);
+    axios.get('http://localhost:8000/plush-api/getAllFollowPosts/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res1 => {
+      if('Error' in res1.data) {
+        console.log(res1.Data.Error);
       } else {
-        console.log("got it");
-        let data = res.data
-        this.onGetFollowingPosts(data)
-      }
+        let data = res1.data
+        let profilePictures = []
+        axios.get('http://localhost:8001/plush-file-server/searchedUserProfilePictures/' + data.Pp_Names, {headers: {'Authorization': this.props.access_token}}).then(res2 => {
+          if(res2.data != null) {
+            if('Error' in res2.data) {
+              console.log(res2.data.Error);
+            } else {
+              for (var i = 0; i < data.Following_Ids.length; i++) {
+                for (var j = 0; j < Object.keys(data.Pp_Names).length; j++) {
+                  if(data.Following_Ids[i] === data.Unique_Following_Ids[j]) {
+                    profilePictures.push(res2.data.Data[j]);
+                  }
+                }
+              }
+            }
+          }
+          this.onGetFollowingPosts(data, profilePictures)
     }).catch(err => {
       console.log(err);
     })
   }
+}).catch(err => {
+  console.log(err);
+})
+}
 
-  onGetFollowingPosts = (data) => {
+  onGetFollowingPosts = (data, profilePictures) => {
     if(data.Posts === null) {
       this.props.replaceHomePosts([],[],[],[])
     } else {
-      this.props.replaceHomePosts(data.Posts, data.Post_Times, [], data.Display_Names)
+      this.props.replaceHomePosts(data.Posts, data.Post_Times, profilePictures, data.Display_Names)
     }
   }
 
@@ -51,7 +68,7 @@ export class Home extends React.Component {
                     <CardHeader
                       title={this.props.home_display_names[index]}
                       subtitle={this.props.home_post_times[index]}
-                      //avatar={this.props.home_profile_pictures[index]}
+                      avatar={this.props.home_profile_pictures[index] === "empty" ? require("../Images/DefaultAvatar.png") : this.props.home_profile_pictures[index]}
                     />
                     <CardText style={{marginLeft:"1%", wordWrap: 'break-word'}}>
                       {post}
@@ -68,15 +85,18 @@ export class Home extends React.Component {
           </Row>
       ));
       }
+      const imageUrl = require(`../Images/loginBackground.png`)
       if(!{posts}.length) {
         return (
-          <List>
-            {posts}
-          </List>
+          <div style={{ backgroundImage: `url(${imageUrl})`, width:"100%", minHeight:"100vh", height:"auto", overflowY: "auto"}}>
+            <List>
+              {posts}
+            </List>
+          </div>
         );
       } else {
         return (
-          <div>
+          <div style={{ backgroundImage: `url(${imageUrl})`, width:"100%", minHeight:"100vh", height:"auto", overflowY: "auto"}}>
           </div>
         )
       }
