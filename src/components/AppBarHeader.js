@@ -12,10 +12,38 @@ import {signOut} from '../actions/signOut'
 import {connect} from 'react-redux'
 import {Redirect} from "react-router-dom"
 import {fire} from './forms/Config'
+import Drawer from 'material-ui/Drawer';
 
 class AppBarHeader extends React.Component {
   state = {
-    loggedIn: true
+    loggedIn: true,
+    open: false,
+    home_page: false,
+    profile_page: false,
+  }
+
+  handleToggle = () => this.setState({open: !this.state.open});
+
+  handleHome = () => {
+    var curState = this.state
+    curState.open = false
+    if (this.props.current_loc !== "/home") {
+      curState.home_page = true
+    }
+    this.setState({
+      curState
+    })
+  }
+
+  handleProfile = () => {
+    var curState = this.state
+    curState.open = false
+    if (this.props.current_loc !== "/profile") {
+      curState.profile_page = true
+    }
+    this.setState({
+      curState
+    })
   }
 
   logOut = () => {
@@ -39,7 +67,10 @@ class AppBarHeader extends React.Component {
         primaryText="Sign out"
         style={{fontFamily:"Risque",
         paddingTop: "10px",
-        fontSize: "20px"}}
+        fontSize: "20px",
+        backgroundColor:"#173777",
+        color:"white"
+        }}
         onClick={() => this.logOut()}
       />
     </IconMenu>
@@ -49,13 +80,31 @@ class AppBarHeader extends React.Component {
     if(!this.state.loggedIn) {
       return <Redirect push to={"/"}/>
     }
+    if(this.state.home_page) {
+        return <Redirect push to={"/home"}/>
+    }
+    if(this.state.profile_page) {
+        return <Redirect push to={"/profile"}/>
+    }
     return (
-      <AppBar
-        title="PLUSH"
-        style={{width: "100%"}}
-        titleStyle={{fontFamily:"Risque"}}
-        iconElementRight={<this.Logged />}
-      />
+      <div>
+        <AppBar
+          title="PLUSH"
+          style={{width: "100%"}}
+          titleStyle={{fontFamily:"Risque"}}
+          iconElementRight={<this.Logged />}
+          onLeftIconButtonClick={this.handleToggle}
+        />
+        <Drawer
+          docked={false}
+          open={this.state.open}
+          onRequestChange={(open) => this.setState({open})}
+          containerStyle={{ backgroundColor: '#173777' }}
+        >
+          <MenuItem style={{fontFamily:"Risque", color:"white"}} onClick={this.handleHome}>Home</MenuItem>
+          <MenuItem style={{fontFamily:"Risque", color:"white"}} onClick={this.handleProfile}>My Profile</MenuItem>
+        </Drawer>
+      </div>
     );
   }
 }

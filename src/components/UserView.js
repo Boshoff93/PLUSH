@@ -269,7 +269,7 @@ class UserView extends React.Component {
                     {this.state.following ?
                       <MenuItem
                         primaryText="Following"
-                        style={{textAlign: "center", backgroundColor:"#FF5522", color:"#FFFFFF",fontFamily:"Risque", borderRadius: "25px", margin: "0px 10px"}}
+                        style={{textAlign: "center", backgroundColor:"#173777", color:"#FFFFFF",fontFamily:"Risque", borderRadius: "25px", margin: "0px 10px"}}
                         containerElement='label'
                         onClick={this.unFollow}
                       >

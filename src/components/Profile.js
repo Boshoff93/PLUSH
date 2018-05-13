@@ -180,9 +180,9 @@ class Profile extends React.Component {
                 >
               <Menu>
                 <ImageUpload
-                user_id={this.props.user_id}
-                onAddProfilePicture={this.onAddProfilePicture}
-                access_token={this.props.access_token}
+                  user_id={this.props.user_id}
+                  onAddProfilePicture={this.onAddProfilePicture}
+                  access_token={this.props.access_token}
                 />
               </Menu>
               </Popover>

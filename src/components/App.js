@@ -28,9 +28,9 @@ const App = ({store}) => (
     <MuiThemeProvider muiTheme={muiTheme}>
       <Router>
         <Switch>
-          <Route path="/view/:id" render={(props) => (<div><AppBarHeader/> <UserView history={this.history}/></div>)}/>
-          <Route path="/profile" component={() => (<div><AppBarHeader/> <Profile/></div>)}/>
-          <Route path="/home" component={() => (<div><AppBarHeader/> <Home/></div>)}/>
+          <Route path="/view/:id" render={(props) => (<div><AppBarHeader current_loc={"/view/:id"}/> <UserView history={this.history}/></div>)}/>
+          <Route path="/profile" component={() => (<div><AppBarHeader current_loc={"/profile"}/> <Profile/></div>)}/>
+          <Route path="/home" component={() => (<div><AppBarHeader current_loc={"/home"}/> <Home/></div>)}/>
           <Route exact path='/' component={Login}/>
         </Switch>
       </Router>

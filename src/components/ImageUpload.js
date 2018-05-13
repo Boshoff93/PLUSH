@@ -46,7 +46,7 @@ class ImageUpload extends React.Component {
     return (
       <MenuItem
         primaryText="Upload Profile Picture"
-        style={{textAlign: "center",  borderRadius: "25px", margin: "0px 10px"}}
+        style={{textAlign: "center",  borderRadius: "25px", margin: "0px 10px" , fontFamily:"Risque", backgroundColor: "#173777", color: "white"}}
         containerElement='label'
       >
       <input type="file"

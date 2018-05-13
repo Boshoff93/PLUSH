@@ -53,6 +53,7 @@ export class PostView extends React.Component {
         targetOrigin={{horizontal: 'right', vertical: 'top'}}
       >
       <MenuItem
+        style={{backgroundColor: "#173777", color:"white",fontFamily:"Risque"}}
         onClick={()=> this.handleDelete(index)}
       >
         Delete
