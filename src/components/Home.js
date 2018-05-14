@@ -89,9 +89,13 @@ export class Home extends React.Component {
       if(!{posts}.length) {
         return (
           <div style={{ backgroundImage: `url(${imageUrl})`, width:"100%", minHeight:"100vh", height:"auto", overflowY: "auto"}}>
-            <List>
-              {posts}
-            </List>
+            <Row center="xs">
+              <Col xs={8} style={{textAlign:"left"}}>
+                <List>
+                  {posts}
+                </List>
+              </Col>
+            </Row>
           </div>
         );
       } else {
