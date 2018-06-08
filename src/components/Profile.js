@@ -9,6 +9,7 @@ import {replacePosts} from '../actions/replacePosts';
 import {setUserView} from '../actions/setUserView';
 import {addProfilePicture} from "../actions/addProfilePicture";
 import {deletePost} from '../actions/deletePost';
+import {replaceFollowCount} from '../actions/replaceFollowCount';
 import {connect} from 'react-redux';
 import '../App.css';
 import {Redirect} from 'react-router-dom'
@@ -20,6 +21,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import Avatar from 'material-ui/Avatar';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
+import Chip from '@material-ui/core/Chip';
 
 class Profile extends React.Component {
   state = {
@@ -74,6 +76,17 @@ class Profile extends React.Component {
       this.onGetProfilePicture("")
       // Handle the error here. E.g. use this.setState() to display an error msg.
     })
+
+    axios.get('http://localhost:8000/plush-api/getFollowCounts/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res => {
+      if('Error' in res.data) {
+        console.log(res.Data.Error)
+      } else {
+        let data = res.data
+        this.onGetFollowCount(data)
+      }
+    }).catch(err => {
+      console.log(err);
+    })
   }
 
   onGetPosts = (data) => {
@@ -127,6 +140,10 @@ class Profile extends React.Component {
       });
   }
 
+  onGetFollowCount = (counts) => {
+    this.props.replaceFollowCount(counts.FollowerCount, counts.FollowingCount);
+  }
+
   handleProfileClick = (event) => {
     // This prevents ghost click.
     event.preventDefault();
@@ -141,6 +158,10 @@ class Profile extends React.Component {
       open: false,
     });
   };
+
+  handleChipClick() {
+    alert('You clicked the Chip.'); // eslint-disable-line no-alert
+  }
 
   render() {
     if (!this.state.loggedIn) {
@@ -187,6 +208,25 @@ class Profile extends React.Component {
               </Menu>
               </Popover>
             </Row>
+          </Col>
+        </Row>
+        <Row center="xs" style={{marginTop:"20px"}}>
+          <Col xs={8} style={{alignItems: "center"}}>
+
+              <Chip
+                avatar={<Avatar style={{backgroundColor:"white", color:"#FF5522"}}>{this.props.followers_count}</Avatar>}
+                label="Followings"
+                onClick={this.handleChipClick}
+                style={{margin:"0px 1%",fontFamily:"Risque", color:"#FF5522"}}
+
+              />
+              <Chip
+                avatar={<Avatar style={{backgroundColor:"white", color:"#FF5522"}}>{this.props.following_count}</Avatar>}
+                label="Followers"
+                onClick={this.handleChipClick}
+                style={{fontFamily:"Risque", color:"#FF5522"}}
+              />
+
           </Col>
         </Row>
         <Row>
@@ -243,6 +283,8 @@ function mapStateToProps(state) {
     post_ids: state.user.post_ids,
     user_id: state.user.user_id,
     profile_picture: state.user.profile_picture,
+    followers_count: state.user.followers_count,
+    following_count: state.user.following_count,
   }
 }
 
@@ -253,6 +295,7 @@ function matchDispachToProps(dispatch) {
     replacePosts: replacePosts,
     setUserView: setUserView,
     deletePost: deletePost,
+    replaceFollowCount: replaceFollowCount,
   }, dispatch)
 }
 
