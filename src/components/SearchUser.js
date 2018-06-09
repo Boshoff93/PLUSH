@@ -119,7 +119,7 @@ export class SearchUser extends React.Component {
                 <TextField
                   style={{width: "70%"}}
                   hintText="Search Users"
-                  hintStyle={{color:"#FF5522"}}
+                  hintStyle={{color:"#FF5522", fontFamily:"Risque"}}
                   onChange={this.onChange}
                   value={this.state.value}
                 />

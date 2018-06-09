@@ -70,7 +70,7 @@ export class PostView extends React.Component {
               <Col xs={11}>
                 <Row>
                   <Col xs={12}>
-                  <Card style={{borderRadius: "25px", marginLeft:"1%"}}>
+                  <Card style={{borderRadius: "25px", marginLeft:"1%",fontFamily:"Risque"}}>
                     <CardHeader
                       title={this.props.display_name}
                       subtitle={this.props.post_times[index]}
@@ -80,9 +80,9 @@ export class PostView extends React.Component {
                       {post}
                     </CardText>
                     <CardActions>
-                      <FlatButton label="Comment" />
-                      <FlatButton label="Like" />
-                      <FlatButton label="Dislike" />
+                      <FlatButton label="Comment" style={{fontFamily:"Risque"}}/>
+                      <FlatButton label="Like" style={{fontFamily:"Risque"}}/>
+                      <FlatButton label="Dislike" style={{fontFamily:"Risque"}}/>
                     </CardActions>
                   </Card>
                   </Col>
