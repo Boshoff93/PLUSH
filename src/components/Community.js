@@ -64,7 +64,7 @@ class Community extends React.Component {
   }
 
   onGetFollowCount = (counts) => {
-    this.props.replaceFollowCount(counts.FollowerCount, counts.FollowingCount);
+    this.props.replaceFollowCount(counts.FollowingCount, counts.FollowerCount);
   }
 
   handleProfileClick = (event) => {
