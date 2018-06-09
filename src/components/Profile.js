@@ -29,6 +29,7 @@ class Profile extends React.Component {
     onProfile: true,
     userViewId: '',
     redirect: false,
+    followerPage: false,
     searchUsers: [],
     searchUsersIds: [],
     searchUsersAvatars: [],
@@ -159,8 +160,10 @@ class Profile extends React.Component {
     });
   };
 
-  handleChipClick() {
-    alert('You clicked the Chip.'); // eslint-disable-line no-alert
+  handleChipClick = () => {
+    this.setState({
+      followerPage: true,
+    })
   }
 
   render() {
@@ -171,6 +174,11 @@ class Profile extends React.Component {
     if (this.state.redirect === true) {
       return <Redirect push to={`/view/${this.state.userViewId}`}/>;
     }
+
+    if(this.state.followerPage === true) {
+      return <Redirect push to={'/my_community'}/>;
+    }
+
     const imageUrl = require(`../Images/loginBackground.png`)
     return (
       <div style={{ backgroundImage: `url(${imageUrl})`, width:"100%", minHeight:"100vh", height:"auto", overflowY: "auto"}}>
@@ -232,7 +240,6 @@ class Profile extends React.Component {
         <Row>
           <Col xs={3}>
             <SearchUser
-            style={{fontFamily:"Risque"}}
               onProfile={this.state.onProfile}
               user_id={this.props.user_id}
               onSearchUsers={this.onSearchUsers}

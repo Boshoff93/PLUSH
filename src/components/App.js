@@ -5,6 +5,7 @@ import {Provider} from 'react-redux'
 import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
 import AppBarHeader from './AppBarHeader'
 import Profile from './Profile'
+import Community from "./Community"
 import Home from './Home'
 import Login from './forms/Login'
 import UserView from './UserView'
@@ -19,7 +20,8 @@ console.log(history);
 const muiTheme = getMuiTheme({
   palette: {
     primary1Color: "#FF5522",
-    accent1Color: "#FF5522"
+    accent1Color: "#FF5522",
+    primary: {main: '#FF5522'}
   }
 })
 
@@ -28,6 +30,7 @@ const App = ({store}) => (
     <MuiThemeProvider muiTheme={muiTheme}>
       <Router>
         <Switch>
+          <Route path="/my_community" render={(props) => (<div><AppBarHeader current_loc={"/my_community"}/> <Community/></div>)}/>
           <Route path="/view/:id" render={(props) => (<div><AppBarHeader current_loc={"/view/:id"}/> <UserView history={this.history}/></div>)}/>
           <Route path="/profile" component={() => (<div><AppBarHeader current_loc={"/profile"}/> <Profile/></div>)}/>
           <Route path="/home" component={() => (<div><AppBarHeader current_loc={"/home"}/> <Home/></div>)}/>
