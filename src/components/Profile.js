@@ -232,6 +232,7 @@ class Profile extends React.Component {
         <Row>
           <Col xs={3}>
             <SearchUser
+            style={{fontFamily:"Risque"}}
               onProfile={this.state.onProfile}
               user_id={this.props.user_id}
               onSearchUsers={this.onSearchUsers}

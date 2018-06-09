@@ -49,7 +49,7 @@ export class PostInput extends React.Component {
         <Col xs={11}>
           <Row center="xs">
             <TextField
-              style={{width: "90%"}}
+              style={{width: "90%", fontFamily:"Risque"}}
               hintText="Tell people what's on your mind"
               hintStyle={{color:"#FF5522", fontFamily:"Risque"}}
               onChange={this.onChange}

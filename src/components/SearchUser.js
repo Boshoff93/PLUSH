@@ -104,7 +104,7 @@ export class SearchUser extends React.Component {
           <ListItem
             onClick={()=> this.handleSubmit(index)}
             key={uuid.v4()}
-            style={{cursor:"pointer", borderRadius: "25px", fontSize:"12px"}}
+            style={{cursor:"pointer", borderRadius: "25px", fontSize:"14px", fontFamily:"Risque"}}
             primaryText={user}
             leftAvatar={<Avatar src={this.props.searchUsersAvatars[index] === "empty" ? require("../Images/DefaultAvatar.png") : this.props.searchUsersAvatars[index]} />}
           />
@@ -117,7 +117,7 @@ export class SearchUser extends React.Component {
             <Col xs={12}>
               <Row center="xs">
                 <TextField
-                  style={{width: "70%"}}
+                  style={{width: "70%", fontFamily:"Risque"}}
                   hintText="Search Users"
                   hintStyle={{color:"#FF5522", fontFamily:"Risque"}}
                   onChange={this.onChange}
