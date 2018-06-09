@@ -15,6 +15,8 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Avatar from 'material-ui/Avatar';
+import Popover from 'material-ui/Popover';
+import Menu from 'material-ui/Menu';
 
 
 class Community extends React.Component {
@@ -65,6 +67,11 @@ class Community extends React.Component {
     this.props.replaceFollowCount(counts.FollowerCount, counts.FollowingCount);
   }
 
+  handleProfileClick = (event) => {
+    // This prevents ghost click.
+    alert("Clicked on picture!")
+  };
+
   render() {
     if (!this.state.loggedIn) {
       return <Redirect push to={`/`}/>;
@@ -88,7 +95,28 @@ class Community extends React.Component {
                   <Tab icon={<Avatar style={{backgroundColor:"#FF5522", color:"white"}}>{this.props.followers_count}</Avatar>} label="Folowers" style={{fontFamily:"Risque"}} />
                 </Tabs>
               </AppBar>
-
+            </Col>
+          </Row>
+          <Row center="xs" style={{marginBottom:"10px"}}>
+            <Col xs={3}>
+              <Row center="xs">
+                <h2 style={{fontFamily:"Risque", marginTop:"10px", color:"white"}}>
+                  {this.props.display_name}
+                </h2>
+              </Row>
+              <Row center="xs">
+                <Paper
+                  style={{width: "200px", height:"200px", cursor:"pointer"}}
+                  circle={true}
+                  zDepth={5}
+                  onClick={this.handleProfileClick}>
+                  <Avatar src={this.props.profile_picture} style={{width: "95%", height:"95%", marginTop: "2.5%"}} />
+                </Paper>
+              </Row>
+            </Col>
+            <Col xs={9}>
+              <Paper style={{height: "100%", width: "100%", borderRadius: "25px", margin: "10px 0px"}} zDepth={3}>
+              </Paper>
             </Col>
           </Row>
         </Grid>
@@ -100,6 +128,8 @@ class Community extends React.Component {
 function mapStateToProps(state) {
   return {
     access_token: state.user.access_token,
+    display_name: state.user.display_name,
+    profile_picture: state.user.profile_picture,
     user_id: state.user.user_id,
     followers_count: state.user.followers_count,
     following_count: state.user.following_count,
