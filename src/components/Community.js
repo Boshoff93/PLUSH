@@ -17,6 +17,8 @@ import Typography from '@material-ui/core/Typography';
 import Avatar from 'material-ui/Avatar';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
+import {List} from 'material-ui/List';
+import uuid from 'uuid';
 
 
 class Community extends React.Component {
@@ -26,9 +28,12 @@ class Community extends React.Component {
     userViewId: '',
     redirect: false,
     followerPage: false,
-    searchUsers: [],
-    searchUsersIds: [],
-    searchUsersAvatars: [],
+    followingDisplayNames: [],
+    followingIds: [],
+    followingAvatars: [],
+    followerDisplayNames: [],
+    followerIds: [],
+    followerAvatars: [],
     path: '',
     open: false,
     value: 0,
@@ -51,20 +56,78 @@ class Community extends React.Component {
   }
 
   componentDidMount(){
-    axios.get('http://localhost:8000/plush-api/getFollowCounts/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res => {
-      if('Error' in res.data) {
-        console.log(res.Data.Error)
+    axios.get('http://localhost:8000/plush-api/getFollowersAndFollowings/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res1 => {
+      if('Error' in res1.data) {
+        console.log(res1.Data.Error)
       } else {
-        let data = res.data
-        this.onGetFollowCount(data)
+        let data = res1.data
+        console.log(data);
+        this.onGetFollowCount(data.FollowerCount, data.FollowingCount)
+
+        axios.get('http://localhost:8001/plush-file-server/searchedUserProfilePictures/' + data.Following_Pp_Names, {headers: {'Authorization': this.props.access_token}}).then(res2 => {
+          if(res2.data != null) {
+            if('Error' in res2.data) {
+              console.log(res2.data.Error);
+            } else {
+              console.log(res2.data.Data);
+              var followingsFound = {
+                Display_Names: data.Following_Display_Names,
+                Following_Ids: data.Following_Ids,
+                Avatars: res2.data.Data,
+              }
+              this.onFollowingsFound(followingsFound)
+            }
+          }
+        }).catch(err => {
+          console.log(err);
+        })
+
+        axios.get('http://localhost:8001/plush-file-server/searchedUserProfilePictures/' + data.Follower_Pp_Names, {headers: {'Authorization': this.props.access_token}}).then(res3 => {
+          if(res3.data != null) {
+            if('Error' in res3.data) {
+              console.log(res3.data.Error);
+            } else {
+              console.log(res3.data.Data);
+              var followersFound = {
+                Display_Names: data.Follower_Display_Names,
+                Follower_Ids: data.Follower_Ids,
+                Avatars: res3.data.Data,
+              }
+              this.onFollowersFound(followersFound)
+            }
+          }
+        }).catch(err => {
+          console.log(err);
+        })
+
       }
     }).catch(err => {
       console.log(err);
     })
   }
 
-  onGetFollowCount = (counts) => {
-    this.props.replaceFollowCount(counts.FollowingCount, counts.FollowerCount);
+  onFollowingsFound = (followings) => {
+      let newState = this.state
+      newState.followingDisplayNames = followings.Display_Names
+      newState.followingIds = followings.Following_Ids
+      newState.followingAvatars = followings.Avatars
+      this.setState({
+        newState
+      });
+  }
+
+  onFollowersFound = (followers) => {
+    let newState = this.state
+    newState.followerDisplayNames = followers.Display_Names
+    newState.followerIds = followers.Follower_Ids
+    newState.followerAvatars = followers.Avatars
+    this.setState({
+      newState
+    });
+  }
+
+  onGetFollowCount = (followerCount, followingCount) => {
+    this.props.replaceFollowCount(followingCount, followerCount);
   }
 
   handleProfileClick = (event) => {
@@ -78,12 +141,80 @@ class Community extends React.Component {
     }
     const imageUrl = require(`../Images/loginBackground.png`)
     const { value } = this.state.value;
+
+    let followings = this.state.followingDisplayNames
+    if(followings !== null) {
+      followings = this.state.followingDisplayNames.map((user, index) => (
+        <Row style={{margin:"1% 0"}}key={uuid.v4()}>
+          <Col xs={12}>
+            <Row>
+              <Col xs={3}>
+                <Row center="xs">
+                  <h2 style={{fontFamily:"Risque", marginTop:"10px", color:"#173777"}}>
+                    {this.state.followingDisplayNames[index]}
+                  </h2>
+                </Row>
+                <Row center="xs">
+                  <Paper
+                    style={{width: "200px", height:"200px", cursor:"pointer"}}
+                    circle={true}
+                    zDepth={5}
+                    >
+                    <Avatar src={this.state.followingAvatars[index] === "empty" ? require("../Images/DefaultAvatar.png") :
+                      this.state.followingAvatars[index]} style={{width: "95%", height:"95%", marginTop: "2.5%"}} />
+                  </Paper>
+                </Row>
+              </Col>
+              <Col xs={9}>
+                <Paper style={{height: "100%", width: "100%", borderRadius: "25px", margin: "10px 0px"}} zDepth={3}>
+                </Paper>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      ));
+    }
+
+    let followers = this.state.followerDisplayNames
+    if(followers !== null) {
+      followers = this.state.followerDisplayNames.map((user, index) => (
+        <Row style={{margin:"1% 0"}}key={uuid.v4()}>
+            <Col xs={12}>
+              <Row>
+                <Col xs={3}>
+                  <Row center="xs">
+                    <h2 style={{fontFamily:"Risque", marginTop:"10px", color:"#173777"}}>
+                      {this.state.followerDisplayNames[index]}
+                    </h2>
+                  </Row>
+                  <Row center="xs">
+                    <Paper
+                      style={{width: "200px", height:"200px", cursor:"pointer"}}
+                      circle={true}
+                      zDepth={5}
+                      >
+                      <Avatar src={this.state.followerAvatars[index] === "empty" ? require("../Images/DefaultAvatar.png") :
+                       this.state.followerAvatars[index]} style={{width: "95%", height:"95%", marginTop: "2.5%"}} />
+                    </Paper>
+                  </Row>
+                </Col>
+                <Col xs={9}>
+                  <Paper style={{height: "100%", width: "100%", borderRadius: "25px", margin: "10px 0px"}} zDepth={3}>
+                  </Paper>
+                </Col>
+              </Row>
+            </Col>
+        </Row>
+
+      ));
+    }
+
     return (
-      <div style={{ backgroundImage: `url(${imageUrl})`, width:"100%", minHeight:"100vh", height:"auto", overflowY: "auto"}}>
+      <div style={{ backgroundImage: `url(${imageUrl})`, width:"100%", minHeight:"100vh", height:"auto", overflowY: "visible"}}>
         <Grid >
           <Row center="xs">
             <Col xs={4}>
-              <AppBar position="static" color="default" style={{marginTop:"5%",borderRadius: "10px"}}>
+              <AppBar position="static" color="default" style={{marginTop:"5%",borderRadius: "10px", color:"#173777"}}>
                 <Tabs
                   value={this.state.value}
                   onChange={this.handleChange}
@@ -92,33 +223,14 @@ class Community extends React.Component {
                   style={{margin:"10px 4%"}}
                 >
                   <Tab icon={<Avatar style={{backgroundColor:"#FF5522", color:"white"}}>{this.props.following_count}</Avatar>} label="Following" style={{fontFamily:"Risque"}} />
-                  <Tab icon={<Avatar style={{backgroundColor:"#FF5522", color:"white"}}>{this.props.followers_count}</Avatar>} label="Folowers" style={{fontFamily:"Risque"}} />
+                  <Tab icon={<Avatar style={{backgroundColor:"#FF5522", color:"white"}}>{this.props.followers_count}</Avatar>} label="Followers" style={{fontFamily:"Risque"}} />
                 </Tabs>
               </AppBar>
             </Col>
           </Row>
-          <Row center="xs" style={{marginBottom:"10px"}}>
-            <Col xs={3}>
-              <Row center="xs">
-                <h2 style={{fontFamily:"Risque", marginTop:"10px", color:"white"}}>
-                  {this.props.display_name}
-                </h2>
-              </Row>
-              <Row center="xs">
-                <Paper
-                  style={{width: "200px", height:"200px", cursor:"pointer"}}
-                  circle={true}
-                  zDepth={5}
-                  onClick={this.handleProfileClick}>
-                  <Avatar src={this.props.profile_picture} style={{width: "95%", height:"95%", marginTop: "2.5%"}} />
-                </Paper>
-              </Row>
-            </Col>
-            <Col xs={9}>
-              <Paper style={{height: "100%", width: "100%", borderRadius: "25px", margin: "10px 0px"}} zDepth={3}>
-              </Paper>
-            </Col>
-          </Row>
+          <List>
+            {this.state.value === 0 ? followings : followers}
+          </List>
         </Grid>
       </div>
     );

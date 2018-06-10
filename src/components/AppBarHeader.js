@@ -20,6 +20,7 @@ class AppBarHeader extends React.Component {
     open: false,
     home_page: false,
     profile_page: false,
+    my_community_page: false,
   }
 
   handleToggle = () => this.setState({open: !this.state.open});
@@ -40,6 +41,17 @@ class AppBarHeader extends React.Component {
     curState.open = false
     if (this.props.current_loc !== "/profile") {
       curState.profile_page = true
+    }
+    this.setState({
+      curState
+    })
+  }
+
+  handleMyCommunity = () => {
+    var curState = this.state
+    curState.open = false
+    if (this.props.current_loc !== "/my_community") {
+      curState.my_community_page = true
     }
     this.setState({
       curState
@@ -86,6 +98,10 @@ class AppBarHeader extends React.Component {
     if(this.state.profile_page) {
         return <Redirect push to={"/profile"}/>
     }
+
+    if(this.state.my_community_page) {
+        return <Redirect push to={"/my_community"}/>
+    }
     return (
       <div>
         <AppBar
@@ -103,6 +119,7 @@ class AppBarHeader extends React.Component {
         >
           <MenuItem style={{fontFamily:"Risque", color:"white"}} onClick={this.handleHome}>Home</MenuItem>
           <MenuItem style={{fontFamily:"Risque", color:"white"}} onClick={this.handleProfile}>My Profile</MenuItem>
+          <MenuItem style={{fontFamily:"Risque", color:"white"}} onClick={this.handleMyCommunity}>My Community</MenuItem>
         </Drawer>
       </div>
     );
