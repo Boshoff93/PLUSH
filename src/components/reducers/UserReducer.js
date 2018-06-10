@@ -9,6 +9,7 @@ export function userReducer(state = {
   profile_picture: '',
   following_count: '',
   followers_count: '',
+  followers_or_followings: 0,
 }, action) {
 
   switch (action.type) {
@@ -71,7 +72,13 @@ export function userReducer(state = {
                   followers_count: action.followers_count,
       }
     }
-    
+
+    case 'FOLLOWERS_OR_FOLLOWINGS': {
+      return {
+        ...state, followers_or_followings: action.followers_or_followings,
+      }
+    }
+
     default: {
       return state;
     }

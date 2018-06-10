@@ -10,6 +10,7 @@ import {setUserView} from '../actions/setUserView';
 import {addProfilePicture} from "../actions/addProfilePicture";
 import {deletePost} from '../actions/deletePost';
 import {replaceFollowCount} from '../actions/replaceFollowCount';
+import {followersOrFollowings} from '../actions/followersOrFollowings'
 import {connect} from 'react-redux';
 import '../App.css';
 import {Redirect} from 'react-router-dom'
@@ -160,7 +161,8 @@ class Profile extends React.Component {
     });
   };
 
-  handleChipClick = () => {
+  handleChipClick = (value) => {
+    this.props.followersOrFollowings(value);
     this.setState({
       followerPage: true,
     })
@@ -224,14 +226,14 @@ class Profile extends React.Component {
               <Chip
                 avatar={<Avatar style={{backgroundColor:"white", color:"#FF5522"}}>{this.props.followers_count}</Avatar>}
                 label="Followings"
-                onClick={this.handleChipClick}
+                onClick={() => this.handleChipClick(0)}
                 style={{margin:"0px 1%",fontFamily:"Risque", color:"#FF5522"}}
 
               />
               <Chip
                 avatar={<Avatar style={{backgroundColor:"white", color:"#FF5522"}}>{this.props.following_count}</Avatar>}
                 label="Followers"
-                onClick={this.handleChipClick}
+                onClick={() => this.handleChipClick(1)}
                 style={{fontFamily:"Risque", color:"#FF5522"}}
               />
 
@@ -304,6 +306,7 @@ function matchDispachToProps(dispatch) {
     setUserView: setUserView,
     deletePost: deletePost,
     replaceFollowCount: replaceFollowCount,
+    followersOrFollowings: followersOrFollowings,
   }, dispatch)
 }
 

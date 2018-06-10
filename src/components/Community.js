@@ -36,7 +36,7 @@ class Community extends React.Component {
     followerAvatars: [],
     path: '',
     open: false,
-    value: 0,
+    value: this.props.followers_or_followings,
   }
 
     handleChange = (event, value) => {
@@ -130,15 +130,29 @@ class Community extends React.Component {
     this.props.replaceFollowCount(followingCount, followerCount);
   }
 
-  handleProfileClick = (event) => {
-    // This prevents ghost click.
-    alert("Clicked on picture!")
+  handleProfileClick = (type,index) => {
+    var curState = this.state
+    if(type === "following") {
+      curState.userViewId = this.state.followingIds[index]
+    } else {
+      curState.userViewId = this.state.followerIds[index]
+    }
+    curState.redirect = true;
+    this.setState({
+      curState
+    })
   };
 
   render() {
+
     if (!this.state.loggedIn) {
       return <Redirect push to={`/`}/>;
     }
+
+    if (this.state.redirect === true) {
+      return <Redirect push to={`/view/${this.state.userViewId}`}/>;
+    }
+    
     const imageUrl = require(`../Images/loginBackground.png`)
     const { value } = this.state.value;
 
@@ -147,28 +161,21 @@ class Community extends React.Component {
       followings = this.state.followingDisplayNames.map((user, index) => (
         <Row style={{margin:"1% 0"}}key={uuid.v4()}>
           <Col xs={12}>
-            <Row>
-              <Col xs={3}>
-                <Row center="xs">
-                  <h2 style={{fontFamily:"Risque", marginTop:"10px", color:"#173777"}}>
-                    {this.state.followingDisplayNames[index]}
-                  </h2>
-                </Row>
-                <Row center="xs">
-                  <Paper
-                    style={{width: "200px", height:"200px", cursor:"pointer"}}
-                    circle={true}
-                    zDepth={5}
-                    >
-                    <Avatar src={this.state.followingAvatars[index] === "empty" ? require("../Images/DefaultAvatar.png") :
-                      this.state.followingAvatars[index]} style={{width: "95%", height:"95%", marginTop: "2.5%"}} />
-                  </Paper>
-                </Row>
-              </Col>
-              <Col xs={9}>
-                <Paper style={{height: "100%", width: "100%", borderRadius: "25px", margin: "10px 0px"}} zDepth={3}>
-                </Paper>
-              </Col>
+            <Row center="xs">
+              <h2 style={{fontFamily:"Risque", marginTop:"10px", color:"#173777"}}>
+              {this.state.followingDisplayNames[index]}
+              </h2>
+            </Row>
+            <Row center="xs">
+              <Paper
+              style={{width: "200px", height:"200px", cursor:"pointer"}}
+              circle={true}
+              zDepth={5}
+              onClick={()=> this.handleProfileClick("following",index)}
+              >
+                <Avatar src={this.state.followingAvatars[index] === "empty" ? require("../Images/DefaultAvatar.png") :
+                this.state.followingAvatars[index]} style={{width: "95%", height:"95%", marginTop: "2.5%"}} />
+              </Paper>
             </Row>
           </Col>
         </Row>
@@ -179,31 +186,24 @@ class Community extends React.Component {
     if(followers !== null) {
       followers = this.state.followerDisplayNames.map((user, index) => (
         <Row style={{margin:"1% 0"}}key={uuid.v4()}>
-            <Col xs={12}>
-              <Row>
-                <Col xs={3}>
-                  <Row center="xs">
-                    <h2 style={{fontFamily:"Risque", marginTop:"10px", color:"#173777"}}>
-                      {this.state.followerDisplayNames[index]}
-                    </h2>
-                  </Row>
-                  <Row center="xs">
-                    <Paper
-                      style={{width: "200px", height:"200px", cursor:"pointer"}}
-                      circle={true}
-                      zDepth={5}
-                      >
-                      <Avatar src={this.state.followerAvatars[index] === "empty" ? require("../Images/DefaultAvatar.png") :
-                       this.state.followerAvatars[index]} style={{width: "95%", height:"95%", marginTop: "2.5%"}} />
-                    </Paper>
-                  </Row>
-                </Col>
-                <Col xs={9}>
-                  <Paper style={{height: "100%", width: "100%", borderRadius: "25px", margin: "10px 0px"}} zDepth={3}>
-                  </Paper>
-                </Col>
-              </Row>
-            </Col>
+          <Col xs={12}>
+            <Row center="xs">
+              <h2 style={{fontFamily:"Risque", marginTop:"10px", color:"#173777"}}>
+              {this.state.followerDisplayNames[index]}
+              </h2>
+            </Row>
+            <Row center="xs">
+              <Paper
+                style={{width: "200px", height:"200px", cursor:"pointer"}}
+                circle={true}
+                zDepth={5}
+                onClick={() => this.handleProfileClick("follower",index)}
+                >
+                <Avatar src={this.state.followerAvatars[index] === "empty" ? require("../Images/DefaultAvatar.png") :
+                this.state.followerAvatars[index]} style={{width: "95%", height:"95%", marginTop: "2.5%"}} />
+              </Paper>
+            </Row>
+          </Col>
         </Row>
 
       ));
@@ -245,6 +245,7 @@ function mapStateToProps(state) {
     user_id: state.user.user_id,
     followers_count: state.user.followers_count,
     following_count: state.user.following_count,
+    followers_or_followings: state.user.followers_or_followings,
   }
 }
 
