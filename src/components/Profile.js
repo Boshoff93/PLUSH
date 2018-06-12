@@ -23,6 +23,13 @@ import Avatar from 'material-ui/Avatar';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import Chip from '@material-ui/core/Chip';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 
 class Profile extends React.Component {
   state = {
@@ -36,12 +43,17 @@ class Profile extends React.Component {
     searchUsersAvatars: [],
     path: '',
     open: false,
+    openDisplayEdit: false,
+    displayName: this.props.display_name,
+    editedName: ""
   }
 
   componentWillMount() {
     if(this.props.access_token != "") {
+      let newState = this.state
+      newState.loggedIn = true
       this.setState({
-        loggedIn: true
+        newState
       })
     }
   }
@@ -120,12 +132,14 @@ class Profile extends React.Component {
       console.log("user does not exist");
     } else {
       this.props.setUserView(user.Display_Name, user.User_Id);
+      let newState = this.state
+      newState.searchUsers = []
+      newState.searchUsersIds = []
+      newState.searchUsersAvatars = []
+      newState.redirect = true
+      newState.userViewId = user.User_Id
       this.setState({
-        searchUsers: [],
-        searchUsersIds: [],
-        searchUsersAvatars: [],
-        redirect: true,
-        userViewId: user.User_Id
+        newState
       });
     }
   }
@@ -135,10 +149,12 @@ class Profile extends React.Component {
   }
 
   onSearchUsers = (users) => {
+      let newState = this.state
+      newState.searchUsers = users.Display_Names
+      newState.searchUsersIds = users.User_Ids
+      newState.searchUsersAvatars = users.Avatars
       this.setState({
-        searchUsers: users.Display_Names,
-        searchUsersIds: users.User_Ids,
-        searchUsersAvatars: users.Avatars,
+        newState
       });
   }
 
@@ -149,26 +165,66 @@ class Profile extends React.Component {
   handleProfileClick = (event) => {
     // This prevents ghost click.
     event.preventDefault();
+    let newState = this.state
+    newState.open = true
+    newState.anchorEl = event.currentTarget
     this.setState({
-      open: true,
-      anchorEl: event.currentTarget,
+      newState
     });
   };
 
   handleProfileRequestClose = () => {
+    let newState = this.state
+    newState.open = false
     this.setState({
-      open: false,
+      newState
     });
   };
 
   handleChipClick = (value) => {
     this.props.followersOrFollowings(value);
+    let newState = this.state
+    newState.followerPage = true
     this.setState({
-      followerPage: true,
+      newState
+    })
+  }
+
+  handleClickOpen = () => {
+    let newState = this.state
+    newState.openDisplayEdit = true
+    this.setState({
+      newState
+    });
+  };
+
+  handleClickClose = () => {
+    let newState = this.state
+    newState.openDisplayEdit = false
+    this.setState({
+      newState
+    });
+  };
+
+  handleClickSave = () => {
+    let newState = this.state
+    newState.openDisplayEdit = false
+    newState.displayName = newState.editedName
+    this.setState({
+      newState
+    });
+  };
+
+  onEditName = (evt) => {
+    let newState = this.state
+    newState.editedName = evt.target.value
+    this.setState({
+      newState
     })
   }
 
   render() {
+
     if (!this.state.loggedIn) {
       return <Redirect push to={`/`}/>;
     }
@@ -182,14 +238,26 @@ class Profile extends React.Component {
     }
 
     const imageUrl = require(`../Images/loginBackground.png`)
+    let openDisplayEdit = this.state.openDisplayEdit
+    if(this.state.displayName === "") {
+      openDisplayEdit = true
+    } else {
+      openDisplayEdit = false
+    }
+    if(this.state.displayName !== "" && this.state.openDisplayEdit) {
+      openDisplayEdit = true
+    }
     return (
-      <div style={{ backgroundImage: `url(${imageUrl})`, width:"100%", minHeight:"100vh", height:"auto", overflowY: "auto"}}>
+      <div id="backgroundDiv" style={{ backgroundImage: `url(${imageUrl})`, width:"100%", minHeight:"100vh", height:"auto", overflowY: "auto"}}>
       <Grid >
         <Row center="xs">
           <Col xs={4} style={{alignItems: "center"}}>
             <Row center="xs">
-              <h1 style={{fontFamily:"Risque", marginTop:"10px", color:"white"}}>
-                {this.props.display_name}
+              <h1
+                style={{fontFamily:"Risque", marginTop:"10px", color:"white", cursor:"pointer"}}
+                onClick={this.handleClickOpen}
+                >
+                {this.props.displayName === "" ? "No Name": this.state.displayName}
               </h1>
             </Row>
             <Row center="xs">
@@ -222,7 +290,6 @@ class Profile extends React.Component {
         </Row>
         <Row center="xs" style={{marginTop:"20px"}}>
           <Col xs={8} style={{alignItems: "center"}}>
-
               <Chip
                 avatar={<Avatar style={{backgroundColor:"white", color:"#FF5522"}}>{this.props.followers_count}</Avatar>}
                 label="Followings"
@@ -279,6 +346,35 @@ class Profile extends React.Component {
           </Col>
         </Row>
       </Grid>
+      <Dialog
+          open={openDisplayEdit}
+          onClose={this.handleClickClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">Edit Display Name</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Enter your display name here.
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              onChange={this.onEditName}
+              label="Display Name"
+              type="text"
+              fullWidth
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClickClose} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={this.handleClickSave} color="primary">
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }
