@@ -14,6 +14,7 @@ import {replaceHomePosts} from "../actions/replaceHomePosts";
 import {Redirect} from 'react-router-dom'
 import { withRouter } from 'react-router'
 import axios from 'axios';
+import TimeAgo from 'react-timeago';
 
 export class Home extends React.Component {
 
@@ -64,19 +65,19 @@ export class Home extends React.Component {
               <Col xs={12}>
                 <Row>
                   <Col xs={12}>
-                  <Card style={{borderRadius: "25px", marginLeft:"1%"}}>
+                  <Card style={{borderRadius: "25px", marginLeft:"1%",fontFamily:"Risque"}}>
                     <CardHeader
-                      title={this.props.home_display_names[index]}
-                      subtitle={this.props.home_post_times[index]}
+                      title={<div style={{color: "#173777"}}>{this.props.home_display_names[index]}</div>}
+                      subtitle={<TimeAgo date={this.props.home_post_times[index]} />}
                       avatar={this.props.home_profile_pictures[index] === "empty" ? require("../Images/DefaultAvatar.png") : this.props.home_profile_pictures[index]}
                     />
-                    <CardText style={{marginLeft:"1%", wordWrap: 'break-word'}}>
+                    <CardText style={{marginLeft:"1%", wordWrap: 'break-word', color:"#FF5522"}}>
                       {post}
                     </CardText>
                     <CardActions>
-                      <FlatButton label="Comment" />
-                      <FlatButton label="Like" />
-                      <FlatButton label="Dislike" />
+                      <FlatButton label="Comment" style={{fontFamily:"Risque", color: "#173777"}} />
+                      <FlatButton label="Like" style={{fontFamily:"Risque", color: "#173777"}}/>
+                      <FlatButton label="Dislike" style={{fontFamily:"Risque", color: "#173777"}} />
                     </CardActions>
                   </Card>
                   </Col>

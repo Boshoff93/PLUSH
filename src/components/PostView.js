@@ -14,6 +14,7 @@ import {List} from 'material-ui/List';
 import FlatButton from 'material-ui/FlatButton';
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import Paper from 'material-ui/Paper';
+import TimeAgo from 'react-timeago';
 
 
 export class PostView extends React.Component {
@@ -41,7 +42,7 @@ export class PostView extends React.Component {
         touch={true}
         tooltipPosition="bottom-left"
       >
-      <MoreVertIcon />
+      <MoreVertIcon color="#173777"/>
       </IconButton>
     )
   };
@@ -72,17 +73,17 @@ export class PostView extends React.Component {
                   <Col xs={12}>
                   <Card style={{borderRadius: "25px", marginLeft:"1%",fontFamily:"Risque"}}>
                     <CardHeader
-                      title={this.props.display_name}
-                      subtitle={this.props.post_times[index]}
+                      title={<div style={{color: "#173777"}}>{this.props.display_name}</div>}
+                      subtitle={<TimeAgo date={this.props.post_times[index]} />}
                       avatar={this.props.profile_picture}
                     />
-                    <CardText style={{marginLeft:"1%", wordWrap: 'break-word'}}>
+                    <CardText style={{marginLeft:"1%", wordWrap: 'break-word', color:"#FF5522"}}>
                       {post}
                     </CardText>
                     <CardActions>
-                      <FlatButton label="Comment" style={{fontFamily:"Risque"}}/>
-                      <FlatButton label="Like" style={{fontFamily:"Risque"}}/>
-                      <FlatButton label="Dislike" style={{fontFamily:"Risque"}}/>
+                      <FlatButton label="Comment" style={{fontFamily:"Risque", color: "#173777"}}/>
+                      <FlatButton label="Like" style={{fontFamily:"Risque", color: "#173777"}}/>
+                      <FlatButton label="Dislike" style={{fontFamily:"Risque", color: "#173777"}}/>
                     </CardActions>
                   </Card>
                   </Col>
