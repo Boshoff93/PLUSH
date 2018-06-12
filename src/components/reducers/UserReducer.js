@@ -10,6 +10,7 @@ export function userReducer(state = {
   following_count: '',
   followers_count: '',
   followers_or_followings: 0,
+  page_title: 'PROFILE',
 }, action) {
 
   switch (action.type) {
@@ -82,6 +83,12 @@ export function userReducer(state = {
     case 'REPLACE_DISPLAY_NAME': {
       return {
         ...state, display_name: action.display_name,
+      }
+    }
+
+    case 'REPLACE_PAGE_TITLE': {
+      return {
+        ...state, page_title: action.page_title,
       }
     }
 

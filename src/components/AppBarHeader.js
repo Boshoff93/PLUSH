@@ -9,10 +9,12 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import NavigationClose from 'material-ui/svg-icons/navigation/close'
 import {bindActionCreators} from 'redux'
 import {signOut} from '../actions/signOut'
+import {replacePageTitle} from '../actions/replacePageTitle'
 import {connect} from 'react-redux'
 import {Redirect} from "react-router-dom"
 import {fire} from './forms/Config'
 import Drawer from 'material-ui/Drawer';
+import {Row, Col } from 'react-flexbox-grid';
 
 class AppBarHeader extends React.Component {
   state = {
@@ -21,6 +23,7 @@ class AppBarHeader extends React.Component {
     home_page: false,
     profile_page: false,
     my_community_page: false,
+    right_page_caption: this.props.page_title,
   }
 
   handleToggle = () => this.setState({open: !this.state.open});
@@ -31,6 +34,7 @@ class AppBarHeader extends React.Component {
     if (this.props.current_loc !== "/home") {
       curState.home_page = true
     }
+    this.updatePageTitle("HOME")
     this.setState({
       curState
     })
@@ -42,6 +46,7 @@ class AppBarHeader extends React.Component {
     if (this.props.current_loc !== "/profile") {
       curState.profile_page = true
     }
+    this.updatePageTitle("PROFILE")
     this.setState({
       curState
     })
@@ -53,9 +58,14 @@ class AppBarHeader extends React.Component {
     if (this.props.current_loc !== "/my_community") {
       curState.my_community_page = true
     }
+    this.updatePageTitle("MY COMMUNITY")
     this.setState({
       curState
     })
+  }
+
+  updatePageTitle = (title) => {
+    this.props.replacePageTitle(title)
   }
 
   logOut = () => {
@@ -68,24 +78,45 @@ class AppBarHeader extends React.Component {
   }
 
   Logged = (props) => (
-    <IconMenu iconStyle={{color: "white"}}
-      iconButtonElement={
-        <IconButton><MoreVertIcon/></IconButton>
+    <div style={{fontFamily: "Risque"}}>
+    <Row>
+     <Col xs="8" style={{display: "inline-block", color: "white", fontSize:"20px", whiteSpace: "nowrap"}}>
+      {this.state.right_page_caption === "MY COMMUNITY" ?
+      <div style={{paddingTop: "8%"}}>
+        {this.state.right_page_caption}
+      </div>
+      : this.state.right_page_caption === "HOME" ?
+      <div style={{paddingTop: "23%"}}>
+        {this.state.right_page_caption}
+      </div>
+      :
+      <div style={{paddingTop: "15%"}}>
+        {this.state.right_page_caption}
+      </div>
       }
-      targetOrigin={{horizontal: 'right', vertical: 'top'}}
-      anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-    >
-      <MenuItem
-        primaryText="Sign out"
-        style={{fontFamily:"Risque",
-        paddingTop: "10px",
-        fontSize: "20px",
-        backgroundColor:"#173777",
-        color:"white"
-        }}
-        onClick={() => this.logOut()}
-      />
-    </IconMenu>
+      </Col>
+      <Col xs="4">
+      <IconMenu iconStyle={{color: "white"}}
+        iconButtonElement={
+          <IconButton><MoreVertIcon/></IconButton>
+        }
+        targetOrigin={{horizontal: 'right', vertical: 'top'}}
+        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+      >
+        <MenuItem
+          primaryText="Sign out"
+          style={{fontFamily:"Risque",
+          paddingTop: "10px",
+          fontSize: "20px",
+          backgroundColor:"#173777",
+          color:"white"
+          }}
+          onClick={() => this.logOut()}
+        />
+      </IconMenu>
+      </Col>
+      </Row>
+    </div>
   );
 
   render() {
@@ -120,6 +151,8 @@ class AppBarHeader extends React.Component {
               <MenuItem style={{fontFamily:"Risque", color:"white"}} onClick={this.handleProfile}>My Profile</MenuItem>
               <MenuItem style={{fontFamily:"Risque", color:"white"}} onClick={this.handleMyCommunity}>My Community</MenuItem>
             </Drawer>
+
+
           </div>
         )
     }
@@ -147,11 +180,17 @@ class AppBarHeader extends React.Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    page_title: state.user.page_title
+  }
+}
 
 function matchDispachToProps(dispatch) {
   return bindActionCreators({
-    signOut: signOut
+    signOut: signOut,
+    replacePageTitle: replacePageTitle,
   }, dispatch)
 }
 
-export default connect(null,matchDispachToProps)(AppBarHeader);
+export default connect(mapStateToProps,matchDispachToProps)(AppBarHeader);
