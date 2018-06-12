@@ -100,7 +100,28 @@ class AppBarHeader extends React.Component {
     }
 
     if(this.state.my_community_page) {
-        return <Redirect push to={"/my_community"}/>
+        return (
+          <div>
+            <Redirect push to={"/my_community"}/>
+            <AppBar
+              title="PLUSH"
+              style={{width: "100%"}}
+              titleStyle={{fontFamily:"Risque"}}
+              iconElementRight={<this.Logged />}
+              onLeftIconButtonClick={this.handleToggle}
+            />
+            <Drawer
+              docked={false}
+              open={this.state.open}
+              onRequestChange={(open) => this.setState({open})}
+              containerStyle={{ backgroundColor: '#173777' }}
+            >
+              <MenuItem style={{fontFamily:"Risque", color:"white"}} onClick={this.handleHome}>Home</MenuItem>
+              <MenuItem style={{fontFamily:"Risque", color:"white"}} onClick={this.handleProfile}>My Profile</MenuItem>
+              <MenuItem style={{fontFamily:"Risque", color:"white"}} onClick={this.handleMyCommunity}>My Community</MenuItem>
+            </Drawer>
+          </div>
+        )
     }
     return (
       <div>
