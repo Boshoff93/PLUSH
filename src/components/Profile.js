@@ -10,6 +10,7 @@ import {setUserView} from '../actions/setUserView';
 import {addProfilePicture} from "../actions/addProfilePicture";
 import {deletePost} from '../actions/deletePost';
 import {replaceFollowCount} from '../actions/replaceFollowCount';
+import {replaceDisplayName} from '../actions/replaceDisplayName';
 import {followersOrFollowings} from '../actions/followersOrFollowings'
 import {connect} from 'react-redux';
 import '../App.css';
@@ -91,16 +92,32 @@ class Profile extends React.Component {
       // Handle the error here. E.g. use this.setState() to display an error msg.
     })
 
-    axios.get('http://localhost:8000/plush-api/getFollowCounts/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res => {
-      if('Error' in res.data) {
-        console.log(res.Data.Error)
+    axios.get('http://localhost:8000/plush-api/getFollowCounts/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res3 => {
+      if('Error' in res3.data) {
+        console.log(res3.Data.Error)
       } else {
-        let data = res.data
+        let data = res3.data
         this.onGetFollowCount(data)
       }
     }).catch(err => {
       console.log(err);
     })
+
+    axios.get('http://localhost:8000/plush-api/getDisplayName/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res4 => {
+      if('Error' in res4.data) {
+        console.log(res4.Data.Error)
+      } else {
+        let data = res4.data
+        this.onGetDisplayName(data)
+      }
+    }).catch(err => {
+      console.log(err);
+    })
+  }
+
+  onGetDisplayName(data) {
+    console.log(data);
+    this.props.replaceDisplayName(data.Display_Name)
   }
 
   onGetPosts = (data) => {
@@ -210,10 +227,25 @@ class Profile extends React.Component {
     let newState = this.state
     newState.openDisplayEdit = false
     newState.displayName = newState.editedName
-    this.setState({
-      newState
-    });
-  };
+    let edit_display_name = {
+      user_id: this.props.user_id,
+      display_name: newState.displayName
+    }
+
+    axios.post('http://localhost:8000/plush-api/editDisplayName', JSON.stringify(edit_display_name), {headers: {'Authorization': this.props.access_token}}).then(res => {
+      if('Error' in res.data) {
+        console.log(res.Data.Error);
+      } else {
+        newState.displayName = res.data.Display_Name
+        this.setState({
+          newState
+        });
+        this.props.replaceDisplayName(newState.displayName)
+      }
+    }).catch(err => {
+      // Handle the error here. E.g. use this.setState() to display an error msg.
+    })
+  }
 
   onEditName = (evt) => {
     let newState = this.state
@@ -257,7 +289,7 @@ class Profile extends React.Component {
                 style={{fontFamily:"Risque", marginTop:"10px", color:"white", cursor:"pointer"}}
                 onClick={this.handleClickOpen}
                 >
-                {this.props.displayName === "" ? "No Name": this.state.displayName}
+                {this.state.displayName === "" ? "No Name": this.state.displayName}
               </h1>
             </Row>
             <Row center="xs">
@@ -351,9 +383,13 @@ class Profile extends React.Component {
           onClose={this.handleClickClose}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">Edit Display Name</DialogTitle>
+          <DialogTitle id="form-dialog-title">
+            <div style={{fontFamily: "Risque", color: "#FF5522"}}>
+              Edit Display Name
+            </div>
+          </DialogTitle>
           <DialogContent>
-            <DialogContentText>
+            <DialogContentText style={{fontFamily: "Risque"}}>
               Enter your display name here.
             </DialogContentText>
             <TextField
@@ -361,16 +397,17 @@ class Profile extends React.Component {
               margin="dense"
               id="name"
               onChange={this.onEditName}
-              label="Display Name"
+              label={<div style={{fontFamily: "Risque"}}>Display Name</div>}
+              value={this.state.editedName}
               type="text"
               fullWidth
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClickClose} color="primary">
+            <Button style={{fontFamily: "Risque"}} onClick={this.handleClickClose} color="primary">
               Cancel
             </Button>
-            <Button onClick={this.handleClickSave} color="primary">
+            <Button style={{fontFamily: "Risque"}} onClick={this.handleClickSave} color="primary">
               Save
             </Button>
           </DialogActions>
@@ -403,6 +440,7 @@ function matchDispachToProps(dispatch) {
     deletePost: deletePost,
     replaceFollowCount: replaceFollowCount,
     followersOrFollowings: followersOrFollowings,
+    replaceDisplayName, replaceDisplayName,
   }, dispatch)
 }
 

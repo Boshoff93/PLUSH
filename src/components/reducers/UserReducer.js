@@ -79,6 +79,12 @@ export function userReducer(state = {
       }
     }
 
+    case 'REPLACE_DISPLAY_NAME': {
+      return {
+        ...state, display_name: action.display_name,
+      }
+    }
+
     default: {
       return state;
     }
