@@ -103,7 +103,7 @@ export function userReducer(state = {
       }
     }
 
-    case 'REPLACE_POSTS_LIKES_DISLIKES_TOTALS': {
+    case 'REPLACE_POSTS_LIKES_AND_DISLIKES_TOTALS': {
       return {
         ...state, posts_likes_totals: action.likes_totals,
                   posts_dislikes_totals: action.dislikes_totals,

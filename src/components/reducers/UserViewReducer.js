@@ -4,7 +4,12 @@ export function userViewReducer(state = {
   user_view_id: '',
   user_view_post_times: [],
   user_view_posts: [],
-  user_view_posts_likes_dislikes: [],
+
+  user_view_posts_likes: [],
+  user_view_posts_dislikes: [],
+  user_view_posts_likes_totals: [],
+  user_view_posts_dislikes_totals: [],
+
 }, action) {
 
   switch (action.type) {
@@ -33,7 +38,15 @@ export function userViewReducer(state = {
 
     case 'REPLACE_USER_VIEW_POSTS_LIKES_DISLIKES': {
       return {
-        ...state, user_view_posts_likes_dislikes: action.posts_likes_dislikes,
+        ...state, user_view_posts_likes: action.posts_likes,
+                  user_view_posts_dislikes: action.posts_dislikes,
+      }
+    }
+
+    case 'REPLACE_USER_VIEW_POSTS_LIKES_AND_DISLIKES_TOTALS': {
+      return {
+        ...state, user_view_posts_likes_totals: action.likes_totals,
+                  user_view_posts_dislikes_totals: action.dislikes_totals,
       }
     }
 
