@@ -33,10 +33,23 @@ export class PostInput extends React.Component {
           console.log(res.Data.Error);
         } else {
           this.props.onAddPost(res.data)
+
+          axios.get('http://localhost:8000/plush-api/getPostsLikesAndDislikesTotals/' + this.props.post_ids, {headers: {'Authorization': this.props.access_token}}).then(res2 => {
+            if('Error' in res2.data) {
+              console.log(res2.Data.Error)
+            } else {
+              let data = res2.data
+              this.props.onLikeAndDislikeTotals(data);
+            }
+          }).catch(err => {
+            console.log(err);
+          })
+          
         }
       }).catch(err => {
         // Handle the error here. E.g. use this.setState() to display an error msg.
       })
+
       this.setState({
         value: '',
       });

@@ -24,16 +24,30 @@ import Button from '@material-ui/core/Button';
 
 export class PostView extends React.Component {
 
+  getLikesAndDislikes = (post_ids) => {
+    axios.get('http://localhost:8000/plush-api/getPostsLikesAndDislikesTotals/' + post_ids, {headers: {'Authorization': this.props.access_token}}).then(res1 => {
+      if('Error' in res1.data) {
+        console.log(res1.Data.Error)
+      } else {
+        let data = res1.data
+        this.props.onLikeAndDislikeTotals(data);
+      }
+    }).catch(err => {
+      console.log(err);
+    })
+  }
+
   handleDelete = (index) => {
     let deletePost = {
       user_id: this.props.user_id,
       post_id: this.props.post_ids[index],
     }
-    axios.delete('http://localhost:8000/plush-api/post', {data: JSON.stringify(deletePost), headers: {'Authorization': this.props.access_token}}).then(res => {
-      if('Error' in res.data) {
-        console.log(res.Data.Error);
+    axios.delete('http://localhost:8000/plush-api/post', {data: JSON.stringify(deletePost), headers: {'Authorization': this.props.access_token}}).then(res2 => {
+      if('Error' in res2.data) {
+        console.log(res2.Data.Error);
       } else {
         this.props.onDeletePost(index);
+        this.getLikesAndDislikes(this.props.post_ids)
       }
     }).catch(err => {
       // Handle the error here. E.g. use this.setState() to display an error msg.
@@ -73,24 +87,13 @@ export class PostView extends React.Component {
       user_id: user_id,
       post_id: post_id
     }
-    axios.post('http://localhost:8000/plush-api/like', JSON.stringify(ids), {headers: {'Authorization': this.props.access_token}}).then(res1 => {
-      if('Error' in res1.data) {
-        console.log(res1.Data.Error);
+    axios.post('http://localhost:8000/plush-api/like', JSON.stringify(ids), {headers: {'Authorization': this.props.access_token}}).then(res3 => {
+      if('Error' in res3.data) {
+        console.log(res3.Data.Error);
       } else {
-        this.props.onLikeOrDislike(res1.data)
-
-        axios.get('http://localhost:8000/plush-api/getPostsLikesAndDislikesTotals/' + this.props.post_ids, {headers: {'Authorization': this.props.access_token}}).then(res2 => {
-          if('Error' in res2.data) {
-            console.log(res2.Data.Error)
-          } else {
-            let data = res2.data
-            this.props.onLikeAndDislikeTotals(data);
-          }
-        }).catch(err => {
-          console.log(err);
-        })
+        this.props.onLikeOrDislike(res3.data)
+        this.getLikesAndDislikes(this.props.post_ids)
       }
-
     }).catch(err => {
       console.log("Error: " + err);
     })
@@ -102,22 +105,12 @@ export class PostView extends React.Component {
       user_id: user_id,
       post_id: post_id
     }
-    axios.post('http://localhost:8000/plush-api/dislike', JSON.stringify(ids), {headers: {'Authorization': this.props.access_token}}).then(res3 => {
-      if('Error' in res3.data) {
-        console.log(res3.Data.Error);
+    axios.post('http://localhost:8000/plush-api/dislike', JSON.stringify(ids), {headers: {'Authorization': this.props.access_token}}).then(res4 => {
+      if('Error' in res4.data) {
+        console.log(res4.Data.Error);
       } else {
-        this.props.onLikeOrDislike(res3.data)
-
-        axios.get('http://localhost:8000/plush-api/getPostsLikesAndDislikesTotals/' + this.props.post_ids, {headers: {'Authorization': this.props.access_token}}).then(res4 => {
-          if('Error' in res4.data) {
-            console.log(res4.Data.Error)
-          } else {
-            let data = res4.data
-            this.props.onLikeAndDislikeTotals(data);
-          }
-        }).catch(err => {
-          console.log(err);
-        })
+        this.props.onLikeOrDislike(res4.data)
+        this.getLikesAndDislikes(this.props.post_ids)
       }
     }).catch(err => {
       console.log("Error: " + err);
@@ -146,7 +139,7 @@ export class PostView extends React.Component {
                       <FlatButton label="Comment" style={{fontFamily:"Risque", color: "#173777"}}/>
                       <FlatButton
                         label="Like"
-                        backgroundColor={this.props.postsLikes[index] === 1 ? "#173777" : "#FFFFFF"}
+                        backgroundColor={this.props.postsLikes[index] === 1 ? "#FF5522" : "#FFFFFF"}
                         onClick={() => this.onLikeClick(this.props.user_id, this.props.post_ids[index])}
                         style={{fontFamily:"Risque", color: this.props.postsLikes[index] === 1 ? "#FFFFFF" : "#173777"}}
                         />

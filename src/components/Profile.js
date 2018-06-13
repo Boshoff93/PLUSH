@@ -433,7 +433,9 @@ class Profile extends React.Component {
                 <PostInput
                   user_id={this.props.user_id}
                   onAddPost={this.onAddPost}
+                  post_ids={this.props.post_ids}
                   access_token={this.props.access_token}
+                  onLikeAndDislikeTotals={this.onLikeAndDislikeTotals}
                 />
               </Paper>
             </Row>
