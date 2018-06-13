@@ -73,7 +73,19 @@ export class PostView extends React.Component {
         console.log(res1.Data.Error);
       } else {
         this.props.onLikeOrDislike(res1.data)
+
+        axios.get('http://localhost:8000/plush-api/getPostsLikesAndDislikesTotals/' + this.props.post_ids, {headers: {'Authorization': this.props.access_token}}).then(res2 => {
+          if('Error' in res2.data) {
+            console.log(res2.Data.Error)
+          } else {
+            let data = res2.data
+            this.props.onLikeAndDislikeTotals(data);
+          }
+        }).catch(err => {
+          console.log(err);
+        })
       }
+
     }).catch(err => {
       console.log("Error: " + err);
     })
@@ -85,11 +97,22 @@ export class PostView extends React.Component {
       user_id: user_id,
       post_id: post_id
     }
-    axios.post('http://localhost:8000/plush-api/dislike', JSON.stringify(ids), {headers: {'Authorization': this.props.access_token}}).then(res2 => {
-      if('Error' in res2.data) {
-        console.log(res2.Data.Error);
+    axios.post('http://localhost:8000/plush-api/dislike', JSON.stringify(ids), {headers: {'Authorization': this.props.access_token}}).then(res3 => {
+      if('Error' in res3.data) {
+        console.log(res3.Data.Error);
       } else {
-        this.props.onLikeOrDislike(res2.data)
+        this.props.onLikeOrDislike(res3.data)
+
+        axios.get('http://localhost:8000/plush-api/getPostsLikesAndDislikesTotals/' + this.props.post_ids, {headers: {'Authorization': this.props.access_token}}).then(res4 => {
+          if('Error' in res4.data) {
+            console.log(res4.Data.Error)
+          } else {
+            let data = res4.data
+            this.props.onLikeAndDislikeTotals(data);
+          }
+        }).catch(err => {
+          console.log(err);
+        })
       }
     }).catch(err => {
       console.log("Error: " + err);

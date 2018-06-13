@@ -13,6 +13,7 @@ import {replaceFollowCount} from '../actions/replaceFollowCount';
 import {replaceDisplayName} from '../actions/replaceDisplayName';
 import {followersOrFollowings} from '../actions/followersOrFollowings';
 import {replacePostsLikesDislikes} from '../actions/replacePostsLikesDislikes';
+import {replacePostsLikesAndDislikesTotals} from '../actions/replacePostsLikesAndDislikesTotals';
 import {connect} from 'react-redux';
 import '../App.css';
 import {Redirect} from 'react-router-dom'
@@ -48,6 +49,9 @@ class Profile extends React.Component {
     postsLikes: [],
     postsDislikes: [],
 
+    postsLikeTotals: [],
+    postsDislikeTotals: [],
+
     path: '',
     open: false,
     openDisplayEdit: false,
@@ -67,7 +71,6 @@ class Profile extends React.Component {
 
   componentDidMount() {
     axios.get('http://localhost:8000/plush-api/getPosts/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res => {
-
       if('Error' in res.data) {
         console.log(res.Data.Error);
       } else {
@@ -119,6 +122,29 @@ class Profile extends React.Component {
     }).catch(err => {
       console.log(err);
     })
+
+    axios.get('http://localhost:8000/plush-api/getLikesAndDislikes/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res5 => {
+      if('Error' in res5.data) {
+        console.log(res5.Data.Error)
+      } else {
+        let data = res5.data
+        this.onLikeOrDislike(data)
+      }
+    }).catch(err => {
+      console.log(err);
+    })
+
+    axios.get('http://localhost:8000/plush-api/getPostsLikesAndDislikesTotals/' + this.props.post_ids, {headers: {'Authorization': this.props.access_token}}).then(res6 => {
+      if('Error' in res6.data) {
+        console.log(res6.Data.Error)
+      } else {
+        let data = res6.data
+        this.onLikeAndDislikeTotals(data);
+      }
+    }).catch(err => {
+      console.log(err);
+    })
+
     this.props.replacePageTitle("PROFILE")
   }
 
@@ -293,6 +319,19 @@ class Profile extends React.Component {
     })
   }
 
+  onLikeAndDislikeTotals = (totals) => {
+    console.log("Totals: " + totals);
+    this.props.replacePostsLikesAndDislikesTotals(totals.TotalLikes, totals.TotalDislikes)
+
+    let newState = this.state
+    newState.postsLikesTotals = totals.TotalLikes
+    newState.postsDislikesTotals = totals.TotalDislikes
+
+    this.setState({
+      newState
+    })
+  }
+
 
   render() {
 
@@ -413,6 +452,7 @@ class Profile extends React.Component {
                   access_token={this.props.access_token}
                   profile_picture={this.props.profile_picture}
                   onLikeOrDislike={this.onLikeOrDislike}
+                  onLikeAndDislikeTotals={this.onLikeAndDislikeTotals}
                   postsLikes={this.state.postsLikes}
                   postsDislikes={this.state.postsDislikes}
                 />
@@ -487,6 +527,7 @@ function matchDispachToProps(dispatch) {
     replacePageTitle: replacePageTitle,
     replaceDisplayName: replaceDisplayName,
     replacePostsLikesDislikes: replacePostsLikesDislikes,
+    replacePostsLikesAndDislikesTotals: replacePostsLikesAndDislikesTotals,
   }, dispatch)
 }
 

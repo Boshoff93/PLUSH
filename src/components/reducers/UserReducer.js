@@ -8,6 +8,8 @@ export function userReducer(state = {
   posts: [],
   posts_likes: [],
   posts_dislikes: [],
+  posts_likes_totals: [],
+  posts_dislikes_totals: [],
   profile_picture: '',
   following_count: '',
   followers_count: '',
@@ -98,6 +100,13 @@ export function userReducer(state = {
       return {
         ...state, posts_likes: action.posts_likes,
                   posts_dislikes: action.posts_dislikes,
+      }
+    }
+
+    case 'REPLACE_POSTS_LIKES_DISLIKES_TOTALS': {
+      return {
+        ...state, posts_likes_totals: action.likes_totals,
+                  posts_dislikes_totals: action.dislikes_totals,
       }
     }
 
