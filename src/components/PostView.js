@@ -6,6 +6,7 @@ import "../App.css"
 import "../animations/animations.css"
 import axios from 'axios';
 import {Row, Col } from 'react-flexbox-grid';
+import Icon from '@material-ui/core/Icon';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import IconMenu from 'material-ui/IconMenu';
@@ -15,6 +16,10 @@ import FlatButton from 'material-ui/FlatButton';
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import Paper from 'material-ui/Paper';
 import TimeAgo from 'react-timeago';
+import ThumbUp from '@material-ui/icons/ThumbUp';
+import ThumbDown from '@material-ui/icons/ThumbDown';
+import Button from '@material-ui/core/Button';
+
 
 
 export class PostView extends React.Component {
@@ -151,6 +156,18 @@ export class PostView extends React.Component {
                         onClick={() => this.onDislikeClick(this.props.user_id, this.props.post_ids[index])}
                         style={{fontFamily:"Risque", color: this.props.postsDislikes[index] === 1 ? "#FFFFFF" : "#173777"}}
                         />
+                        <Button style={{height: "100%", width: "35px", float: "right", color: "#173777", backgroundColor:"white"}} variant="fab"  aria-label="totalDislikes">
+                          {this.props.postsDislikeTotals[index]}
+                        </Button>
+                        <Button style={{height: "100%", width: "35px", float: "right", backgroundColor:"white"}} variant="fab" disabled aria-label="totalDislikesIcon">
+                            <ThumbDown style={{color: "#173777"}}/>
+                        </Button>
+                        <Button style={{height: "100%", width: "35px", float: "right", color: "#FF5522", backgroundColor:"white"}} variant="fab" aria-label="totalLikes">
+                          {this.props.postsLikeTotals[index]}
+                        </Button>
+                        <Button style={{height: "100%", width: "35px", float: "right", backgroundColor: "white"}} variant="fab" disabled aria-label="totalLikesIcon">
+                            <ThumbUp style={{color: "#FF5522"}}/>
+                        </Button>
                     </CardActions>
                   </Card>
                   </Col>

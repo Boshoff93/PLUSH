@@ -290,8 +290,6 @@ class Profile extends React.Component {
   }
 
   onLikeOrDislike = (posts_likes_dislikes) => {
-    console.log(posts_likes_dislikes);
-
     let mapLikesDislikes = {
       posts_ids_ordered: [],
       posts_likes_ordered: [],
@@ -320,12 +318,11 @@ class Profile extends React.Component {
   }
 
   onLikeAndDislikeTotals = (totals) => {
-    console.log("Totals: " + totals);
     this.props.replacePostsLikesAndDislikesTotals(totals.TotalLikes, totals.TotalDislikes)
 
     let newState = this.state
-    newState.postsLikesTotals = totals.TotalLikes
-    newState.postsDislikesTotals = totals.TotalDislikes
+    newState.postsLikeTotals = totals.TotalLikes
+    newState.postsDislikeTotals = totals.TotalDislikes
 
     this.setState({
       newState
@@ -455,6 +452,8 @@ class Profile extends React.Component {
                   onLikeAndDislikeTotals={this.onLikeAndDislikeTotals}
                   postsLikes={this.state.postsLikes}
                   postsDislikes={this.state.postsDislikes}
+                  postsLikeTotals={this.props.posts_likes_totals}
+                  postsDislikeTotals={this.props.posts_dislikes_totals}
                 />
               </Paper>
             </Row>
@@ -511,7 +510,9 @@ function mapStateToProps(state) {
     profile_picture: state.user.profile_picture,
     followers_count: state.user.followers_count,
     following_count: state.user.following_count,
-    posts_likes_dislikes: state.user.posts_likes_dislikes,
+    posts_likes: state.user.posts_likes,
+    posts_likes_totals: state.user.posts_likes_totals,
+    posts_dislikes_totals: state.user.posts_dislikes_totals,
   }
 }
 
