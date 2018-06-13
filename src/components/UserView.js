@@ -194,7 +194,7 @@ class UserView extends React.Component {
     if(this.state.following === false) {
       var id_fields = {
         user_id: this.props.user_id,
-        follow_id: this.props.userView.userViewId,
+        follow_id: this.props.userView.user_view_id,
       }
       axios.post('http://localhost:8000/plush-api/follow', JSON.stringify(id_fields),  {headers: {'Authorization': this.props.access_token}}).then(res => {
         if('Error' in res.data) {
@@ -215,7 +215,7 @@ class UserView extends React.Component {
     if(this.state.following === true) {
       var id_fields = {
         user_id: this.props.user_id,
-        follow_id: this.props.userView.userViewId,
+        follow_id: this.props.userView.user_view_id,
       }
       axios.delete('http://localhost:8000/plush-api/follow', {data: JSON.stringify(id_fields), headers: {'Authorization': this.props.access_token}}).then(res => {
         if('Error' in res.data) {
@@ -245,7 +245,7 @@ class UserView extends React.Component {
           <Col xs={4} style={{alignItems: "center"}}>
             <Row center="xs">
               <h1 style={{fontFamily:"Risque", marginTop:"10px", color:"white"}}>
-                {this.props.userView.userViewDisplayName}
+                {this.props.userView.user_view_display_name}
               </h1>
             </Row>
             <Row center="xs">
@@ -254,7 +254,7 @@ class UserView extends React.Component {
                   circle={true}
                   zDepth={5}
                   onClick={this.handleProfileClick}>
-                  <Avatar src={this.props.userView.userViewProfilePicture} style={{width: "95%", height:"95%", marginTop: "2.5%"}} />
+                  <Avatar src={this.props.userView.user_view_profile_picture} style={{width: "95%", height:"95%", marginTop: "2.5%"}} />
                 </Paper>
                 <Popover
                   style={{marginLeft: "1%", borderRadius: "25px"}}
@@ -304,10 +304,10 @@ class UserView extends React.Component {
             <Row start="xs">
               <Paper style={{height: "100%", width: "100%", borderRadius: "25px", margin: "25px 0px"}} zDepth={3}>
                 <UserPostView
-                  posts={this.props.userView.userViewPosts}
-                  post_times={this.props.userView.userViewPostTimes}
-                  display_name={this.props.userView.userViewDisplayName}
-                  profile_picture={this.props.userView.userViewProfilePicture}
+                  posts={this.props.userView.user_view_posts}
+                  post_times={this.props.userView.user_view_post_times}
+                  display_name={this.props.userView.user_view_display_name}
+                  profile_picture={this.props.userView.user_view_profile_picture}
                 />
               </Paper>
             </Row>

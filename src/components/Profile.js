@@ -11,7 +11,8 @@ import {addProfilePicture} from "../actions/addProfilePicture";
 import {deletePost} from '../actions/deletePost';
 import {replaceFollowCount} from '../actions/replaceFollowCount';
 import {replaceDisplayName} from '../actions/replaceDisplayName';
-import {followersOrFollowings} from '../actions/followersOrFollowings'
+import {followersOrFollowings} from '../actions/followersOrFollowings';
+import {replacePostsLikesDislikes} from '../actions/replacePostsLikesDislikes';
 import {connect} from 'react-redux';
 import '../App.css';
 import {Redirect} from 'react-router-dom'
@@ -31,6 +32,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import {replacePageTitle} from '../actions/replacePageTitle'
 
 class Profile extends React.Component {
   state = {
@@ -42,6 +44,7 @@ class Profile extends React.Component {
     searchUsers: [],
     searchUsersIds: [],
     searchUsersAvatars: [],
+    postsLikesDislikes: [],
     path: '',
     open: false,
     openDisplayEdit: false,
@@ -262,6 +265,7 @@ class Profile extends React.Component {
     }
 
     if (this.state.redirect === true) {
+      this.props.replacePageTitle("USER")
       return <Redirect push to={`/view/${this.state.userViewId}`}/>;
     }
 
@@ -428,6 +432,7 @@ function mapStateToProps(state) {
     profile_picture: state.user.profile_picture,
     followers_count: state.user.followers_count,
     following_count: state.user.following_count,
+    posts_likes_dislikes: state.user.posts_likes_dislikes,
   }
 }
 
@@ -440,7 +445,9 @@ function matchDispachToProps(dispatch) {
     deletePost: deletePost,
     replaceFollowCount: replaceFollowCount,
     followersOrFollowings: followersOrFollowings,
-    replaceDisplayName, replaceDisplayName,
+    replacePageTitle: replacePageTitle,
+    replaceDisplayName: replaceDisplayName,
+    replacePostsLikesDislikes: replacePostsLikesDislikes,
   }, dispatch)
 }
 

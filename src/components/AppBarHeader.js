@@ -33,8 +33,9 @@ class AppBarHeader extends React.Component {
     curState.open = false
     if (this.props.current_loc !== "/home") {
       curState.home_page = true
+      this.updatePageTitle("HOME")
     }
-    this.updatePageTitle("HOME")
+
     this.setState({
       curState
     })
@@ -45,8 +46,8 @@ class AppBarHeader extends React.Component {
     curState.open = false
     if (this.props.current_loc !== "/profile") {
       curState.profile_page = true
+      this.updatePageTitle("PROFILE")
     }
-    this.updatePageTitle("PROFILE")
     this.setState({
       curState
     })
@@ -57,8 +58,8 @@ class AppBarHeader extends React.Component {
     curState.open = false
     if (this.props.current_loc !== "/my_community") {
       curState.my_community_page = true
+      this.updatePageTitle("MY COMMUNITY")
     }
-    this.updatePageTitle("MY COMMUNITY")
     this.setState({
       curState
     })
@@ -81,17 +82,21 @@ class AppBarHeader extends React.Component {
     <div style={{fontFamily: "Risque"}}>
     <Row>
      <Col xs="8" style={{display: "inline-block", color: "white", fontSize:"20px", whiteSpace: "nowrap"}}>
-      {this.state.right_page_caption === "MY COMMUNITY" ?
+      {this.props.page_title === "MY COMMUNITY" ?
       <div style={{paddingTop: "8%"}}>
-        {this.state.right_page_caption}
+        {this.props.page_title}
       </div>
-      : this.state.right_page_caption === "HOME" ?
+      : this.props.page_title === "HOME" ?
       <div style={{paddingTop: "23%"}}>
-        {this.state.right_page_caption}
+        {this.props.page_title}
+      </div>
+      : this.props.page_title === "USER" ?
+      <div style={{paddingTop: "25%"}}>
+        {this.props.page_title}
       </div>
       :
       <div style={{paddingTop: "15%"}}>
-        {this.state.right_page_caption}
+        {this.props.page_title}
       </div>
       }
       </Col>
@@ -133,7 +138,6 @@ class AppBarHeader extends React.Component {
     if(this.state.my_community_page) {
         return (
           <div>
-            <Redirect push to={"/my_community"}/>
             <AppBar
               title="PLUSH"
               style={{width: "100%"}}
@@ -151,8 +155,7 @@ class AppBarHeader extends React.Component {
               <MenuItem style={{fontFamily:"Risque", color:"white"}} onClick={this.handleProfile}>My Profile</MenuItem>
               <MenuItem style={{fontFamily:"Risque", color:"white"}} onClick={this.handleMyCommunity}>My Community</MenuItem>
             </Drawer>
-
-
+            <Redirect push to={"/my_community"}/>
           </div>
         )
     }

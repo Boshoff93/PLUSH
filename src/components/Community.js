@@ -19,6 +19,7 @@ import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import {List} from 'material-ui/List';
 import uuid from 'uuid';
+import {replacePageTitle} from '../actions/replacePageTitle'
 
 
 class Community extends React.Component {
@@ -137,6 +138,9 @@ class Community extends React.Component {
     } else {
       curState.userViewId = this.state.followerIds[index]
     }
+    console.log(this.props.page_title);
+    this.props.replacePageTitle("USER")
+    console.log(this.props.page_title);
     curState.redirect = true;
     this.setState({
       curState
@@ -152,7 +156,7 @@ class Community extends React.Component {
     if (this.state.redirect === true) {
       return <Redirect push to={`/view/${this.state.userViewId}`}/>;
     }
-    
+
     const imageUrl = require(`../Images/loginBackground.png`)
     const { value } = this.state.value;
 
@@ -246,12 +250,14 @@ function mapStateToProps(state) {
     followers_count: state.user.followers_count,
     following_count: state.user.following_count,
     followers_or_followings: state.user.followers_or_followings,
+    page_title: state.user.page_title,
   }
 }
 
 function matchDispachToProps(dispatch) {
   return bindActionCreators({
     replaceFollowCount: replaceFollowCount,
+    replacePageTitle: replacePageTitle,
   }, dispatch)
 }
 

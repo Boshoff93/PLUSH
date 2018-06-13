@@ -11,6 +11,8 @@ import {List, ListItem} from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 import Subheader from 'material-ui/Subheader';
 import Paper from 'material-ui/Paper';
+import { withRouter } from 'react-router'
+import {replacePageTitle} from '../actions/replacePageTitle'
 
 export class SearchUser extends React.Component {
   state = {
@@ -81,6 +83,7 @@ export class SearchUser extends React.Component {
         value: '',
       });
     } else if(this.props.searchUsersIds[index] === (this.props.user_id)) {
+      this.props.replacePageTitle("PROFILE")
       this.setState({
         value: '',
         redirect: true,
@@ -144,5 +147,11 @@ export class SearchUser extends React.Component {
   }
 }
 
+function matchDispachToProps(dispatch) {
+  return bindActionCreators({
+    replacePageTitle: replacePageTitle,
+  }, dispatch)
+}
 
-export default SearchUser
+
+export default withRouter(connect(null, matchDispachToProps)(SearchUser));

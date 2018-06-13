@@ -63,6 +63,29 @@ export class PostView extends React.Component {
     )
   };
 
+  onLikeClick = (user_id, post_id) => {
+    let ids = {
+      user_id: user_id,
+      post_id: post_id
+    }
+    axios.post('http://localhost:8000/plush-api/like', JSON.stringify(ids), {headers: {'Authorization': this.props.access_token}}).then(res => {
+      if('Error' in res.data) {
+        console.log(res.Data.Error);
+      } else {
+        this.props.onLike(res.data)
+      }
+    }).catch(err => {
+      // Handle the error here. E.g. use this.setState() to display an error msg.
+    })
+    this.setState({
+      value: '',
+    });
+  }
+
+  onDislikeClick = (user_id, post_id) => {
+    
+  }
+
   render() {
       let posts = this.props.posts
       if(posts !== null) {
@@ -82,8 +105,8 @@ export class PostView extends React.Component {
                     </CardText>
                     <CardActions>
                       <FlatButton label="Comment" style={{fontFamily:"Risque", color: "#173777"}}/>
-                      <FlatButton label="Like" style={{fontFamily:"Risque", color: "#173777"}}/>
-                      <FlatButton label="Dislike" style={{fontFamily:"Risque", color: "#173777"}}/>
+                      <FlatButton label="Like" onClick={() => this.onLikeClick(this.props.user_id, this.props.post_ids[index])} style={{fontFamily:"Risque", color: "#173777"}}/>
+                      <FlatButton label="Dislike" onClick={() => this.onDislikeClick(this.props.user_id, this.props.post_ids[index])}style={{fontFamily:"Risque", color: "#173777"}}/>
                     </CardActions>
                   </Card>
                   </Col>

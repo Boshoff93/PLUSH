@@ -6,6 +6,7 @@ export function userReducer(state = {
   post_ids: [],
   post_times: [],
   posts: [],
+  posts_likes_dislikes: [],
   profile_picture: '',
   following_count: '',
   followers_count: '',
@@ -89,6 +90,12 @@ export function userReducer(state = {
     case 'REPLACE_PAGE_TITLE': {
       return {
         ...state, page_title: action.page_title,
+      }
+    }
+
+    case 'REPLACE_POSTS_LIKES_DISLIKES': {
+      return {
+        ...state, posts_likes_dislikes: action.posts_likes_dislikes,
       }
     }
 
