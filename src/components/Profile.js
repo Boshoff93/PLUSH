@@ -116,6 +116,7 @@ class Profile extends React.Component {
     }).catch(err => {
       console.log(err);
     })
+    this.props.replacePageTitle("PROFILE")
   }
 
   onGetDisplayName(data) {
@@ -203,6 +204,7 @@ class Profile extends React.Component {
 
   handleChipClick = (value) => {
     this.props.followersOrFollowings(value);
+    this.props.replacePageTitle("MY COMMUNITY")
     let newState = this.state
     newState.followerPage = true
     this.setState({
@@ -328,7 +330,7 @@ class Profile extends React.Component {
           <Col xs={8} style={{alignItems: "center"}}>
               <Chip
                 avatar={<Avatar style={{backgroundColor:"white", color:"#FF5522"}}>{this.props.followers_count}</Avatar>}
-                label="Followings"
+                label="Following"
                 onClick={() => this.handleChipClick(0)}
                 style={{margin:"0px 1%",fontFamily:"Risque", color:"#FF5522"}}
 

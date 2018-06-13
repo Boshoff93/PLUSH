@@ -15,6 +15,7 @@ import {Redirect} from 'react-router-dom'
 import { withRouter } from 'react-router'
 import axios from 'axios';
 import TimeAgo from 'react-timeago';
+import {replacePageTitle} from '../actions/replacePageTitle'
 
 export class Home extends React.Component {
 
@@ -40,14 +41,15 @@ export class Home extends React.Component {
             }
           }
           this.onGetFollowingPosts(data, profilePictures)
+      }).catch(err => {
+        console.log(err);
+      })
+    }
     }).catch(err => {
       console.log(err);
     })
+    this.props.replacePageTitle("HOME")
   }
-}).catch(err => {
-  console.log(err);
-})
-}
 
   onGetFollowingPosts = (data, profilePictures) => {
     if(data.Posts === null) {
@@ -122,6 +124,7 @@ export class Home extends React.Component {
   function matchDispachToProps(dispatch) {
     return bindActionCreators({
       replaceHomePosts: replaceHomePosts,
+      replacePageTitle: replacePageTitle,
     }, dispatch)
   }
 

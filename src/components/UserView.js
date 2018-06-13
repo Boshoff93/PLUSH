@@ -18,6 +18,7 @@ import Paper from 'material-ui/Paper';
 import Popover from 'material-ui/Popover';
 import Menu from 'material-ui/Menu';
 import MenuItem from 'material-ui/MenuItem';
+import {replacePageTitle} from '../actions/replacePageTitle'
 
 class UserView extends React.Component {
   state = {
@@ -59,6 +60,7 @@ class UserView extends React.Component {
         this.checkFollowing()
       });
     }
+    this.props.replacePageTitle("USER")
   }
 
   getUser = () => {
@@ -333,6 +335,7 @@ function matchDispachToProps(dispatch) {
     setUserView: setUserView,
     replaceUserViewPosts: replaceUserViewPosts,
     addUserViewPP: addUserViewPP,
+    replacePageTitle: replacePageTitle,
   }, dispatch)
 }
 

@@ -105,6 +105,7 @@ class Community extends React.Component {
     }).catch(err => {
       console.log(err);
     })
+    this.props.replacePageTitle("MY COMMUNITY")
   }
 
   onFollowingsFound = (followings) => {
