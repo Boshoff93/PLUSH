@@ -44,7 +44,10 @@ class Profile extends React.Component {
     searchUsers: [],
     searchUsersIds: [],
     searchUsersAvatars: [],
-    postsLikesDislikes: [],
+
+    postsLikes: [],
+    postsDislikes: [],
+
     path: '',
     open: false,
     openDisplayEdit: false,
@@ -260,6 +263,37 @@ class Profile extends React.Component {
     })
   }
 
+  onLikeOrDislike = (posts_likes_dislikes) => {
+    console.log(posts_likes_dislikes);
+
+    let mapLikesDislikes = {
+      posts_ids_ordered: [],
+      posts_likes_ordered: [],
+      posts_dislikes_ordered: [],
+    }
+
+    for(var i = 0 ; i < this.props.post_ids.length ; i++) {
+      for(var j = 0 ; j < posts_likes_dislikes.Post_Ids.length; j++) {
+        if(this.props.post_ids[i] == posts_likes_dislikes.Post_Ids[j]){
+          mapLikesDislikes.posts_ids_ordered.push(posts_likes_dislikes.Post_Ids[j]);
+          mapLikesDislikes.posts_likes_ordered.push(posts_likes_dislikes.Likes[j]);
+          mapLikesDislikes.posts_dislikes_ordered.push(posts_likes_dislikes.Dislikes[j]);
+        }
+      }
+    }
+
+    this.props.replacePostsLikesDislikes(mapLikesDislikes.posts_likes_ordered, mapLikesDislikes.posts_dislikes_ordered)
+
+    let newState = this.state
+    newState.postsLikes = mapLikesDislikes.posts_likes_ordered
+    newState.postsDislikes = mapLikesDislikes.posts_dislikes_ordered
+
+    this.setState({
+      newState
+    })
+  }
+
+
   render() {
 
     if (!this.state.loggedIn) {
@@ -378,6 +412,9 @@ class Profile extends React.Component {
                   onDeletePost={this.onDeletePost}
                   access_token={this.props.access_token}
                   profile_picture={this.props.profile_picture}
+                  onLikeOrDislike={this.onLikeOrDislike}
+                  postsLikes={this.state.postsLikes}
+                  postsDislikes={this.state.postsDislikes}
                 />
               </Paper>
             </Row>

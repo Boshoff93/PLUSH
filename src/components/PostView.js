@@ -68,25 +68,36 @@ export class PostView extends React.Component {
       user_id: user_id,
       post_id: post_id
     }
-    axios.post('http://localhost:8000/plush-api/like', JSON.stringify(ids), {headers: {'Authorization': this.props.access_token}}).then(res => {
-      if('Error' in res.data) {
-        console.log(res.Data.Error);
+    axios.post('http://localhost:8000/plush-api/like', JSON.stringify(ids), {headers: {'Authorization': this.props.access_token}}).then(res1 => {
+      if('Error' in res1.data) {
+        console.log(res1.Data.Error);
       } else {
-        this.props.onLike(res.data)
+        this.props.onLikeOrDislike(res1.data)
       }
     }).catch(err => {
-      // Handle the error here. E.g. use this.setState() to display an error msg.
+      console.log("Error: " + err);
     })
-    this.setState({
-      value: '',
-    });
+
   }
 
   onDislikeClick = (user_id, post_id) => {
-    
+    let ids = {
+      user_id: user_id,
+      post_id: post_id
+    }
+    axios.post('http://localhost:8000/plush-api/dislike', JSON.stringify(ids), {headers: {'Authorization': this.props.access_token}}).then(res2 => {
+      if('Error' in res2.data) {
+        console.log(res2.Data.Error);
+      } else {
+        this.props.onLikeOrDislike(res2.data)
+      }
+    }).catch(err => {
+      console.log("Error: " + err);
+    })
   }
 
   render() {
+
       let posts = this.props.posts
       if(posts !== null) {
         posts = this.props.posts.map((post, index) => (
@@ -105,8 +116,18 @@ export class PostView extends React.Component {
                     </CardText>
                     <CardActions>
                       <FlatButton label="Comment" style={{fontFamily:"Risque", color: "#173777"}}/>
-                      <FlatButton label="Like" onClick={() => this.onLikeClick(this.props.user_id, this.props.post_ids[index])} style={{fontFamily:"Risque", color: "#173777"}}/>
-                      <FlatButton label="Dislike" onClick={() => this.onDislikeClick(this.props.user_id, this.props.post_ids[index])}style={{fontFamily:"Risque", color: "#173777"}}/>
+                      <FlatButton
+                        label="Like"
+                        backgroundColor={this.props.postsLikes[index] === 1 ? "#173777" : "#FFFFFF"}
+                        onClick={() => this.onLikeClick(this.props.user_id, this.props.post_ids[index])}
+                        style={{fontFamily:"Risque", color: this.props.postsLikes[index] === 1 ? "#FFFFFF" : "#173777"}}
+                        />
+                      <FlatButton
+                        label="Dislike"
+                        backgroundColor={this.props.postsDislikes[index] === 1 ? "#173777" : "#FFFFFF"}
+                        onClick={() => this.onDislikeClick(this.props.user_id, this.props.post_ids[index])}
+                        style={{fontFamily:"Risque", color: this.props.postsDislikes[index] === 1 ? "#FFFFFF" : "#173777"}}
+                        />
                     </CardActions>
                   </Card>
                   </Col>
