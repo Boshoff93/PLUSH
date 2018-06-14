@@ -4,6 +4,7 @@ export function userViewReducer(state = {
   user_view_id: '',
   user_view_post_times: [],
   user_view_posts: [],
+  user_view_post_ids: [],
 
   user_view_posts_likes: [],
   user_view_posts_dislikes: [],
@@ -20,6 +21,7 @@ export function userViewReducer(state = {
                   user_view_id: action.user_id,
                   user_view_posts: [],
                   user_view_post_times: [],
+                  user_view_post_ids: [],
          }
       }
 
@@ -27,6 +29,7 @@ export function userViewReducer(state = {
       return {
         ...state, user_view_posts: action.posts,
                   user_view_post_times: action.post_times,
+                  user_view_post_ids: action.post_ids,
          }
        }
 

@@ -81,7 +81,7 @@ class AppBarHeader extends React.Component {
   Logged = (props) => (
     <div style={{fontFamily: "Risque"}}>
     <Row>
-     <Col xs="8" style={{display: "inline-block", color: "white", fontSize:"20px", whiteSpace: "nowrap"}}>
+     <Col xs={8} style={{display: "inline-block", color: "white", fontSize:"20px", whiteSpace: "nowrap"}}>
       {this.props.page_title === "MY COMMUNITY" ?
       <div style={{paddingTop: "8%"}}>
         {this.props.page_title}
@@ -100,7 +100,7 @@ class AppBarHeader extends React.Component {
       </div>
       }
       </Col>
-      <Col xs="4">
+      <Col xs={4}>
       <IconMenu iconStyle={{color: "white"}}
         iconButtonElement={
           <IconButton><MoreVertIcon/></IconButton>
