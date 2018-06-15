@@ -3,7 +3,13 @@ export function homeReducer(state = {
   home_profile_pictures: [],
   home_post_times: [],
   home_posts: [],
-  home_posts_likes_dislikes: [] ,
+  home_post_ids: [],
+
+  home_posts_likes: [],
+  home_posts_dislikes: [],
+  home_posts_likes_totals: [],
+  home_posts_dislikes_totals: [],
+
 }, action) {
 
   switch (action.type) {
@@ -13,12 +19,21 @@ export function homeReducer(state = {
                   home_post_times: action.post_times,
                   home_profile_pictures: action.profile_pictures,
                   home_display_names: action.display_names,
+                  home_post_ids: action.post_ids,
       }
     }
 
     case 'REPLACE_HOME_POSTS_LIKES_DISLIKES': {
       return {
-        ...state, home_posts_likes_dislikes: action.posts_likes_dislikes,
+        ...state, home_posts_likes: action.posts_likes,
+                  home_posts_dislikes: action.posts_dislikes,
+      }
+    }
+
+    case 'REPLACE_HOME_POSTS_LIKES_AND_DISLIKES_TOTALS': {
+      return {
+        ...state, home_posts_likes_totals: action.likes_totals,
+                  home_posts_dislikes_totals: action.dislikes_totals,
       }
     }
     default: {

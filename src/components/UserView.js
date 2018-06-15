@@ -131,8 +131,6 @@ class UserView extends React.Component {
         console.log(err);
       })
 
-      console.log("CHOM");
-      console.log(this.props.userView.user_view_post_ids);
       axios.get('http://localhost:8000/plush-api/getPostsLikesAndDislikesTotals/' + this.props.userView.user_view_post_ids, {headers: {'Authorization': this.props.access_token}}).then(res2 => {
         if('Error' in res2.data) {
           console.log(res2.Data.Error)
@@ -348,6 +346,7 @@ class UserView extends React.Component {
         <Row center="xs" style={{marginTop: "3%"}}>
           <Col xs={12} style={{alignItems: "center"}}>
             <CircularProgress style={{color: "white"}} size={300} thickness={1}/>
+            <h3 style={{position: "relative", fontSize: "30px", marginTop:"-170px", color: "#173777"}}>Loading...</h3>
           </Col>
         </Row>
       :

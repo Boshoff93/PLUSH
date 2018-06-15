@@ -380,6 +380,7 @@ class Profile extends React.Component {
         <Row center="xs" style={{marginTop: "3%"}}>
           <Col xs={12} style={{alignItems: "center"}}>
             <CircularProgress style={{color: "white"}} size={300} thickness={1}/>
+            <h3 style={{position: "relative", fontSize: "30px", marginTop:"-170px", color: "#173777"}}>Loading...</h3>
           </Col>
         </Row>
       :
