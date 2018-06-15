@@ -23,13 +23,12 @@ export class UserPostView extends React.Component {
       user_id: user_id,
       post_id: post_id
     }
-    console.log(ids);
     axios.post('http://localhost:8000/plush-api/like', JSON.stringify(ids), {headers: {'Authorization': this.props.access_token}}).then(res1 => {
       if('Error' in res1.data) {
         console.log(res1.Data.Error);
       } else {
         this.props.onLikeOrDislike(res1.data)
-        this.getLikesAndDislikes(this.props.post_ids)
+        this.getLikesAndDislikesTotals(this.props.post_ids)
       }
     }).catch(err => {
       console.log("Error: " + err);
@@ -47,14 +46,14 @@ export class UserPostView extends React.Component {
         console.log(res2.Data.Error);
       } else {
         this.props.onLikeOrDislike(res2.data)
-        this.getLikesAndDislikes(this.props.post_ids)
+        this.getLikesAndDislikesTotals(this.props.post_ids)
       }
     }).catch(err => {
       console.log("Error: " + err);
     })
   }
 
-  getLikesAndDislikes = (post_ids) => {
+  getLikesAndDislikesTotals = (post_ids) => {
     axios.get('http://localhost:8000/plush-api/getPostsLikesAndDislikesTotals/' + post_ids, {headers: {'Authorization': this.props.access_token}}).then(res3 => {
       if('Error' in res3.data) {
         console.log(res3.Data.Error)
@@ -69,11 +68,6 @@ export class UserPostView extends React.Component {
 
   render() {
       let posts = this.props.posts
-      console.log(this.props.postsDislikeTotals);
-      console.log(this.props.postsLikeTotals);
-      console.log("------------------------");
-      console.log(this.props.postsLikes);
-      console.log(this.props.postsDislikes);
       if(posts !== null) {
         posts = this.props.posts.map((post, index) => (
           <Row style={{margin:"1% 0"}}key={uuid.v4()}>

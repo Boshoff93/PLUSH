@@ -108,11 +108,37 @@ class UserView extends React.Component {
   }
 
   onGetPosts(posts) {
+
     if(posts.Posts === null) {
       this.props.replaceUserViewPosts([], [], [])
     } else {
       this.props.replaceUserViewPosts(posts.Posts, posts.Post_Times, posts.Post_Ids)
+
+      axios.get('http://localhost:8000/plush-api/getLikesAndDislikes/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res1 => {
+        if('Error' in res1.data) {
+          console.log(res1.Data.Error)
+        } else {
+          let data = res1.data
+          this.onLikeOrDislike(data)
+        }
+      }).catch(err => {
+        console.log(err);
+      })
+
+      console.log("CHOM");
+      console.log(this.props.userView.user_view_post_ids);
+      axios.get('http://localhost:8000/plush-api/getPostsLikesAndDislikesTotals/' + this.props.userView.user_view_post_ids, {headers: {'Authorization': this.props.access_token}}).then(res2 => {
+        if('Error' in res2.data) {
+          console.log(res2.Data.Error)
+        } else {
+          let data = res2.data
+          this.onLikeAndDislikeTotals(data);
+        }
+      }).catch(err => {
+        console.log(err);
+      })
     }
+
   }
 
   onError(error){
@@ -153,28 +179,6 @@ class UserView extends React.Component {
         console.log(err);
         this.onGetProfilePicture("")
         // Handle the error here. E.g. use this.setState() to display an error msg.
-      })
-
-      axios.get('http://localhost:8000/plush-api/getLikesAndDislikes/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res1 => {
-        if('Error' in res1.data) {
-          console.log(res1.Data.Error)
-        } else {
-          let data = res1.data
-          this.onLikeOrDislike(data)
-        }
-      }).catch(err => {
-        console.log(err);
-      })
-
-      axios.get('http://localhost:8000/plush-api/getPostsLikesAndDislikesTotals/' + this.props.userView.user_view_post_ids, {headers: {'Authorization': this.props.access_token}}).then(res2 => {
-        if('Error' in res2.data) {
-          console.log(res2.Data.Error)
-        } else {
-          let data = res2.data
-          this.onLikeAndDislikeTotals(data);
-        }
-      }).catch(err => {
-        console.log(err);
       })
 
       let newState = this.state
@@ -267,48 +271,55 @@ class UserView extends React.Component {
   }
 
   onLikeOrDislike = (posts_likes_dislikes) => {
-    let mapLikesDislikes = {
-      posts_ids_ordered: [],
-      posts_likes_ordered: [],
-      posts_dislikes_ordered: [],
-    }
-
-    console.log(this.props.userView.user_view_post_ids.length)
-    console.log(mapLikesDislikes);;
-
-    for(var i = 0 ; i < this.props.userView.user_view_post_ids.length ; i++) {
-      for(var j = 0 ; j < posts_likes_dislikes.Post_Ids.length; j++) {
-        if(this.props.userView.user_view_post_ids[i] == posts_likes_dislikes.Post_Ids[j]){
-          mapLikesDislikes.posts_ids_ordered.push(posts_likes_dislikes.Post_Ids[j]);
-          mapLikesDislikes.posts_likes_ordered.push(posts_likes_dislikes.Likes[j]);
-          mapLikesDislikes.posts_dislikes_ordered.push(posts_likes_dislikes.Dislikes[j]);
-        }
-      }
-    }
-
-    console.log("here2")
-    console.log(mapLikesDislikes);;
-
-    this.props.replaceUserViewPostsLikesDislikes(mapLikesDislikes.posts_likes_ordered, mapLikesDislikes.posts_dislikes_ordered)
-
     let newState = this.state
-    newState.userViewPostsLikes = mapLikesDislikes.posts_likes_ordered
-    newState.userViewPostsDislikes = mapLikesDislikes.posts_dislikes_ordered
+    if(posts_likes_dislikes.Likes === null && posts_likes_dislikes.Dislikes === null) {
+      this.props.replaceUserViewPostsLikesDislikes([], [])
+      newState.userViewPostsLikes = []
+      newState.userViewPostsDislikes = []
 
-    this.setState({
-      newState
-    })
+      this.setState({
+        newState
+      })
+      return
+    } else {
+      let mapLikesDislikes = {
+        posts_ids_ordered: [],
+        posts_likes_ordered: [],
+        posts_dislikes_ordered: [],
+      }
+
+      var no_match = true;
+      for(var i = 0 ; i < this.props.userView.user_view_post_ids.length ; i++) {
+        for(var j = 0 ; j < posts_likes_dislikes.Post_Ids.length; j++) {
+          if(this.props.userView.user_view_post_ids[i] == posts_likes_dislikes.Post_Ids[j]){
+            mapLikesDislikes.posts_ids_ordered.push(posts_likes_dislikes.Post_Ids[j]);
+            mapLikesDislikes.posts_likes_ordered.push(posts_likes_dislikes.Likes[j]);
+            mapLikesDislikes.posts_dislikes_ordered.push(posts_likes_dislikes.Dislikes[j]);
+            no_match = false
+          }
+        }
+        if(no_match === true){
+          mapLikesDislikes.posts_ids_ordered.push(this.props.userView.user_view_post_ids[i]);
+          mapLikesDislikes.posts_likes_ordered.push(0);
+          mapLikesDislikes.posts_dislikes_ordered.push(0);
+        }
+        no_match = true
+      }
+
+      this.props.replaceUserViewPostsLikesDislikes(mapLikesDislikes.posts_likes_ordered, mapLikesDislikes.posts_dislikes_ordered)
+
+      newState.userViewPostsLikes = mapLikesDislikes.posts_likes_ordered
+      newState.userViewPostsDislikes = mapLikesDislikes.posts_dislikes_ordered
+
+      this.setState({
+        newState
+      })
+    }
   }
 
   onLikeAndDislikeTotals = (totals) => {
 
-    console.log("This is this part");
-    console.log(totals);
-    if(totals.TotalLikes === null) {
-      this.props.replaceUserViewPostsLikesAndDislikesTotals([], [])
-    } else {
-      this.props.replaceUserViewPostsLikesAndDislikesTotals(totals.TotalLikes, totals.TotalDislikes)
-    }
+    this.props.replaceUserViewPostsLikesAndDislikesTotals(totals.TotalLikes, totals.TotalDislikes)
 
     let newState = this.state
     newState.userViewPostsLikeTotals = totals.TotalLikes

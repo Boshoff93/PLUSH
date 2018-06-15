@@ -128,6 +128,7 @@ class Profile extends React.Component {
         console.log(res5.Data.Error)
       } else {
         let data = res5.data
+        console.log("Sucess so far !");
         this.onLikeOrDislike(data)
       }
     }).catch(err => {
@@ -290,34 +291,52 @@ class Profile extends React.Component {
   }
 
   onLikeOrDislike = (posts_likes_dislikes) => {
-    let mapLikesDislikes = {
-      posts_ids_ordered: [],
-      posts_likes_ordered: [],
-      posts_dislikes_ordered: [],
-    }
-
-    for(var i = 0 ; i < this.props.post_ids.length ; i++) {
-      for(var j = 0 ; j < posts_likes_dislikes.Post_Ids.length; j++) {
-        if(this.props.post_ids[i] == posts_likes_dislikes.Post_Ids[j]){
-          mapLikesDislikes.posts_ids_ordered.push(posts_likes_dislikes.Post_Ids[j]);
-          mapLikesDislikes.posts_likes_ordered.push(posts_likes_dislikes.Likes[j]);
-          mapLikesDislikes.posts_dislikes_ordered.push(posts_likes_dislikes.Dislikes[j]);
-        }
-      }
-    }
-
-    this.props.replacePostsLikesDislikes(mapLikesDislikes.posts_likes_ordered, mapLikesDislikes.posts_dislikes_ordered)
-
     let newState = this.state
-    newState.postsLikes = mapLikesDislikes.posts_likes_ordered
-    newState.postsDislikes = mapLikesDislikes.posts_dislikes_ordered
+    if(posts_likes_dislikes.Likes === null && posts_likes_dislikes.Dislikes === null) {
+      this.props.replacePostsLikesDislikes([], [])
+      newState.postsLikes = []
+      newState.postsDislikes = []
 
-    this.setState({
-      newState
-    })
-  }
+      this.setState({
+        newState
+      })
+      return
+    } else {
+      let mapLikesDislikes = {
+        posts_ids_ordered: [],
+        posts_likes_ordered: [],
+        posts_dislikes_ordered: [],
+      }
+
+      var no_match = true;
+      for(var i = 0 ; i < this.props.post_ids.length ; i++) {
+        for(var j = 0 ; j < posts_likes_dislikes.Post_Ids.length; j++) {
+          if(this.props.post_ids[i] == posts_likes_dislikes.Post_Ids[j]){
+            mapLikesDislikes.posts_ids_ordered.push(posts_likes_dislikes.Post_Ids[j]);
+            mapLikesDislikes.posts_likes_ordered.push(posts_likes_dislikes.Likes[j]);
+            mapLikesDislikes.posts_dislikes_ordered.push(posts_likes_dislikes.Dislikes[j]);
+            no_match = false
+          }
+        }
+        if(no_match === true){
+          mapLikesDislikes.posts_ids_ordered.push(this.props.post_ids[i]);
+          mapLikesDislikes.posts_likes_ordered.push(0);
+          mapLikesDislikes.posts_dislikes_ordered.push(0);
+        }
+        no_match = true
+      }
+      this.props.replacePostsLikesDislikes(mapLikesDislikes.posts_likes_ordered, mapLikesDislikes.posts_dislikes_ordered)
+      newState.postsLikes = mapLikesDislikes.posts_likes_ordered
+      newState.postsDislikes = mapLikesDislikes.posts_dislikes_ordered
+
+      this.setState({
+        newState
+      })
+    }
+    }
 
   onLikeAndDislikeTotals = (totals) => {
+
     this.props.replacePostsLikesAndDislikesTotals(totals.TotalLikes, totals.TotalDislikes)
 
     let newState = this.state
@@ -435,6 +454,7 @@ class Profile extends React.Component {
                   onAddPost={this.onAddPost}
                   post_ids={this.props.post_ids}
                   access_token={this.props.access_token}
+                  onLikeOrDislike={this.onLikeOrDislike}
                   onLikeAndDislikeTotals={this.onLikeAndDislikeTotals}
                 />
               </Paper>
@@ -452,8 +472,8 @@ class Profile extends React.Component {
                   profile_picture={this.props.profile_picture}
                   onLikeOrDislike={this.onLikeOrDislike}
                   onLikeAndDislikeTotals={this.onLikeAndDislikeTotals}
-                  postsLikes={this.state.postsLikes}
-                  postsDislikes={this.state.postsDislikes}
+                  postsLikes={this.props.posts_likes}
+                  postsDislikes={this.props.posts_dislikes}
                   postsLikeTotals={this.props.posts_likes_totals}
                   postsDislikeTotals={this.props.posts_dislikes_totals}
                 />
@@ -513,6 +533,7 @@ function mapStateToProps(state) {
     followers_count: state.user.followers_count,
     following_count: state.user.following_count,
     posts_likes: state.user.posts_likes,
+    posts_dislikes: state.user.posts_dislikes,
     posts_likes_totals: state.user.posts_likes_totals,
     posts_dislikes_totals: state.user.posts_dislikes_totals,
   }

@@ -24,7 +24,7 @@ import Button from '@material-ui/core/Button';
 
 export class PostView extends React.Component {
 
-  getLikesAndDislikes = (post_ids) => {
+  getLikesAndDislikesTotals = (post_ids) => {
     axios.get('http://localhost:8000/plush-api/getPostsLikesAndDislikesTotals/' + post_ids, {headers: {'Authorization': this.props.access_token}}).then(res1 => {
       if('Error' in res1.data) {
         console.log(res1.Data.Error)
@@ -47,7 +47,19 @@ export class PostView extends React.Component {
         console.log(res2.Data.Error);
       } else {
         this.props.onDeletePost(index);
-        this.getLikesAndDislikes(this.props.post_ids)
+
+        axios.get('http://localhost:8000/plush-api/getLikesAndDislikes/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res3 => {
+          if('Error' in res3.data) {
+            console.log(res3.Data.Error)
+          } else {
+            let data = res3.data
+            this.props.onLikeOrDislike(data);
+          }
+        }).catch(err => {
+          console.log(err);
+        })
+
+        this.getLikesAndDislikesTotals(this.props.post_ids)
       }
     }).catch(err => {
       // Handle the error here. E.g. use this.setState() to display an error msg.
@@ -87,12 +99,12 @@ export class PostView extends React.Component {
       user_id: user_id,
       post_id: post_id
     }
-    axios.post('http://localhost:8000/plush-api/like', JSON.stringify(ids), {headers: {'Authorization': this.props.access_token}}).then(res3 => {
-      if('Error' in res3.data) {
-        console.log(res3.Data.Error);
+    axios.post('http://localhost:8000/plush-api/like', JSON.stringify(ids), {headers: {'Authorization': this.props.access_token}}).then(res4 => {
+      if('Error' in res4.data) {
+        console.log(res4.Data.Error);
       } else {
-        this.props.onLikeOrDislike(res3.data)
-        this.getLikesAndDislikes(this.props.post_ids)
+        this.props.onLikeOrDislike(res4.data)
+        this.getLikesAndDislikesTotals(this.props.post_ids)
       }
     }).catch(err => {
       console.log("Error: " + err);
@@ -105,12 +117,14 @@ export class PostView extends React.Component {
       user_id: user_id,
       post_id: post_id
     }
-    axios.post('http://localhost:8000/plush-api/dislike', JSON.stringify(ids), {headers: {'Authorization': this.props.access_token}}).then(res4 => {
-      if('Error' in res4.data) {
-        console.log(res4.Data.Error);
+    console.log(this.props.post_ids);
+    console.log(ids.post_id);
+    axios.post('http://localhost:8000/plush-api/dislike', JSON.stringify(ids), {headers: {'Authorization': this.props.access_token}}).then(res5 => {
+      if('Error' in res5.data) {
+        console.log(res5.Data.Error);
       } else {
-        this.props.onLikeOrDislike(res4.data)
-        this.getLikesAndDislikes(this.props.post_ids)
+        this.props.onLikeOrDislike(res5.data)
+        this.getLikesAndDislikesTotals(this.props.post_ids)
       }
     }).catch(err => {
       console.log("Error: " + err);
