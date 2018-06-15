@@ -34,6 +34,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import {replacePageTitle} from '../actions/replacePageTitle'
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class Profile extends React.Component {
   state = {
@@ -45,13 +46,11 @@ class Profile extends React.Component {
     searchUsers: [],
     searchUsersIds: [],
     searchUsersAvatars: [],
-
     postsLikes: [],
     postsDislikes: [],
-
     postsLikeTotals: [],
     postsDislikeTotals: [],
-
+    loading: true,
     path: '',
     open: false,
     openDisplayEdit: false,
@@ -342,6 +341,7 @@ class Profile extends React.Component {
     let newState = this.state
     newState.postsLikeTotals = totals.TotalLikes
     newState.postsDislikeTotals = totals.TotalDislikes
+    newState.loading = false
 
     this.setState({
       newState
@@ -376,6 +376,13 @@ class Profile extends React.Component {
     }
     return (
       <div id="backgroundDiv" style={{ backgroundImage: `url(${imageUrl})`, width:"100%", minHeight:"100vh", height:"auto", overflowY: "auto"}}>
+      {this.state.loading === true ?
+        <Row center="xs" style={{marginTop: "3%"}}>
+          <Col xs={12} style={{alignItems: "center"}}>
+            <CircularProgress style={{color: "white"}} size={300} thickness={1}/>
+          </Col>
+        </Row>
+      :
       <Grid >
         <Row center="xs">
           <Col xs={4} style={{alignItems: "center"}}>
@@ -482,6 +489,7 @@ class Profile extends React.Component {
           </Col>
         </Row>
       </Grid>
+    }
       <Dialog
           open={openDisplayEdit}
           onClose={this.handleClickClose}

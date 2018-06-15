@@ -21,6 +21,7 @@ import MenuItem from 'material-ui/MenuItem';
 import {replacePageTitle} from '../actions/replacePageTitle'
 import {replaceUserViewPostsLikesDislikes} from '../actions/replaceUserViewPostsLikesDislikes'
 import {replaceUserViewPostsLikesAndDislikesTotals} from '../actions/replaceUserViewPostsLikesAndDislikesTotals'
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 class UserView extends React.Component {
   state = {
@@ -33,13 +34,11 @@ class UserView extends React.Component {
     searchUsersAvatars: [],
     open: false,
     following: false,
-
+    loading: true,
     userViewPostsLikes: [],
     userViewPostsDislikes: [],
-
     userViewPostsLikeTotals: [],
     userViewPostsDislikeTotals: [],
-
   }
 
   componentWillMount() {
@@ -70,6 +69,13 @@ class UserView extends React.Component {
       });
     }
 
+    if(this.state.loading) {
+      let newState = this.state
+      newState.loading = false;
+      this.setState({
+        newState
+      })
+    }
     this.props.replacePageTitle("USER")
   }
 
@@ -338,6 +344,13 @@ class UserView extends React.Component {
     //put logic here to figure out if already folowwing or not.
     return (
       <div style={{ backgroundImage: `url(${imageUrl})`, width:"100%", minHeight:"100vh", height:"auto", overflowY: "auto"}}>
+      {this.state.loading === true ?
+        <Row center="xs" style={{marginTop: "3%"}}>
+          <Col xs={12} style={{alignItems: "center"}}>
+            <CircularProgress style={{color: "white"}} size={300} thickness={1}/>
+          </Col>
+        </Row>
+      :
       <Grid >
         <Row center="xs">
           <Col xs={4} style={{alignItems: "center"}}>
@@ -421,6 +434,7 @@ class UserView extends React.Component {
           </Col>
         </Row>
       </Grid>
+    }
       </div>
     );
   }
