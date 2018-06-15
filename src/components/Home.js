@@ -217,7 +217,9 @@ export class Home extends React.Component {
               <Row style={{margin:"1% 0"}}key={uuid.v4()}>
                   <Col xs={12}>
                     <Row>
-                      <Col xs={12}>
+                    <Col xs={2}>
+                    </Col>
+                      <Col xs={8}>
                       <Card style={{borderRadius: "25px", marginLeft:"1%",fontFamily:"Risque"}}>
                         <CardHeader
                           title={<div style={{color: "#173777"}}>{this.props.home_display_names[index]}</div>}
@@ -255,6 +257,8 @@ export class Home extends React.Component {
                             </Button>
                         </CardActions>
                       </Card>
+                      </Col>
+                      <Col xs={2}>
                       </Col>
                     </Row>
                   </Col>
