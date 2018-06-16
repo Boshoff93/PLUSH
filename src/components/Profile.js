@@ -46,10 +46,10 @@ class Profile extends React.Component {
     searchUsers: [],
     searchUsersIds: [],
     searchUsersAvatars: [],
-    postsLikes: [],
-    postsDislikes: [],
-    postsLikeTotals: [],
-    postsDislikeTotals: [],
+    postsLikes: this.props.posts_likes,
+    postsDislikes: this.props.posts_likes,
+    postsLikeTotals: this.props.posts_likes_totals,
+    postsDislikeTotals: this.props.posts_dislikes_totals,
     loading: true,
     path: '',
     open: false,
@@ -122,29 +122,6 @@ class Profile extends React.Component {
       console.log(err);
     })
 
-    axios.get('http://localhost:8000/plush-api/getLikesAndDislikes/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res5 => {
-      if('Error' in res5.data) {
-        console.log(res5.Data.Error)
-      } else {
-        let data = res5.data
-        console.log("Sucess so far !");
-        this.onLikeOrDislike(data)
-      }
-    }).catch(err => {
-      console.log(err);
-    })
-
-    axios.get('http://localhost:8000/plush-api/getPostsLikesAndDislikesTotals/' + this.props.post_ids, {headers: {'Authorization': this.props.access_token}}).then(res6 => {
-      if('Error' in res6.data) {
-        console.log(res6.Data.Error)
-      } else {
-        let data = res6.data
-        this.onLikeAndDislikeTotals(data);
-      }
-    }).catch(err => {
-      console.log(err);
-    })
-
     this.props.replacePageTitle("PROFILE")
   }
 
@@ -158,6 +135,30 @@ class Profile extends React.Component {
       this.props.replacePosts([],[],[])
     } else {
       this.props.replacePosts(data.Posts, data.Post_Times, data.Post_Ids)
+
+      axios.get('http://localhost:8000/plush-api/getLikesAndDislikes/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res5 => {
+        if('Error' in res5.data) {
+          console.log(res5.Data.Error)
+        } else {
+          let data = res5.data
+          console.log("Sucess so far !");
+          this.onLikeOrDislike(data)
+        }
+      }).catch(err => {
+        console.log(err);
+      })
+
+      axios.get('http://localhost:8000/plush-api/getPostsLikesAndDislikesTotals/' + this.props.post_ids, {headers: {'Authorization': this.props.access_token}}).then(res6 => {
+        if('Error' in res6.data) {
+          console.log(res6.Data.Error)
+        } else {
+          let data = res6.data
+          this.onLikeAndDislikeTotals(data);
+        }
+      }).catch(err => {
+        console.log(err);
+      })
+
     }
   }
 
@@ -337,7 +338,7 @@ class Profile extends React.Component {
   onLikeAndDislikeTotals = (totals) => {
 
     this.props.replacePostsLikesAndDislikesTotals(totals.TotalLikes, totals.TotalDislikes)
-
+    console.log(totals.TotalLikes, totals.TotalDislikes);
     let newState = this.state
     newState.postsLikeTotals = totals.TotalLikes
     newState.postsDislikeTotals = totals.TotalDislikes
@@ -480,10 +481,10 @@ class Profile extends React.Component {
                   profile_picture={this.props.profile_picture}
                   onLikeOrDislike={this.onLikeOrDislike}
                   onLikeAndDislikeTotals={this.onLikeAndDislikeTotals}
-                  postsLikes={this.props.posts_likes}
-                  postsDislikes={this.props.posts_dislikes}
-                  postsLikeTotals={this.props.posts_likes_totals}
-                  postsDislikeTotals={this.props.posts_dislikes_totals}
+                  postsLikes={this.state.postsLikes}
+                  postsDislikes={this.state.postsDislikes}
+                  postsLikeTotals={this.state.postsLikeTotals}
+                  postsDislikeTotals={this.state.postsDislikeTotals}
                 />
               </Paper>
             </Row>
