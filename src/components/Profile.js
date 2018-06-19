@@ -74,6 +74,7 @@ class Profile extends React.Component {
         console.log(res.Data.Error);
       } else {
         let data = res.data
+        console.log(data);
         this.onGetPosts(data)
       }
     }).catch(err => {
@@ -132,9 +133,9 @@ class Profile extends React.Component {
 
   onGetPosts = (data) => {
     if(data.Posts === null) {
-      this.props.replacePosts([],[],[])
+      this.props.replacePosts([],[],[],[])
     } else {
-      this.props.replacePosts(data.Posts, data.Post_Times, data.Post_Ids)
+      this.props.replacePosts(data.Posts, data.Post_Times, data.Post_Ids, data.Types_Of_Posts)
 
       axios.get('http://localhost:8000/plush-api/getLikesAndDislikes/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res5 => {
         if('Error' in res5.data) {
@@ -171,7 +172,7 @@ class Profile extends React.Component {
   }
 
   onAddPost = (post) => {
-    this.props.addPost(post.Post, post.Post_Time, post.Post_Id);
+    this.props.addPost(post.Post, post.Post_Time, post.Post_Id, post.Type_Of_Post);
   }
 
   onDeletePost = (index) => {
@@ -197,6 +198,11 @@ class Profile extends React.Component {
 
   onAddProfilePicture = (blob) => {
     this.props.addProfilePicture(blob.Data);
+  }
+
+  onAddPostImage = (blob) => {
+
+    //this.props.addPostImage(blob.Data);
   }
 
   onSearchUsers = (users) => {
@@ -538,6 +544,7 @@ function mapStateToProps(state) {
     posts: state.user.posts,
     post_times: state.user.post_times,
     post_ids: state.user.post_ids,
+    types_of_posts: state.user.types_of_posts,
     user_id: state.user.user_id,
     profile_picture: state.user.profile_picture,
     followers_count: state.user.followers_count,

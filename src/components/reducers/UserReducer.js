@@ -6,6 +6,7 @@ export function userReducer(state = {
   post_ids: [],
   post_times: [],
   posts: [],
+  types_of_posts: [],
   posts_likes: [],
   posts_dislikes: [],
   posts_likes_totals: [],
@@ -24,6 +25,7 @@ export function userReducer(state = {
           posts: [action.post].concat(state.posts),
           post_times: [action.post_time].concat(state.post_times),
           post_ids: [action.post_id].concat(state.post_ids),
+          types_of_posts: [action.types_of_posts].concat(state.types_of_posts),
 
       };
     }
@@ -40,6 +42,10 @@ export function userReducer(state = {
                   post_ids: [
                     ...state.post_ids.slice(0, action.index),
                     ...state.post_ids.slice(action.index + 1, state.post_ids.length),
+                  ],
+                  types_of_posts: [
+                    ...state.types_of_posts.slice(0, action.index),
+                    ...state.types_of_posts.slice(action.index + 1, state.types_of_posts.length),
                   ]
       };
     }
@@ -62,7 +68,7 @@ export function userReducer(state = {
     case 'REPLACE_POSTS': {
       return {
         ...state, posts: action.posts, post_times: action.post_times,
-                  post_ids: action.post_ids
+                  post_ids: action.post_ids, types_of_posts: action.types_of_posts,
       }
     }
     case 'ADD_PROFILE_PICTURE': {
