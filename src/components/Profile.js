@@ -50,6 +50,7 @@ class Profile extends React.Component {
     postsDislikes: this.props.posts_likes,
     postsLikeTotals: this.props.posts_likes_totals,
     postsDislikeTotals: this.props.posts_dislikes_totals,
+    typesOfPosts: this.props.types_of_posts,
     loading: true,
     path: '',
     open: false,
@@ -200,9 +201,9 @@ class Profile extends React.Component {
     this.props.addProfilePicture(blob.Data);
   }
 
-  onAddPostImage = (blob) => {
-
-    //this.props.addPostImage(blob.Data);
+  onAddPostImage = (data, meta) => {
+    console.log("meow" + meta.Type_Of_Post);
+    this.props.addPost(data, meta.Post_Time, meta.Post_Id, meta.Type_Of_Post);
   }
 
   onSearchUsers = (users) => {
@@ -471,6 +472,7 @@ class Profile extends React.Component {
                   access_token={this.props.access_token}
                   onLikeOrDislike={this.onLikeOrDislike}
                   onLikeAndDislikeTotals={this.onLikeAndDislikeTotals}
+                  onAddPostImage={this.onAddPostImage}
                 />
               </Paper>
             </Row>
@@ -491,6 +493,7 @@ class Profile extends React.Component {
                   postsDislikes={this.state.postsDislikes}
                   postsLikeTotals={this.state.postsLikeTotals}
                   postsDislikeTotals={this.state.postsDislikeTotals}
+                  typesOfPosts={this.props.types_of_posts}
                 />
               </Paper>
             </Row>

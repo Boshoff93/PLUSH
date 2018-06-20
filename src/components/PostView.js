@@ -19,6 +19,9 @@ import TimeAgo from 'react-timeago';
 import ThumbUp from '@material-ui/icons/ThumbUp';
 import ThumbDown from '@material-ui/icons/ThumbDown';
 import Button from '@material-ui/core/Button';
+import Avatar from 'material-ui/Avatar';
+import CardContent from 'material-ui/Card';
+import Typography from '@material-ui/core/Typography';
 
 
 
@@ -134,21 +137,43 @@ export class PostView extends React.Component {
   render() {
 
       let posts = this.props.posts
+      const imageUrl = require(`../Images/loginBackground.png`)
       if(posts !== null) {
         posts = this.props.posts.map((post, index) => (
           <Row style={{margin:"1% 0"}}key={uuid.v4()}>
               <Col xs={11}>
                 <Row>
                   <Col xs={12}>
+
                   <Card style={{borderRadius: "25px", marginLeft:"1%",fontFamily:"Risque"}}>
                     <CardHeader
                       title={<div style={{color: "#173777"}}>{this.props.display_name}</div>}
                       subtitle={<TimeAgo date={this.props.post_times[index]} />}
                       avatar={this.props.profile_picture}
                     />
-                    <CardText style={{marginLeft:"1%", wordWrap: 'break-word', color:"#FF5522"}}>
-                      {post}
-                    </CardText>
+                    {this.props.typesOfPosts[index] == 0 ?
+                      <CardText
+                        style={{marginLeft:"1%", wordWrap: 'break-word', color:"#FF5522"}}
+                        >
+                        {post}
+                      </CardText>
+                    :
+                      <div>
+                        <Row center="xs" style={{marginBottom:"10px"}}>
+                          <Col xs={12}>
+                            <img src={post} title="meow" style={{width: "80%", height: "100%", margin: "0px auto", borderRadius: "25px"}}/>
+                          </Col>
+                        </Row>
+                        <Row start="xs" style={{marginBottom:"10px"}}>
+                          <Col xs={12}>
+                            <Typography style={{margin:"0px 12.5%", fontSize:"16px", color: "#173777", fontFamily:"Risque"}}>
+                              Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
+                              across all continents except Antarctica
+                            </Typography>
+                          </Col>
+                        </Row>
+                      </div>
+                    }
                     <CardActions>
                       <FlatButton label="Comment" style={{fontFamily:"Risque", color: "#173777"}}/>
                       <FlatButton

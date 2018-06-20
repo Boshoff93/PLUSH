@@ -73,18 +73,19 @@ export class PostInput extends React.Component {
               image_name: res4.data.Post,
               data: reader.result
             }
-            
-            // axios.post('http://localhost:8001/plush-file-server/postImage', JSON.stringify(picture_info),  {headers: {'Authorization': this.props.access_token}}).then(res5 => {
-            //   if('Error' in res5.data) {
-            //     console.log(res5.data.Error);
-            //   } else {
-            //     this.props.onAddPostImage(res5.data)
-            //     this.getLikesAndDislikesTotals();
-            //   }
-            // }).catch(err => {
-            //    console.log(err);
-            //     // Handle the error here. E.g. use this.setState() to display an error msg.
-            // })
+
+            axios.post('http://localhost:8001/plush-file-server/postImage', JSON.stringify(picture_info),  {headers: {'Authorization': this.props.access_token}}).then(res5 => {
+              if('Error' in res5.data) {
+                console.log(res5.data.Error);
+              } else {
+                console.log("We got data: " + res5.data);
+                this.props.onAddPostImage(reader.result, res4.data)
+                this.getLikesAndDislikesTotals();
+              }
+            }).catch(err => {
+               console.log(err);
+                // Handle the error here. E.g. use this.setState() to display an error msg.
+            })
           }
       }).catch(err => {
         console.log(err);
