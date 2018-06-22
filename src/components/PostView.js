@@ -20,7 +20,6 @@ import ThumbUp from '@material-ui/icons/ThumbUp';
 import ThumbDown from '@material-ui/icons/ThumbDown';
 import Button from '@material-ui/core/Button';
 import Avatar from 'material-ui/Avatar';
-import CardContent from 'material-ui/Card';
 import Typography from '@material-ui/core/Typography';
 
 
@@ -159,12 +158,12 @@ export class PostView extends React.Component {
                       </CardText>
                     :
                       <div>
-                        <Row center="xs" style={{marginBottom:"10px"}}>
+                        <Row center="xs">
                           <Col xs={12}>
-                            <img src={post} title="meow" style={{width: "80%", height: "100%", margin: "0px auto", borderRadius: "25px"}}/>
+                            <img src={post} style={{width: "100%", height: "100%", margin: "0px auto"}}/>
                           </Col>
                         </Row>
-                        <Row start="xs" style={{marginBottom:"10px"}}>
+                        <Row start="xs" style={{padding:"10px 0px"}}>
                           <Col xs={12}>
                             <Typography style={{margin:"0px 12.5%", fontSize:"16px", color: "#173777", fontFamily:"Risque"}}>
                               Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging

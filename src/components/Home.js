@@ -115,9 +115,8 @@ export class Home extends React.Component {
 
   onGetFollowingPosts = (data, profilePictures) => {
     if(data.Posts === null) {
-      this.props.replaceHomePosts([],[],[],[],[])
+      this.props.replaceHomePosts([],[],[],[],[],[])
     } else {
-      this.props.replaceHomePosts(data.Posts, data.Post_Times, profilePictures, data.Display_Names, data.Post_Ids)
       axios.get('http://localhost:8000/plush-api/getLikesAndDislikes/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res3 => {
         if('Error' in res3.data) {
           console.log(res3.Data.Error)
@@ -143,6 +142,45 @@ export class Home extends React.Component {
       }).catch(err => {
         console.log(err);
       })
+
+      let postsWithImages = []
+      for(var i = 0 ; i < data.Types_Of_Posts.length ; i++ ) {
+        if(data.Types_Of_Posts[i] === 1) {
+          postsWithImages.push(data.Posts[i]);
+        }
+      }
+
+      if(postsWithImages.length === 0) {
+          this.props.replaceHomePosts(data.Posts, data.Post_Times, profilePictures, data.Display_Names, data.Post_Ids, data.Types_Of_Posts)
+          let newState = this.state
+          newState.loading = false;
+          this.setState({
+            newState
+          })
+      } else {
+        axios.get('http://localhost:8001/plush-file-server/getPostImages/' + postsWithImages, {headers: {'Authorization': this.props.access_token}}).then(res7 => {
+          if(res7.data != null) {
+            if('Error' in res7.data) {
+              console.log(res7.data.Error);
+            } else {
+              for(var j = 0 ; j < data.Types_Of_Posts.length ; j++ ) {
+                if(data.Types_Of_Posts[j] === 1) {
+                  data.Posts[j] = res7.data.Data[j]
+                }
+              }
+              this.props.replaceHomePosts(data.Posts, data.Post_Times, profilePictures, data.Display_Names, data.Post_Ids, data.Types_Of_Posts)
+              let newState = this.state
+              newState.loading = false;
+              this.setState({
+                newState
+              })
+            }
+          }
+        }).catch(err => {
+          console.log(err);
+        })
+      }
+
     }
 
   }
@@ -202,7 +240,6 @@ export class Home extends React.Component {
     let newState = this.state
     newState.homePostsLikeTotals = totals.TotalLikes
     newState.homePostsDislikeTotals = totals.TotalDislikes
-    newState.loading = false;
 
     this.setState({
       newState

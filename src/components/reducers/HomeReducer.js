@@ -4,6 +4,7 @@ export function homeReducer(state = {
   home_post_times: [],
   home_posts: [],
   home_post_ids: [],
+  home_types_of_posts: [],
 
   home_posts_likes: [],
   home_posts_dislikes: [],
@@ -20,6 +21,7 @@ export function homeReducer(state = {
                   home_profile_pictures: action.profile_pictures,
                   home_display_names: action.display_names,
                   home_post_ids: action.post_ids,
+                  home_types_of_posts: action.home_types_of_posts,
       }
     }
 

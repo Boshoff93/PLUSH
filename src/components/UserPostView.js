@@ -15,6 +15,7 @@ import ThumbUp from '@material-ui/icons/ThumbUp';
 import ThumbDown from '@material-ui/icons/ThumbDown';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
+import Typography from '@material-ui/core/Typography';
 
 export class UserPostView extends React.Component {
 
@@ -74,15 +75,35 @@ export class UserPostView extends React.Component {
               <Col xs={12}>
                 <Row>
                   <Col xs={12}>
-                  <Card style={{borderRadius: "25px", marginLeft:"1%",fontFamily:"Risque"}}>
+                  <Card style={{borderRadius: "25px", margin:"0px 1%",fontFamily:"Risque"}}>
                     <CardHeader
                       title={<div style={{color: "#173777"}}>{this.props.display_name}</div>}
                       subtitle={<TimeAgo date={this.props.post_times[index]} />}
                       avatar={this.props.profile_picture}
                     />
-                    <CardText style={{marginLeft:"1%", wordWrap: 'break-word', color:"#FF5522"}}>
-                      {post}
-                    </CardText>
+                    {this.props.typesOfPosts[index] == 0 ?
+                      <CardText
+                        style={{marginLeft:"1%", wordWrap: 'break-word', color:"#FF5522"}}
+                        >
+                        {post}
+                      </CardText>
+                    :
+                      <div>
+                        <Row center="xs">
+                          <Col xs={12}>
+                            <img src={post} style={{width: "100%", height: "100%", margin: "0px auto"}}/>
+                          </Col>
+                        </Row>
+                        <Row start="xs" style={{padding:"10px 0px"}}>
+                          <Col xs={12}>
+                            <Typography style={{margin:"0px 12.5%", fontSize:"16px", color: "#173777", fontFamily:"Risque"}}>
+                              Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
+                              across all continents except Antarctica
+                            </Typography>
+                          </Col>
+                        </Row>
+                      </div>
+                    }
                     <CardActions>
                       <FlatButton label="Comment" style={{fontFamily:"Risque", color: "#173777"}}/>
                       <FlatButton

@@ -136,7 +136,6 @@ class Profile extends React.Component {
     if(data.Posts === null) {
       this.props.replacePosts([],[],[],[])
     } else {
-      this.props.replacePosts(data.Posts, data.Post_Times, data.Post_Ids, data.Types_Of_Posts)
 
       axios.get('http://localhost:8000/plush-api/getLikesAndDislikes/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res5 => {
         if('Error' in res5.data) {
@@ -160,6 +159,44 @@ class Profile extends React.Component {
       }).catch(err => {
         console.log(err);
       })
+
+      let postsWithImages = []
+      for(var i = 0 ; i < data.Types_Of_Posts.length ; i++ ) {
+        if(data.Types_Of_Posts[i] === 1) {
+          postsWithImages.push(data.Posts[i]);
+        }
+      }
+
+      if(postsWithImages.length === 0) {
+          this.props.replacePosts(data.Posts, data.Post_Times, data.Post_Ids, data.Types_Of_Posts)
+          let newState = this.state
+          newState.loading = false;
+          this.setState({
+            newState
+          })
+      } else {
+        axios.get('http://localhost:8001/plush-file-server/getPostImages/' + postsWithImages, {headers: {'Authorization': this.props.access_token}}).then(res7 => {
+          if(res7.data != null) {
+            if('Error' in res7.data) {
+              console.log("No images to load...");
+            } else {
+              for(var j = 0 ; j < data.Types_Of_Posts.length ; j++ ) {
+                if(data.Types_Of_Posts[j] === 1) {
+                  data.Posts[j] = res7.data.Data[j]
+                }
+              }
+              this.props.replacePosts(data.Posts, data.Post_Times, data.Post_Ids, data.Types_Of_Posts)
+              let newState = this.state
+              newState.loading = false;
+              this.setState({
+                newState
+              })
+            }
+          }
+        }).catch(err => {
+          console.log(err);
+        })
+      }
 
     }
   }
@@ -345,12 +382,18 @@ class Profile extends React.Component {
   onLikeAndDislikeTotals = (totals) => {
 
     this.props.replacePostsLikesAndDislikesTotals(totals.TotalLikes, totals.TotalDislikes)
-    console.log(totals.TotalLikes, totals.TotalDislikes);
     let newState = this.state
     newState.postsLikeTotals = totals.TotalLikes
     newState.postsDislikeTotals = totals.TotalDislikes
-    newState.loading = false
 
+    this.setState({
+      newState
+    })
+  }
+
+  setLoading = () => {
+    let newState = this.state
+    newState.loading = true
     this.setState({
       newState
     })
@@ -460,6 +503,7 @@ class Profile extends React.Component {
               searchUsersIds={this.state.searchUsersIds}
               searchUsersAvatars={this.state.searchUsersAvatars}
               access_token={this.props.access_token}
+              setLoading={this.setLoading}
             />
           </Col>
           <Col xs={9}>

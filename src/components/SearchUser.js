@@ -57,6 +57,7 @@ export class SearchUser extends React.Component {
   };
 
   getUserView(user_id) {
+    console.log("Getting user: " + user_id);
     axios.get('http://localhost:8000/plush-api/userViewId/' + user_id, {headers: {'Authorization': this.props.access_token}}).then(res => {
       if('Error' in res.data) {
         console.log(res.Data.Error);
@@ -77,6 +78,7 @@ export class SearchUser extends React.Component {
   }
 
   handleSubmit = (index) => {
+    this.props.setLoading()
     if(this.props.searchUsersIds[index] === (this.props.user_id) && this.props.onProfile) {
       this.clearList()
       this.setState({
