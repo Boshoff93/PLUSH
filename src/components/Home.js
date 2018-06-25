@@ -117,31 +117,6 @@ export class Home extends React.Component {
     if(data.Posts === null) {
       this.props.replaceHomePosts([],[],[],[],[],[])
     } else {
-      axios.get('http://localhost:8000/plush-api/getLikesAndDislikes/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res3 => {
-        if('Error' in res3.data) {
-          console.log(res3.Data.Error)
-        } else {
-          let data = res3.data
-          console.log("HEre please:");
-          console.log(this.props.home_post_ids);
-          this.onLikeOrDislike(data)
-        }
-      }).catch(err => {
-        console.log(err);
-      })
-
-      axios.get('http://localhost:8000/plush-api/getPostsLikesAndDislikesTotals/' + this.props.home_post_ids, {headers: {'Authorization': this.props.access_token}}).then(res4 => {
-        if('Error' in res4.data) {
-          console.log(res4.Data.Error)
-        } else {
-          let data = res4.data
-          console.log("WE got her so far:");
-          console.log(data);
-          this.onLikeAndDislikeTotals(data);
-        }
-      }).catch(err => {
-        console.log(err);
-      })
 
       let postsWithImages = []
       for(var i = 0 ; i < data.Types_Of_Posts.length ; i++ ) {
@@ -152,11 +127,8 @@ export class Home extends React.Component {
 
       if(postsWithImages.length === 0) {
           this.props.replaceHomePosts(data.Posts, data.Post_Times, profilePictures, data.Display_Names, data.Post_Ids, data.Types_Of_Posts)
-          let newState = this.state
-          newState.loading = false;
-          this.setState({
-            newState
-          })
+          this.getLikesAndDislikesAndTotals(data)
+
       } else {
         axios.get('http://localhost:8001/plush-file-server/getPostImages/' + postsWithImages, {headers: {'Authorization': this.props.access_token}}).then(res7 => {
           if(res7.data != null) {
@@ -169,11 +141,7 @@ export class Home extends React.Component {
                 }
               }
               this.props.replaceHomePosts(data.Posts, data.Post_Times, profilePictures, data.Display_Names, data.Post_Ids, data.Types_Of_Posts)
-              let newState = this.state
-              newState.loading = false;
-              this.setState({
-                newState
-              })
+              this.getLikesAndDislikesAndTotals(data)
             }
           }
         }).catch(err => {
@@ -181,8 +149,45 @@ export class Home extends React.Component {
         })
       }
 
+      let newState = this.state
+      newState.loading = false;
+      this.setState({
+        newState
+      })
+
     }
 
+  }
+
+  getLikesAndDislikesAndTotals = (data) => {
+    axios.get('http://localhost:8000/plush-api/getLikesAndDislikes/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res5 => {
+      if('Error' in res5.data) {
+        console.log(res5.Data.Error)
+      } else {
+        let data = res5.data
+        console.log("Sucess so far !");
+        this.onLikeOrDislike(data)
+      }
+    }).catch(err => {
+      console.log(err);
+    })
+
+    axios.get('http://localhost:8000/plush-api/getPostsLikesAndDislikesTotals/' + data.Post_Ids, {headers: {'Authorization': this.props.access_token}}).then(res6 => {
+      if('Error' in res6.data) {
+        console.log(res6.Data.Error)
+      } else {
+        let data = res6.data
+        this.onLikeAndDislikeTotals(data);
+      }
+    }).catch(err => {
+      console.log(err);
+    })
+
+    let newState = this.state
+    newState.loading = false;
+    this.setState({
+      newState
+    })
   }
 
   onLikeClick = (user_id, post_id) => {
