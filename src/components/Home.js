@@ -22,6 +22,7 @@ import Button from '@material-ui/core/Button'
 import {replaceHomePostsLikesDislikes} from '../actions/replaceHomePostsLikesDislikes'
 import {replaceHomePostsLikesAndDislikesTotals} from '../actions/replaceHomePostsLikesAndDislikesTotals'
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Typography from '@material-ui/core/Typography';
 
 
 export class Home extends React.Component {
@@ -30,6 +31,7 @@ export class Home extends React.Component {
     homePostsDislikes: this.props.home_posts_dislikes,
     homePostsLikeTotals: this.props.home_posts_likes_totals,
     homePostsDislikeTotals: this.props.home_posts_dislikes_totals,
+    homePostsTypes: this.props.home_types_of_posts,
     loading: true,
 
   }
@@ -268,9 +270,29 @@ export class Home extends React.Component {
                           subtitle={<TimeAgo date={this.props.home_post_times[index]} />}
                           avatar={this.props.home_profile_pictures[index] === "empty" ? require("../Images/DefaultAvatar.png") : this.props.home_profile_pictures[index]}
                         />
-                        <CardText style={{marginLeft:"1%", wordWrap: 'break-word', color:"#FF5522"}}>
-                          {post}
-                        </CardText>
+                        {this.state.homePostsTypes[index] == 0 ?
+                          <CardText
+                            style={{marginLeft:"1%", wordWrap: 'break-word', color:"#FF5522"}}
+                            >
+                            {post}
+                          </CardText>
+                        :
+                          <div>
+                            <Row center="xs">
+                              <Col xs={12}>
+                                <img src={post} style={{width: "100%", height: "100%", margin: "0px auto"}}/>
+                              </Col>
+                            </Row>
+                            <Row start="xs" style={{padding:"10px 0px"}}>
+                              <Col xs={12}>
+                                <Typography style={{margin:"0px 12.5%", fontSize:"16px", color: "#173777", fontFamily:"Risque"}}>
+                                  Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
+                                  across all continents except Antarctica
+                                </Typography>
+                              </Col>
+                            </Row>
+                          </div>
+                        }
                         <CardActions>
                           <FlatButton label="Comment" style={{fontFamily:"Risque", color: "#173777"}}/>
                           <FlatButton
@@ -351,6 +373,7 @@ export class Home extends React.Component {
       home_posts_dislikes: state.home.home_posts_dislikes,
       home_posts_likes_totals: state.home.home_posts_likes_totals,
       home_posts_dislikes_totals: state.home.home_posts_dislikes_totals,
+      home_types_of_posts: state.home.home_types_of_posts,
     }
   }
 
