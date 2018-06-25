@@ -46,11 +46,11 @@ class Profile extends React.Component {
     searchUsers: [],
     searchUsersIds: [],
     searchUsersAvatars: [],
-    postsLikes: this.props.posts_likes,
-    postsDislikes: this.props.posts_likes,
-    postsLikeTotals: this.props.posts_likes_totals,
-    postsDislikeTotals: this.props.posts_dislikes_totals,
-    typesOfPosts: this.props.types_of_posts,
+    postsLikes: [],
+    postsDislikes: [],
+    postsLikeTotals: [],
+    postsDislikeTotals: [],
+    typesOfPosts: [],
     loading: true,
     path: '',
     open: false,
@@ -137,29 +137,6 @@ class Profile extends React.Component {
       this.props.replacePosts([],[],[],[])
     } else {
 
-      axios.get('http://localhost:8000/plush-api/getLikesAndDislikes/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res5 => {
-        if('Error' in res5.data) {
-          console.log(res5.Data.Error)
-        } else {
-          let data = res5.data
-          console.log("Sucess so far !");
-          this.onLikeOrDislike(data)
-        }
-      }).catch(err => {
-        console.log(err);
-      })
-
-      axios.get('http://localhost:8000/plush-api/getPostsLikesAndDislikesTotals/' + this.props.post_ids, {headers: {'Authorization': this.props.access_token}}).then(res6 => {
-        if('Error' in res6.data) {
-          console.log(res6.Data.Error)
-        } else {
-          let data = res6.data
-          this.onLikeAndDislikeTotals(data);
-        }
-      }).catch(err => {
-        console.log(err);
-      })
-
       let postsWithImages = []
       for(var i = 0 ; i < data.Types_Of_Posts.length ; i++ ) {
         if(data.Types_Of_Posts[i] === 1) {
@@ -169,11 +146,7 @@ class Profile extends React.Component {
 
       if(postsWithImages.length === 0) {
           this.props.replacePosts(data.Posts, data.Post_Times, data.Post_Ids, data.Types_Of_Posts)
-          let newState = this.state
-          newState.loading = false;
-          this.setState({
-            newState
-          })
+          this.getLikesAndDislikesAndTotals(data)
       } else {
         axios.get('http://localhost:8001/plush-file-server/getPostImages/' + postsWithImages, {headers: {'Authorization': this.props.access_token}}).then(res7 => {
           if(res7.data != null) {
@@ -186,11 +159,7 @@ class Profile extends React.Component {
                 }
               }
               this.props.replacePosts(data.Posts, data.Post_Times, data.Post_Ids, data.Types_Of_Posts)
-              let newState = this.state
-              newState.loading = false;
-              this.setState({
-                newState
-              })
+              this.getLikesAndDislikesAndTotals(data)
             }
           }
         }).catch(err => {
@@ -199,6 +168,37 @@ class Profile extends React.Component {
       }
 
     }
+  }
+
+  getLikesAndDislikesAndTotals = (data) => {
+    axios.get('http://localhost:8000/plush-api/getLikesAndDislikes/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res5 => {
+      if('Error' in res5.data) {
+        console.log(res5.Data.Error)
+      } else {
+        let data = res5.data
+        console.log("Sucess so far !");
+        this.onLikeOrDislike(data)
+      }
+    }).catch(err => {
+      console.log(err);
+    })
+
+    axios.get('http://localhost:8000/plush-api/getPostsLikesAndDislikesTotals/' + data.Post_Ids, {headers: {'Authorization': this.props.access_token}}).then(res6 => {
+      if('Error' in res6.data) {
+        console.log(res6.Data.Error)
+      } else {
+        let data = res6.data
+        this.onLikeAndDislikeTotals(data);
+      }
+    }).catch(err => {
+      console.log(err);
+    })
+
+    let newState = this.state
+    newState.loading = false;
+    this.setState({
+      newState
+    })
   }
 
   onGetProfilePicture = (data) => {
@@ -335,6 +335,9 @@ class Profile extends React.Component {
   }
 
   onLikeOrDislike = (posts_likes_dislikes) => {
+    console.log("THis is where it starts");
+    console.log(this.props.post_ids);
+
     let newState = this.state
     if(posts_likes_dislikes.Likes === null && posts_likes_dislikes.Dislikes === null) {
       this.props.replacePostsLikesDislikes([], [])
@@ -369,6 +372,7 @@ class Profile extends React.Component {
         }
         no_match = true
       }
+
       this.props.replacePostsLikesDislikes(mapLikesDislikes.posts_likes_ordered, mapLikesDislikes.posts_dislikes_ordered)
       newState.postsLikes = mapLikesDislikes.posts_likes_ordered
       newState.postsDislikes = mapLikesDislikes.posts_dislikes_ordered

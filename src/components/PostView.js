@@ -166,8 +166,7 @@ export class PostView extends React.Component {
                         <Row start="xs" style={{padding:"10px 0px"}}>
                           <Col xs={12}>
                             <Typography style={{margin:"0px 12.5%", fontSize:"16px", color: "#173777", fontFamily:"Risque"}}>
-                              Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
-                              across all continents except Antarctica
+                              
                             </Typography>
                           </Col>
                         </Row>

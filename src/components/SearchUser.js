@@ -132,17 +132,21 @@ export class SearchUser extends React.Component {
             </Col>
          </Row>
          </Paper>
+         {searchedUsers.length !== 0 ?
          <Paper style={{height: "100%", width: "90%", borderRadius: "25px", margin: "10px 0px"}} zDepth={3}>
-         <Row>
-            <Col xs={12}>
-              <Row center="xs">
-                <List>
-                  {searchedUsers}
-                </List>
-              </Row>
-            </Col>
-        </Row>
-      </Paper>
+           <Row>
+              <Col xs={12}>
+                <Row center="xs">
+                  <List>
+                    {searchedUsers}
+                  </List>
+                </Row>
+              </Col>
+          </Row>
+        </Paper>
+        :
+        <div/>
+        }
       </div>
     );
     }
