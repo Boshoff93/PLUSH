@@ -21,8 +21,10 @@ export class SearchUser extends React.Component {
   };
 
   onChange = (e) => {
+    let newState = this.state
+    newState.value = e.target.value
     this.setState({
-      value: e.target.value,
+      newState
     })
     if (e.target.value === '') {
       this.clearList()
@@ -78,28 +80,37 @@ export class SearchUser extends React.Component {
   }
 
   handleSubmit = (index) => {
-    this.props.setLoading()
     if(this.props.searchUsersIds[index] === (this.props.user_id) && this.props.onProfile) {
       this.clearList()
+      let newState = this.state
+      newState.value = ''
       this.setState({
-        value: '',
+        newState
       });
     } else if(this.props.searchUsersIds[index] === (this.props.user_id)) {
       this.props.replacePageTitle("PROFILE")
+      let newState = this.state
+      newState.value = ''
+      newState.redirect = true
       this.setState({
-        value: '',
-        redirect: true,
+        newState
       });
       } else {
+        this.props.setLoading()
         this.getUserView(this.props.searchUsersIds[index])
+        let newState = this.state
+        newState.value = ''
+        newState.redirect = false
         this.setState({
-          value: '',
-          redirect: false,
+          newState
         });
+
       }
+console.log(this.state);
     }
 
   render() {
+    console.log(this.state);
     if (this.state.redirect === true) {
       return <Redirect push to="/profile" />;
     } else {
@@ -117,7 +128,7 @@ export class SearchUser extends React.Component {
       }
       return (
         <div>
-        <Paper style={{height: "100%", width: "90%", borderRadius: "25px", marginTop: "25px"}} zDepth={3}>
+        <Paper style={{height: "100%", width: "90%", borderRadius: "25px", marginTop: "25px", marginLeft:"auto"}} zDepth={3}>
           <Row>
             <Col xs={12}>
               <Row center="xs">
@@ -133,7 +144,7 @@ export class SearchUser extends React.Component {
          </Row>
          </Paper>
          {searchedUsers.length !== 0 ?
-         <Paper style={{height: "100%", width: "90%", borderRadius: "25px", margin: "10px 0px"}} zDepth={3}>
+         <Paper style={{height: "100%", width: "90%", borderRadius: "25px", margin: "10px 0px", marginLeft: "auto"}} zDepth={3}>
            <Row>
               <Col xs={12}>
                 <Row center="xs">

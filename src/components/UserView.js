@@ -22,6 +22,7 @@ import {replacePageTitle} from '../actions/replacePageTitle'
 import {replaceUserViewPostsLikesDislikes} from '../actions/replaceUserViewPostsLikesDislikes'
 import {replaceUserViewPostsLikesAndDislikesTotals} from '../actions/replaceUserViewPostsLikesAndDislikesTotals'
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Sticky from 'react-stickynode';
 
 class UserView extends React.Component {
   state = {
@@ -47,8 +48,10 @@ class UserView extends React.Component {
 
   componentWillMount() {
     if(this.props.access_token != "") {
+      let newState = this.state
+      newState.loggedIn = true
       this.setState({
-        loggedIn: true
+        newState
       })
     }
 
@@ -209,20 +212,14 @@ class UserView extends React.Component {
 
   onGetUser = (user) => {
 
-
    if(user.User_Id !== "") {
       this.props.setUserView(user.Display_Name, user.User_Id);
 
-
-      console.log("getting new posts");
-      console.log("boon");
       axios.get('http://localhost:8000/plush-api/getPosts/' + user.User_Id,  {headers: {'Authorization': this.props.access_token}}).then(res5 => {
         if('Error' in res5.data) {
-          console.log("there was an error");
           console.log(res5.Data.Error);
         } else {
           let data = res5.data
-          console.log("onGetPost is now being called");
           this.onGetPosts(data)
 
           axios.get('http://localhost:8000/plush-api/profilePicture/' + user.User_Id,  {headers: {'Authorization': this.props.access_token}}).then(res6 => {
@@ -423,20 +420,46 @@ class UserView extends React.Component {
     return (
       <div style={{ backgroundImage: `url(${imageUrl})`, width:"100%", minHeight:"100vh", height:"auto", overflowY: "auto"}}>
       {this.state.loading === true ?
-        <Row center="xs" style={{marginTop: "3%"}}>
+        <Row center="xs" style={{marginTop: "5%"}}>
           <Col xs={12} style={{alignItems: "center"}}>
             <CircularProgress style={{color: "white"}} size={300} thickness={1}/>
             <h3 style={{position: "relative", fontSize: "30px", marginTop:"-170px", color: "#173777"}}>Loading...</h3>
           </Col>
         </Row>
       :
+      <Row style={{paddingTop:"75px"}}>
+      <Col xs={2}>
+      <Row style={{height:"325px"}}/>
+      <Row center="xs">
+        <Col xs={12} >
+          <Sticky enabled={true} top={90}>
+            <SearchUser
+              onProfile={this.state.onProfile}
+              user_id={this.props.user_id}
+              onSearchUsers={this.onSearchUsers}
+              onGetUser={this.onGetUser}
+              searchUsers={this.state.searchUsers}
+              searchUsersIds={this.state.searchUsersIds}
+              searchUsersAvatars={this.state.searchUsersAvatars}
+              access_token={this.props.access_token}
+              setLoading={this.setLoading}
+            />
+          </Sticky>
+        </Col>
+      </Row>
+      </Col>
+      <Col xs={10}>
       <Grid >
+      <Row>
+        <Col xs={10}>
         <Row center="xs">
-          <Col xs={4} style={{alignItems: "center"}}>
+          <Col xs={10} style={{alignItems: "center"}}>
             <Row center="xs">
-              <h1 style={{fontFamily:"Risque", marginTop:"10px", color:"white"}}>
-                {this.props.userView.user_view_display_name}
-              </h1>
+              <Col xs={10}>
+                <h1 style={{fontFamily:"Risque", marginTop:"10px", color:"white"}}>
+                  {this.props.userView.user_view_display_name}
+                </h1>
+              </Col>
             </Row>
             <Row center="xs">
                 <Paper
@@ -477,21 +500,10 @@ class UserView extends React.Component {
             </Row>
           </Col>
         </Row>
+        </Col>
+        </Row>
         <Row>
-          <Col xs={3}>
-            <SearchUser
-              onProfile={this.state.onProfile}
-              user_id={this.props.user_id}
-              onSearchUsers={this.onSearchUsers}
-              onGetUser={this.onGetUser}
-              searchUsers={this.state.searchUsers}
-              searchUsersIds={this.state.searchUsersIds}
-              searchUsersAvatars={this.state.searchUsersAvatars}
-              access_token={this.props.access_token}
-              setLoading={this.setLoading}
-            />
-          </Col>
-          <Col xs={9}>
+          <Col xs={10}>
             <Row start="xs">
               <Paper style={{height: "100%", width: "100%", borderRadius: "25px", margin: "25px 0px"}} zDepth={3}>
                 <UserPostView
@@ -515,6 +527,8 @@ class UserView extends React.Component {
           </Col>
         </Row>
       </Grid>
+      </Col>
+      </Row>
     }
       </div>
     );

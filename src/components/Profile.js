@@ -35,6 +35,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import {replacePageTitle} from '../actions/replacePageTitle'
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Sticky from 'react-stickynode';
 
 class Profile extends React.Component {
   state = {
@@ -432,72 +433,19 @@ class Profile extends React.Component {
     return (
       <div id="backgroundDiv" style={{ backgroundImage: `url(${imageUrl})`, width:"100%", minHeight:"100vh", height:"auto", overflowY: "auto"}}>
       {this.state.loading === true ?
-        <Row center="xs" style={{marginTop: "3%"}}>
+        <Row center="xs" style={{marginTop: "5%"}}>
           <Col xs={12} style={{alignItems: "center"}}>
             <CircularProgress style={{color: "white"}} size={300} thickness={1}/>
             <h3 style={{position: "relative", fontSize: "30px", marginTop:"-170px", color: "#173777"}}>Loading...</h3>
           </Col>
         </Row>
       :
-      <Grid >
-        <Row center="xs">
-          <Col xs={4} style={{alignItems: "center"}}>
-            <Row center="xs">
-              <h1
-                style={{fontFamily:"Risque", marginTop:"10px", color:"white", cursor:"pointer"}}
-                onClick={this.handleClickOpen}
-                >
-                {this.state.displayName === "" ? "No Name": this.state.displayName}
-              </h1>
-            </Row>
-            <Row center="xs">
-              <Paper
-                style={{width: "250px", height:"250px", cursor:"pointer",marginTop:"10px"}}
-                circle={true}
-                zDepth={5}
-                onClick={this.handleProfileClick}>
-                <Avatar src={this.props.profile_picture} style={{width: "95%", height:"95%", marginTop: "2.5%"}} />
-              </Paper>
-              <Popover
-                style={{marginLeft: "1%", borderRadius: "25px"}}
-                open={this.state.open}
-                anchorEl={this.state.anchorEl}
-                anchorOrigin={{horizontal: 'right', vertical: 'center'}}
-                targetOrigin={{horizontal: 'left', vertical: 'center'}}
-                onRequestClose={this.handleProfileRequestClose}
-                autoCloseWhenOffScreen={true}
-                >
-              <Menu>
-                <ImageUpload
-                  user_id={this.props.user_id}
-                  onAddProfilePicture={this.onAddProfilePicture}
-                  access_token={this.props.access_token}
-                />
-              </Menu>
-              </Popover>
-            </Row>
-          </Col>
-        </Row>
-        <Row center="xs" style={{marginTop:"20px"}}>
-          <Col xs={8} style={{alignItems: "center"}}>
-              <Chip
-                avatar={<Avatar style={{backgroundColor:"white", color:"#FF5522"}}>{this.props.followers_count}</Avatar>}
-                label="Following"
-                onClick={() => this.handleChipClick(0)}
-                style={{margin:"0px 1%",fontFamily:"Risque", color:"#FF5522"}}
-
-              />
-              <Chip
-                avatar={<Avatar style={{backgroundColor:"white", color:"#FF5522"}}>{this.props.following_count}</Avatar>}
-                label="Followers"
-                onClick={() => this.handleChipClick(1)}
-                style={{fontFamily:"Risque", color:"#FF5522"}}
-              />
-
-          </Col>
-        </Row>
-        <Row>
-          <Col xs={3}>
+      <Row style={{paddingTop:"75px"}}>
+      <Col xs={2}>
+      <Row style={{height:"380px"}}/>
+      <Row center="xs" >
+        <Col xs={12}>
+          <Sticky enabled={true} top={90}>
             <SearchUser
               onProfile={this.state.onProfile}
               user_id={this.props.user_id}
@@ -508,9 +456,73 @@ class Profile extends React.Component {
               searchUsersAvatars={this.state.searchUsersAvatars}
               access_token={this.props.access_token}
               setLoading={this.setLoading}
-            />
-          </Col>
-          <Col xs={9}>
+              />
+            </Sticky>
+        </Col>
+      </Row>
+      </Col>
+      <Col xs={10}>
+      <Grid >
+        <Row>
+          <Col xs={10}>
+          <Row center="xs">
+            <Col xs={10} style={{alignItems: "center"}}>
+              <Row center="xs">
+              <Col xs={10}>
+                <h1
+                  style={{fontFamily:"Risque", marginTop:"10px", color:"white", cursor:"pointer"}}
+                  onClick={this.handleClickOpen}
+                  >
+                  {this.state.displayName === "" ? "No Name": this.state.displayName}
+                </h1>
+                </Col>
+              </Row>
+              <Row center="xs">
+                <Paper
+                  style={{width: "250px", height:"250px", cursor:"pointer",marginTop:"10px"}}
+                  circle={true}
+                  zDepth={5}
+                  onClick={this.handleProfileClick}>
+                  <Avatar src={this.props.profile_picture} style={{width: "95%", height:"95%", marginTop: "2.5%"}} />
+                </Paper>
+                <Popover
+                  style={{marginLeft: "1%", borderRadius: "25px"}}
+                  open={this.state.open}
+                  anchorEl={this.state.anchorEl}
+                  anchorOrigin={{horizontal: 'right', vertical: 'center'}}
+                  targetOrigin={{horizontal: 'left', vertical: 'center'}}
+                  onRequestClose={this.handleProfileRequestClose}
+                  autoCloseWhenOffScreen={true}
+                  >
+                <Menu>
+                  <ImageUpload
+                    user_id={this.props.user_id}
+                    onAddProfilePicture={this.onAddProfilePicture}
+                    access_token={this.props.access_token}
+                  />
+                </Menu>
+                </Popover>
+              </Row>
+            </Col>
+          </Row>
+          <Row center="xs" style={{marginTop:"20px"}}>
+            <Col xs={8} style={{alignItems: "center"}}>
+                <Chip
+                  avatar={<Avatar style={{backgroundColor:"white", color:"#FF5522"}}>{this.props.followers_count}</Avatar>}
+                  label="Following"
+                  onClick={() => this.handleChipClick(0)}
+                  style={{margin:"0px 1%",fontFamily:"Risque", color:"#FF5522"}}
+
+                />
+                <Chip
+                  avatar={<Avatar style={{backgroundColor:"white", color:"#FF5522"}}>{this.props.following_count}</Avatar>}
+                  label="Followers"
+                  onClick={() => this.handleChipClick(1)}
+                  style={{fontFamily:"Risque", color:"#FF5522"}}
+                />
+
+            </Col>
+          </Row>
             <Row>
               <Paper style={{height: "100%", width: "100%", borderRadius: "25px", marginTop: "25px"}} zDepth={3}>
                 <PostInput
@@ -548,6 +560,8 @@ class Profile extends React.Component {
           </Col>
         </Row>
       </Grid>
+      </Col>
+      </Row>
     }
       <Dialog
           open={openDisplayEdit}

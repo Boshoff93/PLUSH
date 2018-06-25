@@ -23,18 +23,38 @@ import {replaceHomePostsLikesDislikes} from '../actions/replaceHomePostsLikesDis
 import {replaceHomePostsLikesAndDislikesTotals} from '../actions/replaceHomePostsLikesAndDislikesTotals'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
+import Sticky from 'react-stickynode';
+import SearchUser from './SearchUser';
+import {setUserView} from '../actions/setUserView';
 
 
 export class Home extends React.Component {
   state = {
+    onProfile: "false",
     homePostsLikes: this.props.home_posts_likes,
     homePostsDislikes: this.props.home_posts_dislikes,
     homePostsLikeTotals: this.props.home_posts_likes_totals,
     homePostsDislikeTotals: this.props.home_posts_dislikes_totals,
     homePostsTypes: this.props.home_types_of_posts,
     loading: true,
-
+    searchUsers: [],
+    searchUsersIds: [],
+    searchUsersAvatars: [],
+    redirect: false,
+    userViewId: '',
+    loggedIn: false,
   }
+
+  componentWillMount() {
+    if(this.props.access_token != "") {
+      let newState = this.state
+      newState.loggedIn = true
+      this.setState({
+        newState
+      })
+    }
+
+    }
 
   componentDidMount() {
     axios.get('http://localhost:8000/plush-api/getAllFollowPosts/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res1 => {
@@ -118,6 +138,11 @@ export class Home extends React.Component {
   onGetFollowingPosts = (data, profilePictures) => {
     if(data.Posts === null) {
       this.props.replaceHomePosts([],[],[],[],[],[])
+      let newState = this.state
+      newState.loading = false;
+      this.setState({
+        newState
+      })
     } else {
 
       let postsWithImages = []
@@ -150,12 +175,6 @@ export class Home extends React.Component {
           console.log(err);
         })
       }
-
-      let newState = this.state
-      newState.loading = false;
-      this.setState({
-        newState
-      })
 
     }
 
@@ -253,76 +272,116 @@ export class Home extends React.Component {
     })
   }
 
+  onSearchUsers = (users) => {
+      this.setState({
+        searchUsers: users.Display_Names,
+        searchUsersIds: users.User_Ids,
+        searchUsersAvatars: users.Avatars,
+      });
+  }
+
+  onGetUser = (user) => {
+    if(user.User_Id === "") {
+      console.log("user does not exist");
+    } else {
+      this.props.setUserView(user.Display_Name, user.User_Id);
+      let newState = this.state
+      newState.searchUsers = []
+      newState.searchUsersIds = []
+      newState.searchUsersAvatars = []
+      newState.redirect = true
+      newState.userViewId = user.User_Id
+      this.setState({
+        newState
+      });
+    }
+  }
+
+  setLoading = () => {
+    let newState = this.state
+    newState.loading = true
+    this.setState({
+      newState
+    })
+  }
 
   render() {
+    if (!this.state.loggedIn) {
+      return <Redirect push to={`/`}/>;
+    }
+
+    if (this.state.redirect === true) {
+      this.props.replacePageTitle("USER")
+      return <Redirect push to={`/view/${this.state.userViewId}`}/>;
+    }
+
       let posts = this.props.home_posts
           if(posts !== null) {
             posts = this.props.home_posts.map((post, index) => (
               <Row style={{margin:"1% 0"}}key={uuid.v4()}>
                   <Col xs={12}>
-                    <Row>
-                    <Col xs={2}>
-                    </Col>
+                    <Row center="xs">
                       <Col xs={8}>
-                      <Card style={{borderRadius: "25px", marginLeft:"1%",fontFamily:"Risque"}}>
-                        <CardHeader
-                          title={<div style={{color: "#173777"}}>{this.props.home_display_names[index]}</div>}
-                          subtitle={<TimeAgo date={this.props.home_post_times[index]} />}
-                          avatar={this.props.home_profile_pictures[index] === "empty" ? require("../Images/DefaultAvatar.png") : this.props.home_profile_pictures[index]}
-                        />
-                        {this.state.homePostsTypes[index] == 0 ?
-                          <CardText
-                            style={{marginLeft:"1%", wordWrap: 'break-word', color:"#FF5522"}}
-                            >
-                            {post}
-                          </CardText>
-                        :
-                          <div>
-                            <Row center="xs">
-                              <Col xs={12}>
-                                <img src={post} style={{width: "100%", height: "100%", margin: "0px auto"}}/>
-                              </Col>
-                            </Row>
-                            <Row start="xs" style={{padding:"10px 0px"}}>
-                              <Col xs={12}>
-                                <Typography style={{margin:"0px 12.5%", fontSize:"16px", color: "#173777", fontFamily:"Risque"}}>
-                                  Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
-                                  across all continents except Antarctica
-                                </Typography>
-                              </Col>
-                            </Row>
-                          </div>
-                        }
-                        <CardActions>
-                          <FlatButton label="Comment" style={{fontFamily:"Risque", color: "#173777"}}/>
-                          <FlatButton
-                            label="Like"
-                            backgroundColor={this.props.home_posts_likes[index] === 1 ? "#FF5522" : "#FFFFFF"}
-                            onClick={() => this.onLikeClick(this.props.user_id, this.props.home_post_ids[index])}
-                            style={{fontFamily:"Risque", color: this.props.home_posts_likes[index] === 1 ? "#FFFFFF" : "#173777"}}
+                        <Row start="xs">
+                          <Col xs={12}>
+                          <Card style={{borderRadius: "25px", marginLeft:"1%",fontFamily:"Risque"}}>
+                            <CardHeader
+                              title={<div style={{color: "#173777"}}>{this.props.home_display_names[index]}</div>}
+                              subtitle={<TimeAgo date={this.props.home_post_times[index]} />}
+                              avatar={this.props.home_profile_pictures[index] === "empty" ? require("../Images/DefaultAvatar.png") : this.props.home_profile_pictures[index]}
                             />
-                          <FlatButton
-                            label="Dislike"
-                            backgroundColor={this.props.home_posts_dislikes[index] === 1 ? "#173777" : "#FFFFFF"}
-                            onClick={() => this.onDislikeClick(this.props.user_id, this.props.home_post_ids[index])}
-                            style={{fontFamily:"Risque", color: this.props.home_posts_dislikes[index] === 1 ? "#FFFFFF" : "#173777"}}
-                            />
-                            <Button style={{height: "100%", width: "35px", float: "right", color: "#173777", backgroundColor:"white"}} variant="fab"  aria-label="totalDislikes">
-                              {this.props.home_posts_dislikes_totals[index]}
-                            </Button>
-                            <Button style={{height: "100%", width: "35px", float: "right", backgroundColor:"white"}} variant="fab" disabled aria-label="totalDislikesIcon">
-                                <ThumbDown style={{color: "#173777"}}/>
-                            </Button>
-                            <Button style={{height: "100%", width: "35px", float: "right", color: "#FF5522", backgroundColor:"white"}} variant="fab" aria-label="totalLikes">
-                              {this.props.home_posts_likes_totals[index]}
-                            </Button>
-                            <Button style={{height: "100%", width: "35px", float: "right", backgroundColor: "white"}} variant="fab" disabled aria-label="totalLikesIcon">
-                                <ThumbUp style={{color: "#FF5522"}}/>
-                            </Button>
-                        </CardActions>
-                      </Card>
-                      </Col>
-                      <Col xs={2}>
+                            {this.props.home_types_of_posts[index] == 0 ?
+                              <CardText
+                                  style={{marginLeft:"1%", width:"100%", wordWrap: 'break-word', color:"#FF5522"}}
+                                >
+                                {post}
+                              </CardText>
+                            :
+                              <div>
+                                <Row center="xs">
+                                  <Col xs={12}>
+                                    <img src={post} style={{width: "100%", height: "100%", margin: "0px auto"}}/>
+                                  </Col>
+                                </Row>
+                                <Row start="xs" style={{padding:"10px 0px"}}>
+                                  <Col xs={12}>
+                                    <Typography style={{margin:"0px 12.5%", fontSize:"16px", color: "#173777", fontFamily:"Risque"}}>
+
+                                    </Typography>
+                                  </Col>
+                                </Row>
+                              </div>
+                            }
+                            <CardActions>
+                              <FlatButton label="Comment" style={{fontFamily:"Risque", color: "#173777"}}/>
+                              <FlatButton
+                                label="Like"
+                                backgroundColor={this.props.home_posts_likes[index] === 1 ? "#FF5522" : "#FFFFFF"}
+                                onClick={() => this.onLikeClick(this.props.user_id, this.props.home_post_ids[index])}
+                                style={{fontFamily:"Risque", color: this.props.home_posts_likes[index] === 1 ? "#FFFFFF" : "#173777"}}
+                                />
+                              <FlatButton
+                                label="Dislike"
+                                backgroundColor={this.props.home_posts_dislikes[index] === 1 ? "#173777" : "#FFFFFF"}
+                                onClick={() => this.onDislikeClick(this.props.user_id, this.props.home_post_ids[index])}
+                                style={{fontFamily:"Risque", color: this.props.home_posts_dislikes[index] === 1 ? "#FFFFFF" : "#173777"}}
+                                />
+                                <Button style={{height: "100%", width: "35px", float: "right", color: "#173777", backgroundColor:"white"}} variant="fab"  aria-label="totalDislikes">
+                                  {this.props.home_posts_dislikes_totals[index]}
+                                </Button>
+                                <Button style={{height: "100%", width: "35px", float: "right", backgroundColor:"white"}} variant="fab" disabled aria-label="totalDislikesIcon">
+                                    <ThumbDown style={{color: "#173777"}}/>
+                                </Button>
+                                <Button style={{height: "100%", width: "35px", float: "right", color: "#FF5522", backgroundColor:"white"}} variant="fab" aria-label="totalLikes">
+                                  {this.props.home_posts_likes_totals[index]}
+                                </Button>
+                                <Button style={{height: "100%", width: "35px", float: "right", backgroundColor: "white"}} variant="fab" disabled aria-label="totalLikesIcon">
+                                    <ThumbUp style={{color: "#FF5522"}}/>
+                                </Button>
+                            </CardActions>
+                          </Card>
+                          </Col>
+                        </Row>
                       </Col>
                     </Row>
                   </Col>
@@ -341,12 +400,35 @@ export class Home extends React.Component {
               </Col>
             </Row>
           :
+          <Row>
+          <Col xs={2} style={{paddingTop:"90px"}}>
             <Row center="xs">
-              <Col xs={8} style={{textAlign:"left"}}>
+              <Col xs={12} >
+                <Sticky enabled={true} top={90}>
+                  <SearchUser
+                    onProfile={this.state.onProfile}
+                    user_id={this.props.user_id}
+                    onSearchUsers={this.onSearchUsers}
+                    onGetUser={this.onGetUser}
+                    searchUsers={this.state.searchUsers}
+                    searchUsersIds={this.state.searchUsersIds}
+                    searchUsersAvatars={this.state.searchUsersAvatars}
+                    access_token={this.props.access_token}
+                    setLoading={this.setLoading}
+                  />
+                </Sticky>
+              </Col>
+            </Row>
+          </Col>
+          <Col xs={10} style={{paddingTop:"100px"}}>
+            <Row center="xs">
+              <Col xs={12} style={{textAlign:"left"}}>
                 <List>
                   {posts}
                 </List>
               </Col>
+            </Row>
+            </Col>
             </Row>
           }
           </div>
@@ -379,6 +461,7 @@ export class Home extends React.Component {
 
   function matchDispachToProps(dispatch) {
     return bindActionCreators({
+      setUserView: setUserView,
       replaceHomePosts: replaceHomePosts,
       replacePageTitle: replacePageTitle,
       replaceHomePostsLikesDislikes: replaceHomePostsLikesDislikes,

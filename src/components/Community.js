@@ -20,6 +20,7 @@ import Menu from 'material-ui/Menu';
 import {List} from 'material-ui/List';
 import uuid from 'uuid';
 import {replacePageTitle} from '../actions/replacePageTitle'
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 class Community extends React.Component {
@@ -37,6 +38,7 @@ class Community extends React.Component {
     followerAvatars: [],
     path: '',
     open: false,
+    loading: true,
     value: this.props.followers_or_followings,
   }
 
@@ -113,6 +115,7 @@ class Community extends React.Component {
       newState.followingDisplayNames = followings.Display_Names
       newState.followingIds = followings.Following_Ids
       newState.followingAvatars = followings.Avatars
+      newState.loading = false
       this.setState({
         newState
       });
@@ -216,8 +219,16 @@ class Community extends React.Component {
 
     return (
       <div style={{ backgroundImage: `url(${imageUrl})`, width:"100%", minHeight:"100vh", height:"auto", overflowY: "visible"}}>
+        {this.state.loading === true ?
+          <Row center="xs" style={{marginTop: "3%"}}>
+            <Col xs={12} style={{alignItems: "center"}}>
+              <CircularProgress style={{color: "white"}} size={300} thickness={1}/>
+              <h3 style={{position: "relative", fontSize: "30px", marginTop:"-170px", color: "#173777"}}>Loading...</h3>
+            </Col>
+          </Row>
+        :
         <Grid >
-          <Row center="xs">
+          <Row center="xs" style={{paddingTop:"8%"}}>
             <Col xs={4}>
               <AppBar position="static" color="default" style={{marginTop:"5%",borderRadius: "10px", color:"#173777"}}>
                 <Tabs
@@ -237,6 +248,7 @@ class Community extends React.Component {
             {this.state.value === 0 ? followings : followers}
           </List>
         </Grid>
+        }
       </div>
     );
   }

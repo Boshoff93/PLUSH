@@ -140,7 +140,7 @@ class AppBarHeader extends React.Component {
           <div>
             <AppBar
               title="PLUSH"
-              style={{width: "100%"}}
+              style={{width: "100%", position:"fixed", top:"0px"}}
               titleStyle={{fontFamily:"Risque"}}
               iconElementRight={<this.Logged />}
               onLeftIconButtonClick={this.handleToggle}
@@ -163,7 +163,7 @@ class AppBarHeader extends React.Component {
       <div>
         <AppBar
           title="PLUSH"
-          style={{width: "100%"}}
+          style={{width: "100%", position:"fixed", top:"0px"}}
           titleStyle={{fontFamily:"Risque"}}
           iconElementRight={<this.Logged />}
           onLeftIconButtonClick={this.handleToggle}
