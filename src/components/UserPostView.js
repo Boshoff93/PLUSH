@@ -78,7 +78,7 @@ export class UserPostView extends React.Component {
                   <Card style={{borderRadius: "25px", margin:"0px 1%",fontFamily:"Risque"}}>
                     <CardHeader
                       title={<div style={{color: "#173777"}}>{this.props.display_name}</div>}
-                      subtitle={<TimeAgo date={this.props.post_times[index]} />}
+                      subtitle={<TimeAgo date={this.props.post_times[index]} title={""}/>}
                       avatar={this.props.profile_picture}
                     />
                     {this.props.typesOfPosts[index] == 0 ?

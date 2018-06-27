@@ -220,7 +220,7 @@ class Community extends React.Component {
     return (
       <div style={{ backgroundImage: `url(${imageUrl})`, width:"100%", minHeight:"100vh", height:"auto", overflowY: "visible"}}>
         {this.state.loading === true ?
-          <Row center="xs" style={{marginTop: "3%"}}>
+          <Row center="xs" style={{paddingTop: "5%"}}>
             <Col xs={12} style={{alignItems: "center"}}>
               <CircularProgress style={{color: "white"}} size={300} thickness={1}/>
               <h3 style={{position: "relative", fontSize: "30px", marginTop:"-170px", color: "#173777"}}>Loading...</h3>

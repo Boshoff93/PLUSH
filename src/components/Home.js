@@ -28,6 +28,7 @@ import SearchUser from './SearchUser';
 import {setUserView} from '../actions/setUserView';
 
 
+
 export class Home extends React.Component {
   state = {
     onProfile: "false",
@@ -320,14 +321,15 @@ export class Home extends React.Component {
             posts = this.props.home_posts.map((post, index) => (
               <Row style={{margin:"1% 0"}}key={uuid.v4()}>
                   <Col xs={12}>
-                    <Row center="xs">
+                    <Row start="xs">
+                      <Col xs={1}/>
                       <Col xs={8}>
                         <Row start="xs">
                           <Col xs={12}>
                           <Card style={{borderRadius: "25px", marginLeft:"1%",fontFamily:"Risque"}}>
                             <CardHeader
                               title={<div style={{color: "#173777"}}>{this.props.home_display_names[index]}</div>}
-                              subtitle={<TimeAgo date={this.props.home_post_times[index]} />}
+                              subtitle={<TimeAgo date={this.props.home_post_times[index]} title={""}/>}
                               avatar={this.props.home_profile_pictures[index] === "empty" ? require("../Images/DefaultAvatar.png") : this.props.home_profile_pictures[index]}
                             />
                             {this.props.home_types_of_posts[index] == 0 ?
@@ -393,7 +395,7 @@ export class Home extends React.Component {
         return (
           <div style={{ backgroundImage: `url(${imageUrl})`, width:"100%", minHeight:"100vh", height:"auto", overflowY: "auto"}}>
           {this.state.loading === true ?
-            <Row center="xs" style={{marginTop: "3%"}}>
+            <Row center="xs" style={{marginTop: "5%"}}>
               <Col xs={12} style={{alignItems: "center"}}>
                 <CircularProgress style={{color: "white"}} size={300} thickness={1}/>
                 <h3 style={{position: "relative", fontSize: "30px", marginTop:"-170px", color: "#173777"}}>Loading...</h3>
@@ -401,10 +403,10 @@ export class Home extends React.Component {
             </Row>
           :
           <Row>
-          <Col xs={2} style={{paddingTop:"90px"}}>
+          <Col xs={2} style={{paddingTop:"95px"}}>
             <Row center="xs">
               <Col xs={12} >
-                <Sticky enabled={true} top={90}>
+                <Sticky enabled={true} top={95}>
                   <SearchUser
                     onProfile={this.state.onProfile}
                     user_id={this.props.user_id}

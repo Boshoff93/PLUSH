@@ -80,7 +80,9 @@ export class SearchUser extends React.Component {
   }
 
   handleSubmit = (index) => {
-    if(this.props.searchUsersIds[index] === (this.props.user_id) && this.props.onProfile) {
+    console.log(this.props.onProfile);
+    if((this.props.searchUsersIds[index] === this.props.user_id) && this.props.onProfile === true) {
+      console.log("Got here: " + 1);
       this.clearList()
       let newState = this.state
       newState.value = ''
@@ -88,6 +90,7 @@ export class SearchUser extends React.Component {
         newState
       });
     } else if(this.props.searchUsersIds[index] === (this.props.user_id)) {
+      console.log("Got here: " + 2);
       this.props.replacePageTitle("PROFILE")
       let newState = this.state
       newState.value = ''
@@ -96,6 +99,7 @@ export class SearchUser extends React.Component {
         newState
       });
       } else {
+        console.log("Got here: " + 3);
         this.props.setLoading()
         this.getUserView(this.props.searchUsersIds[index])
         let newState = this.state

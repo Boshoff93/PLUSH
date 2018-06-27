@@ -23,7 +23,6 @@ import Avatar from 'material-ui/Avatar';
 import Typography from '@material-ui/core/Typography';
 
 
-
 export class PostView extends React.Component {
 
   getLikesAndDislikesTotals = (post_ids) => {
@@ -50,18 +49,35 @@ export class PostView extends React.Component {
       } else {
         this.props.onDeletePost(index);
 
-        axios.get('http://localhost:8000/plush-api/getLikesAndDislikes/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res3 => {
+        var picture_info = {
+          image_name: res2.data.Post,
+          data:""
+        }
+
+        console.log(picture_info);
+
+        axios.delete('http://localhost:8001/plush-file-server/removePostPicture', {data: JSON.stringify(picture_info), headers: {'Authorization': this.props.access_token}}).then(res3 => {
           if('Error' in res3.data) {
             console.log(res3.Data.Error)
           } else {
-            let data = res3.data
-            this.props.onLikeOrDislike(data);
+
           }
         }).catch(err => {
           console.log(err);
         })
 
-        this.getLikesAndDislikesTotals(this.props.post_ids)
+        axios.get('http://localhost:8000/plush-api/getLikesAndDislikes/' + this.props.user_id, {headers: {'Authorization': this.props.access_token}}).then(res4 => {
+          if('Error' in res4.data) {
+            console.log(res4.Data.Error)
+          } else {
+            let data = res4.data
+            this.props.onLikeOrDislike(data);
+            this.getLikesAndDislikesTotals(this.props.post_ids)
+          }
+        }).catch(err => {
+          console.log(err);
+        })
+
       }
     }).catch(err => {
       // Handle the error here. E.g. use this.setState() to display an error msg.
@@ -101,11 +117,11 @@ export class PostView extends React.Component {
       user_id: user_id,
       post_id: post_id
     }
-    axios.post('http://localhost:8000/plush-api/like', JSON.stringify(ids), {headers: {'Authorization': this.props.access_token}}).then(res4 => {
-      if('Error' in res4.data) {
-        console.log(res4.Data.Error);
+    axios.post('http://localhost:8000/plush-api/like', JSON.stringify(ids), {headers: {'Authorization': this.props.access_token}}).then(res5 => {
+      if('Error' in res5.data) {
+        console.log(res5.Data.Error);
       } else {
-        this.props.onLikeOrDislike(res4.data)
+        this.props.onLikeOrDislike(res5.data)
         this.getLikesAndDislikesTotals(this.props.post_ids)
       }
     }).catch(err => {
@@ -121,11 +137,11 @@ export class PostView extends React.Component {
     }
     console.log(this.props.post_ids);
     console.log(ids.post_id);
-    axios.post('http://localhost:8000/plush-api/dislike', JSON.stringify(ids), {headers: {'Authorization': this.props.access_token}}).then(res5 => {
-      if('Error' in res5.data) {
-        console.log(res5.Data.Error);
+    axios.post('http://localhost:8000/plush-api/dislike', JSON.stringify(ids), {headers: {'Authorization': this.props.access_token}}).then(res6 => {
+      if('Error' in res6.data) {
+        console.log(res6.Data.Error);
       } else {
-        this.props.onLikeOrDislike(res5.data)
+        this.props.onLikeOrDislike(res6.data)
         this.getLikesAndDislikesTotals(this.props.post_ids)
       }
     }).catch(err => {
@@ -147,7 +163,7 @@ export class PostView extends React.Component {
                   <Card style={{borderRadius: "25px", marginLeft:"1%",fontFamily:"Risque"}}>
                     <CardHeader
                       title={<div style={{color: "#173777"}}>{this.props.display_name}</div>}
-                      subtitle={<TimeAgo date={this.props.post_times[index]} />}
+                      subtitle={<TimeAgo date={this.props.post_times[index]} title={""}/>}
                       avatar={this.props.profile_picture}
                     />
                     {this.props.typesOfPosts[index] == 0 ?
@@ -166,7 +182,6 @@ export class PostView extends React.Component {
                         <Row start="xs" style={{padding:"10px 0px"}}>
                           <Col xs={12}>
                             <Typography style={{margin:"0px 12.5%", fontSize:"16px", color: "#173777", fontFamily:"Risque"}}>
-                              
                             </Typography>
                           </Col>
                         </Row>
